@@ -24,10 +24,24 @@ jobs:
               s=s.replace('</body>',tag+'\n</body>')
               p.write_text(s,encoding='utf-8')
           PY
-      - name: Commit integration
+      - name: Fix wallpaper publishing
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          start=s.find('/* PUBLISH */')
+          end=s.find('/* -------------------------\n   EVERYTHING', start)
+          if start == -1 or end == -1:
+              raise SystemExit('Could not find the publish section in index.html')
+          replacement='''/* PUBLISH */\n\n$("publish").onclick=async()=>{\n\nif(!user){\n\n$("authModal").classList.add("open");\n\nreturn;\n\n}\n\nconst button=$("publish");\nconst caption=$("postCaption").value.trim();\nconst state=editorState();\nconst decorations=state.objects.map(o=>({\ntext:o.text,\ncss:o.css,\ntype:o.type\n}));\n\nbutton.disabled=true;\nconst oldText=button.textContent;\nbutton.textContent="Publishing...";\n\ntry{\n\nconst result=await sb.from("wallpapers").insert({\nuser_id:user.id,\ntitle:"",\nsubtitle:"",\ncaption:caption,\nbackground:state.background || "#fff",\ntext_color:"#111111",\nfont:"Arial",\ntitle_size:52,\nsubtitle_size:16,\ndecorations:decorations,\nbrightness:100,\ncontrast:100,\nblur:0\n}).select(`*, profiles (id, username, real_name, avatar_url, bio)`).single();\n\nif(result.error) throw result.error;\n\n/* Put the returned row into the current feed immediately.\n   This prevents the profile/home view from waiting on a second query. */\nconst saved=result.data;\nif(saved){\n  wallpapers=wallpapers.filter(w=>w.id!==saved.id);\n  wallpapers.unshift(saved);\n}\n\n$("postCaption").value="";\n\nawait loadLikeCounts();\nrenderEverything();\ngoPage("home");\n\nalert("Wallpaper published! 🎉");\n\n}catch(error){\n\nconsole.error("DreamWall publish error:",error);\nalert("Could not publish:\\n\\n"+(error?.message || "Please try again."));\n\n}finally{\nbutton.disabled=false;\nbutton.textContent=oldText;\n}\n\n};\n\n\n'''
+          s=s[:start]+replacement+s[end:]
+          p.write_text(s,encoding='utf-8')
+          PY
+      - name: Commit integration and publishing fix
         run: |
           git config user.name 'DreamWall Bot'
           git config user.email 'actions@users.noreply.github.com'
           git add index.html
-          git diff --cached --quiet || git commit -m 'Integrate advanced wallpaper studio'
+          git diff --cached --quiet || git commit -m 'Fix wallpaper publishing refresh'
           git push
