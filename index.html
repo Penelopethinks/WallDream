@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DreamWall ✨</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -10,19 +10,17 @@
 <style>
 :root{
   --bg:#ffffff;
-  --text:#17131c;
+  --text:#17131d;
   --muted:#77717f;
   --line:#e8e2eb;
-  --soft:#f8f5fa;
+  --soft:#f7f3fa;
   --card:#ffffff;
   --pink:#ff3cac;
   --purple:#784cff;
   --blue:#25d9ff;
 }
 
-*{
-  box-sizing:border-box;
-}
+*{box-sizing:border-box}
 
 html,body{
   margin:0;
@@ -34,17 +32,14 @@ html,body{
 
 body.dark{
   --bg:#09080b;
-  --text:#f7f4fa;
+  --text:#f8f5fa;
   --muted:#aaa2b1;
-  --line:#29252d;
-  --soft:#151218;
-  --card:#100e12;
+  --line:#29252e;
+  --soft:#151219;
+  --card:#100e13;
 }
 
-button,
-input,
-textarea,
-select{
+button,input,textarea,select{
   font:inherit;
 }
 
@@ -54,7 +49,9 @@ button{
 
 .sidebar{
   position:fixed;
-  inset:0 auto 0 0;
+  left:0;
+  top:0;
+  bottom:0;
   width:235px;
   background:var(--bg);
   border-right:1px solid var(--line);
@@ -66,12 +63,7 @@ button{
   font-size:29px;
   font-weight:900;
   margin:5px 13px 30px;
-  background:linear-gradient(
-    90deg,
-    var(--pink),
-    var(--purple),
-    var(--blue)
-  );
+  background:linear-gradient(90deg,var(--pink),var(--purple),var(--blue));
   color:transparent;
   background-clip:text;
   -webkit-background-clip:text;
@@ -100,8 +92,8 @@ button{
 
 .main{
   margin-left:235px;
-  max-width:1200px;
-  padding:28px 36px;
+  max-width:1250px;
+  padding:28px 36px 60px;
 }
 
 .page{
@@ -122,7 +114,7 @@ button{
 
 .top h1{
   margin:0;
-  font-size:27px;
+  font-size:28px;
 }
 
 .btn{
@@ -138,20 +130,10 @@ button{
   transform:translateY(-1px);
 }
 
-.btn:disabled{
-  opacity:.55;
-  cursor:not-allowed;
-}
-
 .primary{
   border:0;
-  color:#fff;
-  background:linear-gradient(
-    90deg,
-    var(--pink),
-    var(--purple),
-    var(--blue)
-  );
+  color:white;
+  background:linear-gradient(90deg,var(--pink),var(--purple),var(--blue));
 }
 
 .muted{
@@ -160,7 +142,6 @@ button{
 }
 
 .notice,
-.gamecard,
 .feature-card{
   padding:18px;
   border:1px solid var(--line);
@@ -172,7 +153,7 @@ button{
 .feed,
 .stories,
 .funbar{
-  width:min(650px,100%);
+  width:min(680px,100%);
   margin:auto;
 }
 
@@ -209,12 +190,7 @@ button{
   padding:2px;
   border-radius:50%;
   margin:auto;
-  background:linear-gradient(
-    135deg,
-    var(--pink),
-    var(--purple),
-    var(--blue)
-  );
+  background:linear-gradient(135deg,var(--pink),var(--purple),var(--blue));
 }
 
 .face{
@@ -283,15 +259,10 @@ button{
   height:43px;
   border-radius:50%;
   overflow:hidden;
-  background:linear-gradient(
-    135deg,
-    var(--pink),
-    var(--purple),
-    var(--blue)
-  );
+  background:linear-gradient(135deg,var(--pink),var(--purple),var(--blue));
   display:grid;
   place-items:center;
-  color:#fff;
+  color:white;
   font-weight:900;
   flex:none;
 }
@@ -308,7 +279,7 @@ button{
 
 .wall{
   aspect-ratio:9/14;
-  background:#fff;
+  background:white;
   overflow:hidden;
   position:relative;
 }
@@ -344,25 +315,54 @@ button{
   font-size:14px;
 }
 
-.grid{
+/* EXPLORE */
+
+.explore-toolbar{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-bottom:18px;
+}
+
+.explore-grid{
   display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:8px;
+  grid-template-columns:repeat(5,1fr);
+  gap:12px;
 }
 
-.tile{
+.explore-card{
   aspect-ratio:9/14;
-  border-radius:11px;
+  border-radius:15px;
   overflow:hidden;
-  background:var(--soft);
+  position:relative;
   cursor:pointer;
+  box-shadow:0 5px 18px #00000015;
+  transition:.2s;
 }
 
-.tile .wall{
+.explore-card:hover{
+  transform:scale(1.025);
+}
+
+.explore-card .wall{
   width:100%;
   height:100%;
   aspect-ratio:auto;
 }
+
+.explore-label{
+  position:absolute;
+  left:8px;
+  top:8px;
+  padding:5px 8px;
+  border-radius:999px;
+  background:#ffffffaa;
+  backdrop-filter:blur(7px);
+  font-size:9px;
+  font-weight:900;
+}
+
+/* EDITOR */
 
 .editor{
   display:grid;
@@ -398,7 +398,7 @@ button{
 }
 
 .obj.sel{
-  outline:2px dashed #fff;
+  outline:2px dashed white;
 }
 
 .panel{
@@ -437,10 +437,6 @@ button{
   color:var(--text);
   padding:9px 11px;
   border-radius:10px;
-}
-
-.tool:hover{
-  background:var(--line);
 }
 
 .tools{
@@ -494,6 +490,8 @@ button{
   font-size:12px;
   margin:8px 0 5px;
 }
+
+/* MESSAGES */
 
 .messages{
   display:grid;
@@ -575,42 +573,61 @@ button{
   flex:1;
 }
 
-.profile-card{
+/* PROFILE */
+
+.profilehead{
   display:flex;
+  gap:22px;
   align-items:center;
-  gap:12px;
-  padding:12px;
-  border:1px solid var(--line);
-  border-radius:13px;
-  cursor:pointer;
-  margin-bottom:8px;
+  padding:20px 0 28px;
+  border-bottom:1px solid var(--line);
 }
 
-.feature-grid{
+.bigavatar{
+  width:105px;
+  height:105px;
+  border-radius:50%;
+  overflow:hidden;
+  background:linear-gradient(135deg,var(--pink),var(--purple),var(--blue));
   display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:14px;
-}
-
-.feature-card{
-  border:1px solid var(--line);
-  border-radius:17px;
-  background:var(--card);
-  padding:18px;
-}
-
-.theme-box{
-  border-radius:18px;
-  padding:25px;
+  place-items:center;
   color:white;
-  background:linear-gradient(
-    135deg,
-    #ff3cac,
-    #784cff,
-    #25d9ff
-  );
-  margin-bottom:15px;
+  font-size:40px;
+  font-weight:900;
+  flex:none;
 }
+
+.stats{
+  display:flex;
+  gap:28px;
+  margin-top:15px;
+}
+
+.stats b{
+  display:block;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+}
+
+.tile{
+  aspect-ratio:9/14;
+  border-radius:11px;
+  overflow:hidden;
+  background:var(--soft);
+  cursor:pointer;
+}
+
+.tile .wall{
+  width:100%;
+  height:100%;
+  aspect-ratio:auto;
+}
+
+/* MODALS */
 
 .modal{
   position:fixed;
@@ -643,86 +660,16 @@ button{
   font-size:26px;
 }
 
-.profilehead{
-  display:flex;
-  gap:22px;
-  align-items:center;
-  padding:20px 0 28px;
-  border-bottom:1px solid var(--line);
-}
-
-.bigavatar{
-  width:105px;
-  height:105px;
-  border-radius:50%;
-  overflow:hidden;
-  background:linear-gradient(
-    135deg,
-    var(--pink),
-    var(--purple),
-    var(--blue)
-  );
-  display:grid;
-  place-items:center;
-  color:#fff;
-  font-size:40px;
-  font-weight:900;
-  flex:none;
-}
-
-.stats{
-  display:flex;
-  gap:28px;
-  margin-top:15px;
-}
-
-.stats b{
-  display:block;
-}
+/* MOBILE */
 
 .mobile-extra{
   display:none;
 }
 
-.msg-wall{
-  width:180px;
-  aspect-ratio:9/14;
-  border-radius:10px;
-  overflow:hidden;
-  margin-top:7px;
-}
-
-.small-actions{
-  display:flex;
-  gap:6px;
-  margin-top:8px;
-}
-
-.preset-label{
-  position:absolute;
-  left:12px;
-  top:12px;
-  padding:5px 8px;
-  border-radius:999px;
-  background:#ffffffaa;
-  backdrop-filter:blur(6px);
-  font-size:10px;
-  font-weight:800;
-}
-
-.gradient-preview{
-  height:80px;
-  border-radius:12px;
-  margin-top:10px;
-  border:1px solid var(--line);
-}
-
-.status{
-  padding:10px;
-  border-radius:10px;
-  background:var(--soft);
-  margin-bottom:10px;
-  font-size:13px;
+@media(max-width:1000px){
+  .explore-grid{
+    grid-template-columns:repeat(4,1fr);
+  }
 }
 
 @media(max-width:850px){
@@ -759,11 +706,11 @@ button{
     grid-template-columns:1fr;
   }
 
-  .feature-grid{
-    grid-template-columns:1fr;
+  .grid{
+    grid-template-columns:repeat(3,1fr);
   }
 
-  .grid{
+  .explore-grid{
     grid-template-columns:repeat(3,1fr);
   }
 }
@@ -816,6 +763,10 @@ button{
     grid-template-columns:repeat(2,1fr);
   }
 
+  .explore-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+
   .preview{
     min-height:500px;
     padding:15px;
@@ -839,11 +790,6 @@ button{
   .profilehead{
     align-items:flex-start;
   }
-
-  .bigavatar{
-    width:80px;
-    height:80px;
-  }
 }
 </style>
 </head>
@@ -851,7 +797,6 @@ button{
 <body>
 
 <aside class="sidebar">
-
   <div class="logo">DreamWall</div>
 
   <nav class="nav">
@@ -865,106 +810,85 @@ button{
     <button data-page="fun">🎯 Challenge</button>
     <button data-page="settings">⚙ Settings</button>
   </nav>
-
 </aside>
 
-<button
-  class="btn primary mobile-extra"
-  onclick="go('messages')">
-  ✉
-</button>
+<button class="btn primary mobile-extra" onclick="go('messages')">✉</button>
 
 <main class="main">
 
 <!-- HOME -->
-
 <section id="home" class="page">
-
   <div class="top">
     <h1>Home</h1>
-    <button class="btn primary" onclick="go('create')">
-      ＋ Create
-    </button>
+    <button class="btn primary" data-page="create">＋ Create</button>
   </div>
 
   <div class="stories">
-
     <div class="stories-title">
       <b>DreamWallers</b>
       <span class="muted">Last 24 hours ✨</span>
     </div>
-
     <div id="storiesRow" class="stories-row"></div>
-
   </div>
 
   <div class="funbar">
-
-    <button class="funchip" onclick="go('explore')">
-      ✨ Discover
-    </button>
-
-    <button class="funchip" onclick="go('fun')">
-      🎯 Challenge
-    </button>
-
-    <button class="funchip" onclick="go('messages')">
-      💌 Messages
-    </button>
-
-    <button class="funchip" onclick="go('create')">
-      🎨 Make one
-    </button>
-
+    <button class="funchip" onclick="go('explore')">✨ Discover</button>
+    <button class="funchip" onclick="go('fun')">🎯 Challenge</button>
+    <button class="funchip" onclick="go('messages')">💌 Messages</button>
+    <button class="funchip" onclick="go('create')">🎨 Make one</button>
   </div>
 
   <div id="feed" class="feed"></div>
-
 </section>
 
 
 <!-- SEARCH -->
-
 <section id="search" class="page">
-
   <div class="top">
     <h1>Search</h1>
   </div>
 
-  <input
-    id="searchInput"
-    class="search"
-    placeholder="Search DreamWallers..."
-  >
+  <input id="searchInput" class="search" placeholder="Search DreamWallers...">
 
-  <div
-    id="searchResults"
-    style="margin-top:18px">
-  </div>
-
+  <div id="searchResults" style="margin-top:18px"></div>
 </section>
 
 
 <!-- EXPLORE -->
-
 <section id="explore" class="page">
 
   <div class="top">
     <div>
       <h1>Explore ✨</h1>
-      <span class="muted">
-        Beautiful wallpaper ideas
-      </span>
+      <div class="muted">Endless wallpaper inspiration</div>
     </div>
+
+    <button class="btn primary" onclick="generateMoreWallpapers()">
+      ✨ Load more
+    </button>
   </div>
 
-  <div id="exploreGrid" class="grid"></div>
+  <div class="explore-toolbar">
+    <button class="funchip" onclick="exploreStyle='all';generateMoreWallpapers(true)">🌈 All</button>
+    <button class="funchip" onclick="exploreStyle='dreamy';generateMoreWallpapers(true)">☁️ Dreamy</button>
+    <button class="funchip" onclick="exploreStyle='space';generateMoreWallpapers(true)">🌙 Space</button>
+    <button class="funchip" onclick="exploreStyle='nature';generateMoreWallpapers(true)">🌿 Nature</button>
+    <button class="funchip" onclick="exploreStyle='cute';generateMoreWallpapers(true)">🎀 Cute</button>
+    <button class="funchip" onclick="exploreStyle='abstract';generateMoreWallpapers(true)">🪩 Abstract</button>
+  </div>
+
+  <div id="exploreGrid" class="explore-grid"></div>
+
+  <div style="text-align:center;padding:30px">
+    <button class="btn primary" onclick="generateMoreWallpapers()">
+      ✨ Show me MORE wallpapers
+    </button>
+  </div>
 
 </section>
 
 
 <!-- CREATE -->
-
 <section id="create" class="page">
 
   <div class="top">
@@ -976,127 +900,68 @@ button{
     <div>
 
       <div class="preview">
-
         <div id="canvas" class="canvas"></div>
-
       </div>
 
       <div class="field">
-
         <label>Caption</label>
-
-        <textarea
-          id="caption"
-          maxlength="220"
-          placeholder="Say something about your wallpaper...">
-        </textarea>
-
+        <textarea id="caption" maxlength="220"
+          placeholder="Say something about your wallpaper..."></textarea>
       </div>
 
       <div class="row">
-
-        <button class="btn" id="undo">
-          ↶ Undo
-        </button>
-
-        <button class="btn" id="redo">
-          ↷ Redo
-        </button>
-
-        <button class="btn" id="clear">
-          Clear
-        </button>
-
-        <button class="btn" id="saveDraft">
-          💾 Save
-        </button>
-
-        <button class="btn primary" id="publish">
-          ✦ Publish
-        </button>
-
+        <button class="btn" id="undo">↶ Undo</button>
+        <button class="btn" id="redo">↷ Redo</button>
+        <button class="btn" id="clear">Clear</button>
+        <button class="btn" id="saveDraft">💾 Save</button>
+        <button class="btn primary" id="publish">✦ Publish</button>
       </div>
 
     </div>
 
-
     <aside class="panel">
 
-      <!-- BACKGROUND -->
-
       <div class="section">
-
         <h3>Background 🎨</h3>
 
         <div class="row">
-
-          <button class="tool" id="bgColor">
-            Color
-          </button>
-
-          <button class="tool" id="bgGradient">
-            Gradient
-          </button>
-
-          <button class="tool" id="bgPattern">
-            Pattern
-          </button>
-
+          <button class="tool" id="bgColor">Color</button>
+          <button class="tool" id="bgGradient">Gradient</button>
+          <button class="tool" id="bgPattern">Pattern</button>
         </div>
 
         <div id="bgControls"></div>
-
       </div>
 
-
-      <!-- TEXT -->
 
       <div class="section">
 
         <h3>Text ✏️</h3>
 
-        <button class="tool" id="addText">
-          ＋ Add text
-        </button>
+        <button class="tool" id="addText">＋ Add text</button>
 
         <div id="textControls" style="display:none">
 
           <div class="field">
-
             <label>Text</label>
-
-            <input
-              id="textValue"
-              value="DreamWall">
-
+            <input id="textValue" value="DreamWall">
           </div>
 
           <div class="field">
-
             <label>Color</label>
-
-            <input
-              id="textColor"
-              type="color"
-              value="#111111">
-
+            <input id="textColor" type="color" value="#111111">
           </div>
 
           <div class="field">
-
             <label>Font</label>
-
             <select id="font">
-
               <option>Arial</option>
               <option>Georgia</option>
               <option>Verdana</option>
               <option>Trebuchet MS</option>
               <option>Courier New</option>
               <option>Impact</option>
-
             </select>
-
           </div>
 
           <div class="label">
@@ -1104,28 +969,13 @@ button{
             <span id="sizeOut">42px</span>
           </div>
 
-          <input
-            id="textSize"
-            class="range"
-            type="range"
-            min="10"
-            max="150"
-            value="42">
+          <input id="textSize" class="range"
+            type="range" min="10" max="150" value="42">
 
           <div class="row">
-
-            <button class="tool" id="bold">
-              Bold
-            </button>
-
-            <button class="tool" id="italic">
-              Italic
-            </button>
-
-            <button class="tool" id="shadow">
-              Shadow
-            </button>
-
+            <button class="tool" id="bold">Bold</button>
+            <button class="tool" id="italic">Italic</button>
+            <button class="tool" id="shadow">Shadow</button>
           </div>
 
         </div>
@@ -1133,21 +983,14 @@ button{
       </div>
 
 
-      <!-- STICKERS -->
-
       <div class="section">
 
         <h3>Stickers & Shapes 🌟</h3>
 
-        <div
-          id="stickers"
-          class="tools">
-        </div>
+        <div id="stickers" class="tools"></div>
 
       </div>
 
-
-      <!-- EFFECTS -->
 
       <div class="section">
 
@@ -1158,12 +1001,7 @@ button{
       </div>
 
 
-      <!-- OBJECT -->
-
-      <div
-        class="section"
-        id="objectControls"
-        style="display:none">
+      <div class="section" id="objectControls" style="display:none">
 
         <h3>Selected object</h3>
 
@@ -1172,193 +1010,131 @@ button{
           <span id="objSizeOut">100%</span>
         </div>
 
-        <input
-          id="objSize"
-          class="range"
-          type="range"
-          min="20"
-          max="300"
-          value="100">
+        <input id="objSize" class="range"
+          type="range" min="20" max="300" value="100">
 
         <div class="label">
           Rotation
           <span id="objRotOut">0°</span>
         </div>
 
-        <input
-          id="objRot"
-          class="range"
-          type="range"
-          min="-180"
-          max="180"
-          value="0">
+        <input id="objRot" class="range"
+          type="range" min="-180" max="180" value="0">
 
         <div class="label">
           Opacity
           <span id="objOpacityOut">100%</span>
         </div>
 
-        <input
-          id="objOpacity"
-          class="range"
-          type="range"
-          min="0"
-          max="100"
-          value="100">
+        <input id="objOpacity" class="range"
+          type="range" min="0" max="100" value="100">
 
         <div class="row">
-
-          <button class="tool" id="duplicate">
-            Duplicate
-          </button>
-
-          <button class="tool" id="delete">
-            Delete
-          </button>
-
+          <button class="tool" id="duplicate">Duplicate</button>
+          <button class="tool" id="delete">Delete</button>
         </div>
 
       </div>
 
 
-      <!-- LAYERS -->
-
       <div class="section">
 
         <h3>Layers</h3>
 
-        <div
-          id="layers"
-          class="muted">
+        <div id="layers" class="muted">
           No objects yet.
         </div>
 
       </div>
 
     </aside>
-
   </div>
-
 </section>
 
 
 <!-- ACTIVITY -->
-
 <section id="activity" class="page">
-
   <div class="top">
     <h1>Activity</h1>
   </div>
 
   <div id="activityList"></div>
-
 </section>
 
 
 <!-- MESSAGES -->
-
 <section id="messages" class="page">
 
   <div class="top">
-
-    <div>
-      <h1>Messages 💌</h1>
-      <span class="muted">
-        Talk with other DreamWallers
-      </span>
-    </div>
-
+    <h1>Messages 💌</h1>
+    <span class="muted">Chat with DreamWallers</span>
   </div>
 
   <div class="messages">
 
-    <div
-      class="threads"
-      id="threads">
+    <div class="threads" id="threads">
+      <div class="muted">Loading people...</div>
     </div>
 
     <div class="chat">
 
-      <div
-        id="chatTitle"
-        class="chat-head">
+      <div id="chatTitle" class="chat-head">
         Choose someone to message
       </div>
 
-      <div
-        id="chatLog"
-        class="chatlog">
-
+      <div id="chatLog" class="chatlog">
         <div class="muted">
           Choose a DreamWaller on the left.
         </div>
-
       </div>
 
       <div class="composer">
-
         <input
           id="messageInput"
           class="search"
-          placeholder="Message...">
+          placeholder="Message..."
+        >
 
         <button
           class="btn primary"
           id="sendMessage">
           Send
         </button>
-
       </div>
 
     </div>
 
   </div>
-
 </section>
 
 
 <!-- PROFILE -->
-
 <section id="profile" class="page">
 
   <div class="top">
-
     <h1>Profile</h1>
-
-    <button
-      class="btn"
-      id="editProfile">
+    <button class="btn" id="editProfile">
       Edit profile
     </button>
-
   </div>
 
   <div class="profilehead">
 
-    <div
-      id="bigAvatar"
-      class="bigavatar">
+    <div id="bigAvatar" class="bigavatar">
       P
     </div>
 
     <div>
 
-      <h2
-        id="profileName"
-        style="margin:0">
+      <h2 id="profileName" style="margin:0">
         Your profile
       </h2>
 
-      <div
-        id="profileHandle"
-        class="muted">
+      <div id="profileHandle" class="muted">
         @username
       </div>
 
-      <p
-        id="profileBio"
-        class="muted">
-      </p>
+      <p id="profileBio" class="muted"></p>
 
       <div class="stats">
 
@@ -1385,23 +1161,24 @@ button{
 
   <h3>Your wallpapers</h3>
 
-  <div
-    id="profileGrid"
-    class="grid">
-  </div>
+  <div id="profileGrid" class="grid"></div>
 
 </section>
 
 
 <!-- CHALLENGE -->
-
 <section id="fun" class="page">
 
   <div class="top">
     <h1>🎯 Final Challenge</h1>
   </div>
 
-  <div class="theme-box">
+  <div class="theme-box" style="
+    border-radius:18px;
+    padding:25px;
+    color:white;
+    background:linear-gradient(135deg,#ff3cac,#784cff,#25d9ff);
+  ">
 
     <h2 id="challengeTitle">
       Your challenge
@@ -1409,47 +1186,9 @@ button{
 
     <p id="challengeText"></p>
 
-    <button
-      class="btn"
-      onclick="newChallenge()">
+    <button class="btn" onclick="newChallenge()">
       New challenge
     </button>
-
-  </div>
-
-  <div class="feature-grid">
-
-    <div class="feature-card">
-
-      <h3>🏆 Create</h3>
-
-      <p class="muted">
-        Make a wallpaper using the challenge.
-      </p>
-
-      <button
-        class="btn primary"
-        onclick="go('create')">
-        Start creating
-      </button>
-
-    </div>
-
-    <div class="feature-card">
-
-      <h3>🎲 Random</h3>
-
-      <p class="muted">
-        Get a random wallpaper idea.
-      </p>
-
-      <button
-        class="btn"
-        onclick="randomizeChallenge()">
-        Randomize
-      </button>
-
-    </div>
 
   </div>
 
@@ -1457,7 +1196,6 @@ button{
 
 
 <!-- SETTINGS -->
-
 <section id="settings" class="page">
 
   <div class="top">
@@ -1468,13 +1206,9 @@ button{
 
     <b>Appearance</b>
 
-    <p class="muted">
-      Change the way DreamWall looks.
-    </p>
+    <br><br>
 
-    <button
-      class="btn"
-      id="themeToggle">
+    <button class="btn" id="themeToggle">
       Toggle dark mode
     </button>
 
@@ -1484,15 +1218,11 @@ button{
 
     <b>Account</b>
 
-    <p
-      id="accountStatus"
-      class="muted">
+    <p id="accountStatus" class="muted">
       Not signed in
     </p>
 
-    <button
-      class="btn"
-      id="signOut">
+    <button class="btn" id="signOut">
       Sign out
     </button>
 
@@ -1504,10 +1234,7 @@ button{
 
 
 <!-- AUTH -->
-
-<div
-  id="authModal"
-  class="modal open">
+<div id="authModal" class="modal open">
 
   <div class="modalbox">
 
@@ -1520,25 +1247,13 @@ button{
     </p>
 
     <div class="field">
-
       <label>Email</label>
-
-      <input
-        id="authEmail"
-        type="email"
-        autocomplete="email">
-
+      <input id="authEmail" type="email">
     </div>
 
     <div class="field">
-
       <label>Password</label>
-
-      <input
-        id="authPassword"
-        type="password"
-        autocomplete="current-password">
-
+      <input id="authPassword" type="password">
     </div>
 
     <button
@@ -1555,64 +1270,41 @@ button{
       Create account
     </button>
 
-    <p
-      id="authMsg"
-      class="muted">
-    </p>
+    <p id="authMsg" class="muted"></p>
 
   </div>
-
 </div>
 
 
-<!-- PROFILE MODAL -->
-
-<div
-  id="profileModal"
-  class="modal">
+<!-- EDIT PROFILE -->
+<div id="profileModal" class="modal">
 
   <div class="modalbox">
 
-    <button
-      class="close"
-      id="closeProfile">
+    <button class="close" id="closeProfile">
       ×
     </button>
 
     <h2>Edit profile</h2>
 
     <div class="field">
-
       <label>Your name</label>
-
       <input id="editName">
-
     </div>
 
     <div class="field">
-
       <label>Username</label>
-
-      <input
-        id="editUsername"
-        maxlength="30">
-
+      <input id="editUsername" maxlength="30">
     </div>
 
     <div class="field">
-
       <label>Bio</label>
-
       <textarea id="editBio"></textarea>
-
     </div>
 
     <div class="field">
-
       <label>Profile photo URL</label>
-
       <input id="editAvatar">
-
     </div>
 
     <button
@@ -1622,34 +1314,24 @@ button{
       Save profile
     </button>
 
-    <p
-      id="profileMsg"
-      class="muted">
-    </p>
+    <p id="profileMsg" class="muted"></p>
 
   </div>
-
 </div>
 
 
-<!-- USER / WALLPAPER MODAL -->
-
-<div
-  id="userModal"
-  class="modal">
+<!-- GENERAL MODAL -->
+<div id="userModal" class="modal">
 
   <div class="modalbox">
 
-    <button
-      class="close"
-      id="closeUser">
+    <button class="close" id="closeUser">
       ×
     </button>
 
     <div id="userContent"></div>
 
   </div>
-
 </div>
 
 
@@ -1660,20 +1342,20 @@ button{
 ========================================================= */
 
 const SUPABASE_URL =
-  "https://kcybwrdtnlflevndmzfn.supabase.co";
+"https://kcybwrdtnlflevndmzfn.supabase.co";
 
 const SUPABASE_KEY =
-  "sb_publishable_XhOq8P5tdMgjWDKZEvgsgg_hcALWg48";
+"sb_publishable_XhOq8P5tdMgjWDKZEvgsgg_hcALWg48";
 
 const sb =
-  window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
+window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
 
 
 /* =========================================================
-   GLOBAL STATE
+   GLOBAL VARIABLES
 ========================================================= */
 
 let user = null;
@@ -1684,93 +1366,111 @@ let likes = {};
 let chatUser = null;
 
 let selected = null;
-
 let history = [];
 let historyPos = -1;
-
 let objectNumber = 0;
+
+let authMode = "signin";
+
+let exploreStyle = "all";
+let exploreWallpapers = [];
 
 
 /* =========================================================
    HELPERS
 ========================================================= */
 
-const $ = id =>
-  document.getElementById(id);
+const $ = id => document.getElementById(id);
 
-const esc = value =>
-  String(value ?? "").replace(
-    /[&<>"']/g,
-    char => ({
+function esc(value){
+  return String(value ?? "")
+    .replace(/[&<>"']/g, c => ({
       "&":"&amp;",
       "<":"&lt;",
       ">":"&gt;",
       '"':"&quot;",
       "'":"&#39;"
-    }[char])
-  );
+    }[c]));
+}
 
-const recent = date =>
-  Date.now() -
-  new Date(date).getTime()
-  < 86400000;
-
-const ago = date => {
-
+function ago(date){
   const seconds =
     Math.max(
       0,
       Math.floor(
-        (Date.now() -
-        new Date(date).getTime()) /
-        1000
+        (Date.now() - new Date(date).getTime()) / 1000
       )
     );
 
-  if(seconds < 60)
-    return "Just now";
-
-  if(seconds < 3600)
-    return Math.floor(seconds/60)+"m ago";
-
-  if(seconds < 86400)
-    return Math.floor(seconds/3600)+"h ago";
+  if(seconds < 60) return "Just now";
+  if(seconds < 3600) return Math.floor(seconds/60)+"m ago";
+  if(seconds < 86400) return Math.floor(seconds/3600)+"h ago";
 
   return Math.floor(seconds/86400)+"d ago";
-};
+}
+
+function recent(date){
+  return Date.now() - new Date(date).getTime() < 86400000;
+}
+
+function avatar(p){
+
+  if(p && p.avatar_url){
+
+    return `
+      <img
+        src="${esc(p.avatar_url)}"
+        onerror="this.style.display='none'"
+      >
+    `;
+
+  }
+
+  const letter =
+    (p?.real_name ||
+     p?.username ||
+     "D")
+     .charAt(0)
+     .toUpperCase();
+
+  return esc(letter);
+}
 
 
 /* =========================================================
-   NAVIGATION
+   PAGE NAVIGATION
 ========================================================= */
 
 function go(page){
 
   document
     .querySelectorAll(".page")
-    .forEach(section => {
-      section.classList.toggle(
-        "active",
-        section.id === page
-      );
-    });
+    .forEach(x =>
+      x.classList.toggle("active", x.id === page)
+    );
 
   document
     .querySelectorAll("[data-page]")
-    .forEach(button => {
-      button.classList.toggle(
+    .forEach(x =>
+      x.classList.toggle(
         "active",
-        button.dataset.page === page
-      );
-    });
+        x.dataset.page === page
+      )
+    );
 
   window.scrollTo(0,0);
 
-  if(page === "activity")
-    renderActivity();
-
-  if(page === "messages")
+  if(page === "messages"){
     renderThreads();
+  }
+
+  if(page === "activity"){
+    renderActivity();
+  }
+
+  if(page === "profile"){
+    renderProfileGrid();
+  }
 }
 
 document
@@ -1784,47 +1484,18 @@ document
 
 
 /* =========================================================
-   AVATARS
-========================================================= */
-
-function avatar(person){
-
-  if(person?.avatar_url){
-
-    return `
-      <img
-        src="${esc(person.avatar_url)}"
-        onerror="this.style.display='none'">
-    `;
-
-  }
-
-  return esc(
-    (
-      person?.real_name ||
-      person?.username ||
-      "D"
-    )
-    .charAt(0)
-    .toUpperCase()
-  );
-}
-
-
-/* =========================================================
    PROFILE
 ========================================================= */
 
 async function ensureProfile(){
 
-  if(!user)
-    return;
+  if(!user) return;
 
   const result =
     await sb
       .from("profiles")
       .select("*")
-      .eq("id",user.id)
+      .eq("id", user.id)
       .maybeSingle();
 
   if(result.error){
@@ -1832,7 +1503,6 @@ async function ensureProfile(){
     console.error(result.error);
 
     return;
-
   }
 
   if(!result.data){
@@ -1842,10 +1512,7 @@ async function ensureProfile(){
         .from("profiles")
         .insert({
           id:user.id,
-          username:
-            "dw_" +
-            user.id
-              .slice(0,8),
+          username:"dw_"+user.id.slice(0,8),
           real_name:"",
           bio:"",
           avatar_url:"",
@@ -1859,7 +1526,6 @@ async function ensureProfile(){
       console.error(created.error);
 
       return;
-
     }
 
     profile = created.data;
@@ -1876,8 +1542,7 @@ async function ensureProfile(){
 
 function renderProfile(){
 
-  if(!profile)
-    return;
+  if(!profile) return;
 
   $("profileName").textContent =
     profile.real_name?.trim() ||
@@ -1902,37 +1567,53 @@ function renderProfile(){
 }
 
 
-async function saveProfile(){
+$("editProfile").onclick = () => {
 
-  if(!user)
-    return;
+  $("editName").value =
+    profile?.real_name || "";
+
+  $("editUsername").value =
+    profile?.username || "";
+
+  $("editBio").value =
+    profile?.bio || "";
+
+  $("editAvatar").value =
+    profile?.avatar_url || "";
+
+  $("profileModal")
+    .classList.add("open");
+};
+
+
+$("closeProfile").onclick = () => {
+
+  $("profileModal")
+    .classList.remove("open");
+
+};
+
+
+$("saveProfile").onclick =
+async () => {
+
+  if(!user) return;
+
+  const username =
+    $("editUsername")
+      .value
+      .trim()
+      .replace(/^@/,"")
+      .toLowerCase();
 
   const result =
     await sb
       .from("profiles")
       .update({
-        username:
-          $("editUsername")
-            .value
-            .trim()
-            .replace(/^@/,"")
-            .toLowerCase(),
-
-        real_name:
-          $("editName")
-            .value
-            .trim(),
-
-        bio:
-          $("editBio")
-            .value
-            .trim(),
-
-        avatar_url:
-          $("editAvatar")
-            .value
-            .trim()
-
+        username,
+        real_name:$("editName").value.trim(),
+        bio:$("editBio").value.trim(),
+        avatar_url:$("editAvatar").value.trim()
       })
       .eq("id",user.id)
       .select()
@@ -1941,11 +1622,12 @@ async function saveProfile(){
   if(result.error){
 
     $("profileMsg").textContent =
-      "Could not save: " +
-      result.error.message;
+      result.error.code === "23505"
+        ? "That username is already taken."
+        : "Could not save: " +
+          result.error.message;
 
     return;
-
   }
 
   profile = result.data;
@@ -1957,46 +1639,12 @@ async function saveProfile(){
   renderEverything();
 
   $("profileModal")
-    .classList
-    .remove("open");
-}
-
-
-$("editProfile").onclick = () => {
-
-  if(!profile)
-    return;
-
-  $("editName").value =
-    profile.real_name || "";
-
-  $("editUsername").value =
-    profile.username || "";
-
-  $("editBio").value =
-    profile.bio || "";
-
-  $("editAvatar").value =
-    profile.avatar_url || "";
-
-  $("profileModal")
-    .classList
-    .add("open");
+    .classList.remove("open");
 };
 
 
-$("saveProfile").onclick =
-  saveProfile;
-
-
-$("closeProfile").onclick = () =>
-  $("profileModal")
-    .classList
-    .remove("open");
-
-
 /* =========================================================
-   LOAD DATA
+   LOAD DATABASE DATA
 ========================================================= */
 
 async function loadPeople(){
@@ -2005,23 +1653,16 @@ async function loadPeople(){
     await sb
       .from("profiles")
       .select("*")
-      .order(
-        "created_at",
-        {ascending:true}
-      );
+      .order("created_at",{ascending:true});
 
   if(result.error){
 
-    console.error(result.error);
-
-    people = [];
+    console.error("Could not load profiles:",result.error);
 
     return;
-
   }
 
-  people =
-    result.data || [];
+  people = result.data || [];
 }
 
 
@@ -2031,24 +1672,17 @@ async function loadWallpapers(){
     await sb
       .from("wallpapers")
       .select("*")
-      .order(
-        "created_at",
-        {ascending:false}
-      )
+      .order("created_at",{ascending:false})
       .limit(200);
 
   if(result.error){
 
-    console.error(result.error);
-
-    wallpapers = [];
+    console.error("Could not load wallpapers:",result.error);
 
     return;
-
   }
 
-  wallpapers =
-    result.data || [];
+  wallpapers = result.data || [];
 }
 
 
@@ -2061,14 +1695,8 @@ async function loadLikes(){
     const result =
       await sb
         .from("likes")
-        .select(
-          "user_id",
-          {count:"exact",head:true}
-        )
-        .eq(
-          "wallpaper_id",
-          wallpaper.id
-        );
+        .select("user_id",{count:"exact",head:true})
+        .eq("wallpaper_id",wallpaper.id);
 
     likes[wallpaper.id] =
       result.count || 0;
@@ -2077,29 +1705,32 @@ async function loadLikes(){
 
 
 /* =========================================================
-   WALLPAPERS
+   WALLPAPER RENDERING
 ========================================================= */
 
-function renderWall(element, wallpaper){
+function wallStyle(w){
+
+  return `
+    background:${w.background || "#fff"};
+    filter:
+      brightness(${w.brightness ?? 100}%)
+      contrast(${w.contrast ?? 100}%)
+      blur(${w.blur ?? 0}px);
+  `;
+}
+
+
+function renderWall(element,w){
 
   element.innerHTML = "";
 
-  element.style.background =
-    wallpaper.background || "#fff";
-
-  element.style.filter =
-    `
-    brightness(${wallpaper.brightness ?? 100}%)
-    contrast(${wallpaper.contrast ?? 100}%)
-    blur(${wallpaper.blur ?? 0}px)
-    `;
+  element.style.cssText =
+    wallStyle(w);
 
   const decorations =
-    Array.isArray(
-      wallpaper.decorations
-    )
-    ? wallpaper.decorations
-    : [];
+    Array.isArray(w.decorations)
+      ? w.decorations
+      : [];
 
   decorations.forEach(object => {
 
@@ -2113,13 +1744,12 @@ function renderWall(element, wallpaper){
       object.text || "";
 
     element.appendChild(item);
-
   });
 }
 
 
 /* =========================================================
-   HOME POSTS
+   HOME FEED
 ========================================================= */
 
 function peopleMap(){
@@ -2136,133 +1766,119 @@ function peopleMap(){
 
 function renderPosts(){
 
-  const map =
-    peopleMap();
+  const map = peopleMap();
 
   $("feed").innerHTML =
-    wallpapers
-      .map(wallpaper => {
+    wallpapers.map(wallpaper => {
 
-        const person =
-          map[wallpaper.user_id] || {};
+      const person =
+        map[wallpaper.user_id] || {};
 
-        return `
+      return `
 
-          <article class="post">
+      <article class="post">
 
-            <div
-              class="posthead"
-              onclick="openUser('${wallpaper.user_id}')">
+        <div
+          class="posthead"
+          onclick="openUser('${wallpaper.user_id}')"
+        >
 
-              <div class="avatar">
-                ${avatar(person)}
-              </div>
+          <div class="avatar">
+            ${avatar(person)}
+          </div>
 
-              <div>
+          <div>
 
-                <div class="postname">
-                  ${esc(
-                    person.real_name ||
-                    person.username ||
-                    "DreamWaller"
-                  )}
-                </div>
-
-                <div class="handle">
-                  @${esc(
-                    person.username ||
-                    "dreamwall"
-                  )}
-                </div>
-
-                <div class="post-time">
-                  ${ago(wallpaper.created_at)}
-                </div>
-
-              </div>
-
-            </div>
-
-            <div
-              class="wall"
-              data-wid="${wallpaper.id}">
-            </div>
-
-            <div class="actions">
-
-              <button
-                class="icon"
-                onclick="likeWall('${wallpaper.id}')">
-                ♡
-              </button>
-
-              <button
-                class="icon"
-                onclick="sendWall('${wallpaper.id}')">
-                💌
-              </button>
-
-              <button
-                class="icon"
-                onclick="saveWall('${wallpaper.id}')">
-                🔖
-              </button>
-
-            </div>
-
-            <div class="likes">
-              ${likes[wallpaper.id] || 0}
-              likes
-            </div>
-
-            <div class="caption">
-
-              <b>
-                @${esc(
-                  person.username ||
-                  "dreamwall"
-                )}
-              </b>
-
+            <div class="postname">
               ${esc(
-                wallpaper.caption || ""
+                person.real_name ||
+                person.username ||
+                "DreamWaller"
               )}
-
             </div>
 
-          </article>
+            <div class="handle">
+              @${esc(
+                person.username ||
+                "dreamwall"
+              )}
+            </div>
 
-        `;
+            <div class="post-time">
+              ${ago(wallpaper.created_at)}
+            </div>
 
-      })
-      .join("")
-
-      ||
-
-      `
-        <div class="notice">
-
-          <b>
-            Welcome to DreamWall ✨
-          </b>
-
-          <br><br>
-
-          Make the first wallpaper!
+          </div>
 
         </div>
+
+        <div
+          class="wall"
+          data-wall-id="${wallpaper.id}"
+        ></div>
+
+        <div class="actions">
+
+          <button
+            class="icon"
+            onclick="likeWall('${wallpaper.id}')">
+            ♡
+          </button>
+
+          <button
+            class="icon"
+            onclick="sendWall('${wallpaper.id}')">
+            💌
+          </button>
+
+          <button
+            class="icon"
+            onclick="saveWall('${wallpaper.id}')">
+            🔖
+          </button>
+
+        </div>
+
+        <div class="likes">
+          ${likes[wallpaper.id] || 0} likes
+        </div>
+
+        <div class="caption">
+          <b>
+            @${esc(
+              person.username ||
+              "dreamwall"
+            )}
+          </b>
+
+          ${esc(wallpaper.caption || "")}
+        </div>
+
+      </article>
+
       `;
 
+    }).join("")
+
+    ||
+
+    `
+      <div class="notice">
+        <b>Welcome to DreamWall ✨</b>
+        <br><br>
+        Make the first wallpaper!
+      </div>
+    `;
 
   document
-    .querySelectorAll("[data-wid]")
+    .querySelectorAll("[data-wall-id]")
     .forEach(element => {
 
       const wallpaper =
         wallpapers.find(
-          item =>
-            item.id ===
-            element.dataset.wid
+          x =>
+            x.id ===
+            element.dataset.wallId
         );
 
       if(wallpaper)
@@ -2272,7 +1888,6 @@ function renderPosts(){
         );
 
     });
-
 }
 
 
@@ -2281,13 +1896,12 @@ async function likeWall(id){
   if(!user){
 
     $("authModal")
-      .classList
-      .add("open");
+      .classList.add("open");
 
     return;
   }
 
-  const result =
+  const existing =
     await sb
       .from("likes")
       .select("user_id")
@@ -2295,7 +1909,7 @@ async function likeWall(id){
       .eq("wallpaper_id",id)
       .maybeSingle();
 
-  if(result.data){
+  if(existing.data){
 
     await sb
       .from("likes")
@@ -2324,18 +1938,17 @@ function saveWall(id){
 
   const wallpaper =
     wallpapers.find(
-      item => item.id === id
+      x => x.id === id
     );
 
-  if(!wallpaper)
-    return;
+  if(!wallpaper) return;
 
   localStorage.setItem(
-    "dw_saved_" + id,
+    "dreamwall_saved_"+id,
     JSON.stringify(wallpaper)
   );
 
-  alert("Saved ✨");
+  alert("Wallpaper saved ✨");
 }
 
 
@@ -2346,11 +1959,10 @@ function sendWall(id){
     go("messages");
 
     alert(
-      "Choose a friend first, then send a wallpaper."
+      "Choose a friend first."
     );
 
     return;
-
   }
 
   sendWallpaperTo(
@@ -2366,77 +1978,70 @@ function sendWall(id){
 
 function renderStories(){
 
-  const recentWallpapers =
+  const recentWalls =
     wallpapers.filter(
-      wallpaper =>
-        recent(wallpaper.created_at)
+      x => recent(x.created_at)
     );
 
   const ids =
-    [
-      ...new Set(
-        recentWallpapers.map(
-          wallpaper =>
-            wallpaper.user_id
-        )
+    [...new Set(
+      recentWalls.map(
+        x => x.user_id
       )
-    ];
+    )];
 
   const map =
     peopleMap();
 
   $("storiesRow").innerHTML =
-    ids
-      .map(id => {
+    ids.map(id => {
 
-        const person =
-          map[id] || {};
+      const person =
+        map[id] || {};
 
-        return `
+      return `
 
-          <div
-            class="story"
-            onclick="openUser('${id}')">
+        <div
+          class="story"
+          onclick="openUser('${id}')">
 
-            <div class="ring">
+          <div class="ring">
 
-              <div class="face">
-                ${avatar(person)}
-              </div>
-
-            </div>
-
-            <div class="story-name">
-              ${esc(
-                person.real_name ||
-                person.username ||
-                "DreamWaller"
-              )}
+            <div class="face">
+              ${avatar(person)}
             </div>
 
           </div>
 
-        `;
+          <div class="story-name">
+            ${esc(
+              person.real_name ||
+              person.username ||
+              "DreamWaller"
+            )}
+          </div>
 
-      })
-      .join("")
+        </div>
 
-      ||
-
-      `
-        <span class="muted">
-          No new wallpapers yet.
-        </span>
       `;
+
+    }).join("")
+
+    ||
+
+    `<span class="muted">
+      No new wallpapers yet.
+    </span>`;
 }
 
 
 /* =========================================================
-   EXPLORE WALLPAPERS
+   ENDLESS EXPLORE WALLPAPER ENGINE
 ========================================================= */
 
-const palettes = [
+const colorSets = [
 
+  ["#ff3cac","#784cff","#25d9ff"],
   ["#ff9a9e","#fad0c4","#fbc2eb"],
   ["#a18cd1","#fbc2eb","#84fab0"],
   ["#84fab0","#8fd3f4","#667eea"],
@@ -2454,232 +2059,315 @@ const palettes = [
   ["#1a2a6c","#b21f1f","#fdbb2d"],
   ["#ee9ca7","#ffdde1","#fcb69f"],
   ["#c6ffdd","#fbd786","#f7797d"],
-  ["#12c2e9","#c471ed","#f64f59"]
-
+  ["#12c2e9","#c471ed","#f64f59"],
+  ["#ffecd2","#fcb69f","#ff9a9e"],
+  ["#a8edea","#fed6e3","#d299c2"],
+  ["#d4fc79","#96e6a1","#84fab0"],
+  ["#fa709a","#fee140","#fbc2eb"],
+  ["#4facfe","#00f2fe","#43e97b"],
+  ["#667eea","#764ba2","#6a11cb"],
+  ["#f7971e","#ffd200","#ff6a00"],
+  ["#00c6ff","#0072ff","#00f2fe"],
+  ["#8e2de2","#4a00e0","#c471ed"],
+  ["#fc5c7d","#6a82fb","#f093fb"],
+  ["#11998e","#38ef7d","#84fab0"]
 ];
 
+const dreamyStickers =
+["☁","✨","✦","✧","♡","🌙","⭐","💫","🦋"];
 
-const decoSets = [
+const spaceStickers =
+["🌙","⭐","✨","🪐","☄","🌌","✦","☾","💫"];
 
-  ["✦","✧","★","☆"],
-  ["🌸","🌺","🌼","🌿"],
-  ["🦋","💫","✨","☁"],
-  ["🎀","♡","♥","💎"],
-  ["🌙","☀","⭐","☾"],
-  ["🍓","🍒","🍋","🍉"],
-  ["🪩","🎵","💜","🩷"],
-  ["🌊","🐚","🫧","☁"],
-  ["❀","✿","❋","☘"],
-  ["🌈","⭐","🦋","✨"],
-  ["🍬","🫧","💎","🎀"],
-  ["☁","🌙","⭐","💫"]
+const natureStickers =
+["🌿","🌸","🌺","🌼","🍃","🌱","🦋","☘","🌷"];
 
-];
+const cuteStickers =
+["🎀","♡","♥","🩷","🌸","🍓","🧸","✨","💎"];
 
+const abstractStickers =
+["◆","◇","●","○","▲","△","❖","✦","✺","❋"];
 
-const designTexts = [
-
-  "DREAM",
-  "good vibes",
-  "make it yours",
-  "dream big",
-  "stay bright",
-  "daydream",
-  "little joys",
-  "soft skies",
-  "you got this",
-  "create something beautiful",
-  "be kind",
-  "shine today",
-  "made to dream",
-  "hello sunshine",
-  "just breathe"
-
-];
+const allStickers =
+["✦","✧","★","☆","♡","♥","✿","❀",
+"☀","☾","☁","⚡","◆","◇","●","○",
+"▲","△","❖","✺","❋","☘","🌈","🦋",
+"🌸","🍓","🍋","🍒","⭐","💫","🎀","🌿",
+"🍃","🌙","🪩","🎵","🍬","🫧","🐚",
+"🌺","🌼","🌻","🍉","🍭","💎","🩷",
+"💜","💙","🤍","🪻","🌷","🩵","🧡"];
 
 
-function safeWallpaper(index){
+function randomItem(array){
 
-  const colors =
-    palettes[
-      index % palettes.length
-    ];
+  return array[
+    Math.floor(
+      Math.random()*array.length
+    )
+  ];
+}
 
-  const decorations =
-    decoSets[
-      (index * 3) %
-      decoSets.length
-    ];
 
-  const angle =
-    (index * 29) % 360;
+function randomNumber(min,max){
 
-  const type =
-    index % 6;
+  return Math.floor(
+    Math.random()*(max-min+1)+min
+  );
+}
 
-  let background;
 
-  if(type === 0){
+function makeGradient(colors,type,angle){
 
-    background =
-      `linear-gradient(
-        ${angle}deg,
+  if(type === "radial"){
+
+    return `
+      radial-gradient(
+        circle at ${randomNumber(10,90)}% ${randomNumber(10,90)}%,
         ${colors[0]},
         ${colors[1]},
         ${colors[2]}
-      )`;
+      )
+    `;
 
-  }else if(type === 1){
+  }
 
-    background =
-      `radial-gradient(
-        circle at
-        ${20+(index%60)}%
-        ${20+(index%60)}%,
-        ${colors[0]},
-        ${colors[1]} 48%,
-        ${colors[2]}
-      )`;
+  if(type === "conic"){
 
-  }else if(type === 2){
-
-    background =
-      `conic-gradient(
+    return `
+      conic-gradient(
         from ${angle}deg,
         ${colors[0]},
         ${colors[1]},
         ${colors[2]},
         ${colors[0]}
-      )`;
-
-  }else if(type === 3){
-
-    background =
-      `linear-gradient(
-        135deg,
-        ${colors[0]} 0 32%,
-        ${colors[1]} 32% 64%,
-        ${colors[2]} 64%
-      )`;
-
-  }else if(type === 4){
-
-    background =
-      `radial-gradient(
-        circle at 15% 20%,
-        #fff8 0 35px,
-        transparent 36px
-      ),
-      radial-gradient(
-        circle at 85% 75%,
-        #fff6 0 55px,
-        transparent 56px
-      ),
-      linear-gradient(
-        ${angle}deg,
-        ${colors[0]},
-        ${colors[2]}
-      )`;
-
-  }else{
-
-    background =
-      `linear-gradient(
-        ${angle}deg,
-        ${colors[0]} 0 45%,
-        ${colors[1]} 45% 55%,
-        ${colors[2]} 55%
-      )`;
+      )
+    `;
 
   }
 
-  const objects = [];
+  return `
+    linear-gradient(
+      ${angle}deg,
+      ${colors[0]},
+      ${colors[1]},
+      ${colors[2]}
+    )
+  `;
+}
 
-  for(let j=0;j<8;j++){
+
+function generateEndlessWallpaper(){
+
+  let colors =
+    [...randomItem(colorSets)];
+
+  let type =
+    randomItem(
+      ["linear","linear","radial","conic"]
+    );
+
+  let angle =
+    randomNumber(0,360);
+
+  let background =
+    makeGradient(
+      colors,
+      type,
+      angle
+    );
+
+  let objects = [];
+
+  let stickerSet =
+    exploreStyle === "space"
+      ? spaceStickers
+      : exploreStyle === "nature"
+      ? natureStickers
+      : exploreStyle === "cute"
+      ? cuteStickers
+      : exploreStyle === "abstract"
+      ? abstractStickers
+      : exploreStyle === "dreamy"
+      ? dreamyStickers
+      : allStickers;
+
+
+  /* EXTRA BACKGROUND LAYERS */
+
+  const layerType =
+    randomNumber(0,5);
+
+  if(layerType === 0){
+
+    background =
+      `
+      radial-gradient(
+        circle at ${randomNumber(0,100)}% ${randomNumber(0,100)}%,
+        #ffffff55 0 ${randomNumber(20,80)}px,
+        transparent ${randomNumber(80,150)}px
+      ),
+      ${background}
+      `;
+
+  }
+
+  if(layerType === 1){
+
+    background =
+      `
+      repeating-linear-gradient(
+        ${randomNumber(0,180)}deg,
+        #ffffff15 0 ${randomNumber(4,15)}px,
+        transparent ${randomNumber(15,30)}px ${randomNumber(25,50)}px
+      ),
+      ${background}
+      `;
+
+  }
+
+  if(layerType === 2){
+
+    background =
+      `
+      repeating-radial-gradient(
+        circle,
+        transparent 0 ${randomNumber(8,20)}px,
+        #ffffff18 ${randomNumber(20,30)}px ${randomNumber(25,40)}px
+      ),
+      ${background}
+      `;
+
+  }
+
+
+  /* STICKERS */
+
+  const amount =
+    randomNumber(7,17);
+
+  for(let i=0;i<amount;i++){
+
+    const sticker =
+      randomItem(stickerSet);
 
     const x =
-      10 +
-      ((index*19+j*31)%80);
+      randomNumber(5,95);
 
     const y =
-      8 +
-      ((index*37+j*17)%78);
+      randomNumber(4,95);
 
     const size =
-      18 +
-      ((index+j*2)%6)*7;
+      randomNumber(16,65);
+
+    const rotation =
+      randomNumber(-45,45);
+
+    const opacity =
+      (randomNumber(45,100)/100)
+        .toFixed(2);
 
     objects.push({
 
-      text:
-        decorations[
-          (index+j) %
-          decorations.length
-        ],
+      text:sticker,
 
-      css:
-        `
+      css:`
         left:${x}%;
         top:${y}%;
         font-size:${size}px;
+        opacity:${opacity};
         transform:
           translate(-50%,-50%)
-          rotate(${(index*17+j*23)%360}deg);
-        opacity:${0.45+(j%5)*0.1};
+          rotate(${rotation}deg);
         filter:
-          drop-shadow(0 3px 8px #0004);
-        `
+          drop-shadow(
+            0 4px 10px #0005
+          );
+      `
 
     });
 
   }
 
+
+  /* MAIN TEXT */
+
+  const words = [
+
+    "DREAM",
+    "DAYDREAM",
+    "CREATE",
+    "SHINE",
+    "GOOD VIBES",
+    "BE YOU",
+    "DREAM BIG",
+    "MAKE MAGIC",
+    "JUST BREATHE",
+    "YOU GOT THIS",
+    "STAY BRIGHT",
+    "HELLO SUNSHINE",
+    "LITTLE JOYS",
+    "CREATE SOMETHING",
+    "SPARKLE",
+    "WANDER",
+    "IMAGINE",
+    "BELIEVE",
+    "MAGIC",
+    "DREAMER"
+  ];
+
+  const mainText =
+    randomItem(words);
+
   objects.push({
 
-    text:
-      designTexts[
-        index %
-        designTexts.length
-      ],
+    text:mainText,
 
-    css:
-      `
+    css:`
       left:50%;
-      top:${70+(index%12)}%;
-      font-size:${16+(index%4)*5}px;
-      font-family:${
-        index%3===0
-        ? "Georgia"
-        : index%3===1
-        ? "Arial"
-        : "Trebuchet MS"
-      };
-      font-weight:800;
-      letter-spacing:${1+(index%3)}px;
-      color:#fff;
-      text-shadow:0 2px 12px #0008;
-      transform:translate(-50%,-50%);
-      text-align:center;
+      top:${randomNumber(55,82)}%;
       width:90%;
-      `
+      text-align:center;
+      font-size:${randomNumber(18,42)}px;
+      font-family:${randomItem([
+        "Arial",
+        "Georgia",
+        "Verdana",
+        "Trebuchet MS"
+      ])};
+      font-weight:900;
+      letter-spacing:${randomNumber(1,5)}px;
+      color:#ffffff;
+      text-shadow:
+        0 3px 15px #0009;
+      transform:
+        translate(-50%,-50%)
+        rotate(${randomNumber(-4,4)}deg);
+    `
 
   });
 
+
   return {
 
-    id:"safe" + index,
+    id:
+      "endless_" +
+      Date.now() +
+      "_" +
+      Math.random()
+        .toString(36)
+        .slice(2),
 
     background,
 
     decorations:objects,
 
     brightness:100,
-
     contrast:100,
-
     blur:0,
 
-    title:"DreamWall design"
+    title:"DreamWall ✦",
+
+    endless:true
 
   };
 
@@ -2688,81 +2376,85 @@ function safeWallpaper(index){
 
 function renderExplore(){
 
-  const safe =
-    Array.from(
-      {length:120},
-      (_,index) =>
-        safeWallpaper(index)
-    );
+  const grid =
+    $("exploreGrid");
 
-  const all =
-    safe.concat(wallpapers);
+  grid.innerHTML = "";
 
-  $("exploreGrid").innerHTML =
-    all
-      .map((wallpaper,index) => {
+  exploreWallpapers.forEach(
+    (wallpaper,index) => {
 
-        return `
+      const card =
+        document.createElement("div");
 
-          <div
-            class="tile"
-            data-explore="${index}">
+      card.className =
+        "explore-card";
 
-            <div
-              class="wall"
-              data-ex="${index}">
-            </div>
+      card.innerHTML = `
+        <div
+          class="wall"
+          data-explore-index="${index}">
+        </div>
 
-            ${
-              index < safe.length
-              ?
-              `
-                <span class="preset-label">
-                  DreamWall ✦
-                </span>
-              `
-              :
-              ""
-            }
+        <span class="explore-label">
+          DreamWall ✦
+        </span>
+      `;
 
-          </div>
+      grid.appendChild(card);
 
-        `;
-
-      })
-      .join("");
-
-
-  document
-    .querySelectorAll("[data-ex]")
-    .forEach((element,index) => {
-
-      const wallpaper =
-        all[index];
+      const wall =
+        card.querySelector(".wall");
 
       renderWall(
-        element,
+        wall,
         wallpaper
       );
 
-      element.parentElement.onclick =
-        () =>
-          previewWallpaper(
-            wallpaper
-          );
+      card.onclick = () =>
+        previewWallpaper(wallpaper);
 
-    });
-
+    }
+  );
 }
 
 
-function previewWallpaper(wallpaper){
+function generateMoreWallpapers(reset=false){
+
+  if(reset){
+
+    exploreWallpapers = [];
+
+  }
+
+  /* Make 30 brand-new designs every time */
+
+  for(let i=0;i<30;i++){
+
+    exploreWallpapers.push(
+      generateEndlessWallpaper()
+    );
+
+  }
+
+  renderExplore();
+}
+
+
+/* Start Explore with 30 */
+
+generateMoreWallpapers();
+
+
+/* =========================================================
+   WALLPAPER PREVIEW
+========================================================= */
+
+function previewWallpaper(w){
 
   $("userContent").innerHTML = `
 
-    <h2>
-      Wallpaper ✨
-    </h2>
+    <h2>Wallpaper ✨</h2>
 
     <div
       id="previewWall"
@@ -2775,17 +2467,12 @@ function previewWallpaper(wallpaper){
     </div>
 
     <p class="muted">
-      ${
-        wallpaper.title ===
-        "DreamWall design"
-        ?
-        "Built into DreamWall"
-        :
-        "Community wallpaper"
-      }
+      Beautiful DreamWall design
     </p>
 
-    <div class="small-actions">
+    <div
+      class="row"
+      style="margin-top:12px">
 
       <button
         class="btn primary"
@@ -2800,51 +2487,44 @@ function previewWallpaper(wallpaper){
       </button>
 
     </div>
-
   `;
 
   $("userModal")
-    .classList
-    .add("open");
+    .classList.add("open");
 
   renderWall(
     $("previewWall"),
-    wallpaper
+    w
   );
 
   $("usePreview").onclick =
-    () =>
-      useWallpaper(wallpaper);
+    () => useWallpaper(w);
 
   $("savePreview").onclick =
     () => {
 
       localStorage.setItem(
-        "dw_preset_" +
-        Date.now(),
-        JSON.stringify(wallpaper)
+        "dw_preset_"+Date.now(),
+        JSON.stringify(w)
       );
 
       alert("Saved ✨");
 
     };
-
 }
 
 
-function useWallpaper(wallpaper){
+function useWallpaper(w){
 
   $("userModal")
-    .classList
-    .remove("open");
+    .classList.remove("open");
 
   go("create");
 
   canvas.innerHTML = "";
 
   canvas.style.background =
-    wallpaper.background ||
-    "#fff";
+    w.background || "#fff";
 
   canvas.style.backgroundImage =
     "none";
@@ -2855,7 +2535,7 @@ function useWallpaper(wallpaper){
   canvas.style.filter =
     "none";
 
-  (wallpaper.decorations || [])
+  (w.decorations || [])
     .forEach(object => {
 
       addObject(
@@ -2871,35 +2551,33 @@ function useWallpaper(wallpaper){
     });
 
   saveHistory();
-
 }
 
 
-$("closeUser").onclick = () =>
+$("closeUser").onclick = () => {
+
   $("userModal")
-    .classList
-    .remove("open");
+    .classList.remove("open");
+
+};
 
 
 /* =========================================================
-   USER PROFILES
+   OPEN USER
 ========================================================= */
 
 async function openUser(id){
 
   const person =
-    people.find(
-      item => item.id === id
-    );
+    people.find(x => x.id === id);
 
-  if(!person)
-    return;
+  if(!person) return;
 
   const posts =
     wallpapers.filter(
-      wallpaper =>
-        wallpaper.user_id === id &&
-        recent(wallpaper.created_at)
+      x =>
+        x.user_id === id &&
+        recent(x.created_at)
     );
 
   $("userContent").innerHTML = `
@@ -2926,20 +2604,22 @@ async function openUser(id){
           )}
         </div>
 
+        <p class="muted">
+          ${esc(person.bio || "")}
+        </p>
+
         <div class="row">
 
           ${
             user && user.id !== id
-            ?
-            `
+            ? `
               <button
-                class="btn"
+                class="btn primary"
                 onclick="startChat('${id}')">
                 ✉ Message
               </button>
             `
-            :
-            ""
+            : ""
           }
 
         </div>
@@ -2949,58 +2629,46 @@ async function openUser(id){
     </div>
 
     <h3>
-      Wallpapers
+      Wallpapers from the last 24 hours
     </h3>
 
     <div class="grid">
 
       ${
-        posts
-          .map(
-            wallpaper =>
-              `
-              <div
-                class="tile"
-                data-userwall="${wallpaper.id}">
-              </div>
-              `
-          )
-          .join("")
-
-          ||
-
-          `
-            <div
-              class="notice"
-              style="grid-column:1/-1">
-              No wallpapers posted yet.
-            </div>
-          `
+        posts.map(w => `
+          <div
+            class="tile"
+            data-user-wall="${w.id}">
+          </div>
+        `).join("")
+        ||
+        `
+          <div
+            class="notice"
+            style="grid-column:1/-1">
+            No wallpapers posted in the
+            last 24 hours.
+          </div>
+        `
       }
 
     </div>
-
   `;
 
   $("userModal")
-    .classList
-    .add("open");
+    .classList.add("open");
 
-  posts.forEach(wallpaper => {
+  posts.forEach(w => {
 
     const element =
       document.querySelector(
-        `[data-userwall="${wallpaper.id}"]`
+        `[data-user-wall="${w.id}"]`
       );
 
     if(element)
-      renderWall(
-        element,
-        wallpaper
-      );
+      renderWall(element,w);
 
   });
-
 }
 
 
@@ -3020,18 +2688,15 @@ function renderSearch(query=""){
 
       const text =
         (
-          person.username ||
-          ""
+          person.username || ""
         ) +
         " " +
         (
-          person.real_name ||
-          ""
+          person.real_name || ""
         ) +
         " " +
         (
-          person.bio ||
-          ""
+          person.bio || ""
         );
 
       return text
@@ -3041,130 +2706,145 @@ function renderSearch(query=""){
     });
 
   $("searchResults").innerHTML =
-    results
-      .map(person => `
+    results.map(person => `
 
-        <div
-          class="profile-card"
-          onclick="openUser('${person.id}')">
+      <div
+        class="profile-card"
+        onclick="openUser('${person.id}')"
+        style="
+          display:flex;
+          gap:10px;
+          align-items:center;
+          padding:12px;
+          border:1px solid var(--line);
+          border-radius:13px;
+          cursor:pointer;
+          margin-bottom:8px;
+        ">
 
-          <div class="avatar">
-            ${avatar(person)}
-          </div>
+        <div class="avatar">
+          ${avatar(person)}
+        </div>
 
-          <div>
+        <div>
 
-            <b>
-              ${esc(
-                person.real_name ||
-                "DreamWaller"
-              )}
-            </b>
+          <b>
+            ${esc(
+              person.real_name ||
+              "DreamWaller"
+            )}
+          </b>
 
-            <div class="muted">
-              @${esc(
-                person.username ||
-                "username"
-              )}
-            </div>
-
+          <div class="muted">
+            @${esc(
+              person.username ||
+              "username"
+            )}
           </div>
 
         </div>
 
-      `)
-      .join("")
+      </div>
 
-      ||
+    `).join("")
 
-      `
-        <div class="notice">
-          No people found.
-        </div>
-      `;
+    ||
 
+    `
+      <div class="notice">
+        No people found.
+      </div>
+    `;
 }
 
 
 $("searchInput").oninput =
-  event =>
-    renderSearch(
-      event.target.value
-    );
+e => renderSearch(e.target.value);
 
 
 /* =========================================================
-   MESSAGING
+   MESSAGING — FIXED
 ========================================================= */
+
+/*
+   IMPORTANT:
+
+   The old code used:
+
+   .or(
+     "and(...),and(...)"
+   )
+
+   Supabase/PostgREST was rejecting that
+   logic tree.
+
+   This version does TWO normal queries,
+   one for each direction, and combines them.
+*/
 
 async function renderThreads(){
 
-  if(!user)
-    return;
+  if(!user) return;
 
-  const others =
+  const otherPeople =
     people.filter(
-      person =>
-        person.id !== user.id
+      person => person.id !== user.id
     );
 
   $("threads").innerHTML =
-    others
-      .map(person => `
+    otherPeople.map(person => `
 
-        <div
-          class="thread"
-          onclick="startChat('${person.id}')">
+      <div
+        class="thread"
+        onclick="startChat('${person.id}')">
 
-          <div class="avatar">
-            ${avatar(person)}
-          </div>
+        <div class="avatar">
+          ${avatar(person)}
+        </div>
 
-          <div>
+        <div>
 
-            <b>
-              ${esc(
-                person.real_name ||
-                person.username ||
-                "DreamWaller"
-              )}
-            </b>
+          <b>
+            ${esc(
+              person.real_name ||
+              person.username ||
+              "DreamWaller"
+            )}
+          </b>
 
-            <div class="muted">
-              @${esc(
-                person.username ||
-                "username"
-              )}
-            </div>
-
+          <div class="muted">
+            @${esc(
+              person.username ||
+              "username"
+            )}
           </div>
 
         </div>
 
-      `)
-      .join("")
+      </div>
 
-      ||
+    `).join("")
 
-      `
-        <div class="muted">
-          No other DreamWallers yet.
-        </div>
-      `;
+    ||
 
+    `
+      <div class="muted">
+        No other DreamWallers yet.
+      </div>
+    `;
 }
 
 
 async function startChat(id){
 
+  if(!user) return;
+
   chatUser =
     people.find(
-      person =>
-        person.id === id
+      person => person.id === id
     );
 
-  if(!chatUser)
-    return;
+  if(!chatUser) return;
 
   go("messages");
 
@@ -3173,83 +2853,57 @@ async function startChat(id){
     chatUser.username ||
     "DreamWaller";
 
+  $("chatLog").innerHTML =
+    `<div class="muted">
+      Loading messages...
+    </div>`;
+
   await loadMessages();
 }
 
-
-/*
-  IMPORTANT:
-
-  We intentionally DO NOT use the complicated
-  Supabase .or(and(...),and(...)) query here.
-
-  Instead we make two straightforward queries:
-  1. messages sent by you to them
-  2. messages sent by them to you
-
-  Then we combine and sort them.
-
-  This prevents the logic-tree error you were seeing.
-*/
 
 async function loadMessages(){
 
   if(!user || !chatUser)
     return;
 
-  $("chatLog").innerHTML = `
-    <div class="muted">
-      Loading messages...
-    </div>
-  `;
-
   try{
 
-    const myMessagesPromise =
-      sb
+    /* Messages YOU sent */
+
+    const sent =
+      await sb
         .from("messages")
         .select("*")
-        .eq(
-          "sender_id",
-          user.id
-        )
-        .eq(
-          "receiver_id",
-          chatUser.id
-        );
+        .eq("sender_id",user.id)
+        .eq("receiver_id",chatUser.id)
+        .order("created_at",{ascending:true});
 
-    const theirMessagesPromise =
-      sb
+
+    /* Messages THEY sent */
+
+    const received =
+      await sb
         .from("messages")
         .select("*")
-        .eq(
-          "sender_id",
-          chatUser.id
-        )
-        .eq(
-          "receiver_id",
-          user.id
-        );
+        .eq("sender_id",chatUser.id)
+        .eq("receiver_id",user.id)
+        .order("created_at",{ascending:true});
 
-    const [
-      mine,
-      theirs
-    ] =
-      await Promise.all([
-        myMessagesPromise,
-        theirMessagesPromise
-      ]);
 
-    if(mine.error)
-      throw mine.error;
+    if(sent.error)
+      throw sent.error;
 
-    if(theirs.error)
-      throw theirs.error;
+    if(received.error)
+      throw received.error;
+
+
+    /* Combine both directions */
 
     const messages =
       [
-        ...(mine.data || []),
-        ...(theirs.data || [])
+        ...(sent.data || []),
+        ...(received.data || [])
       ]
       .sort(
         (a,b) =>
@@ -3258,119 +2912,105 @@ async function loadMessages(){
       );
 
 
-    let html =
-      messages
-        .map(message => {
+    if(!messages.length){
 
-          let wallpaper = null;
+      $("chatLog").innerHTML =
+        `
+          <div class="muted">
+            No messages yet.
+            Say hello! ✨
+          </div>
+        `;
 
-          if(
-            message.text &&
-            message.text.startsWith(
-              "DW_WALLPAPER:"
-            )
-          ){
-
-            try{
-
-              wallpaper =
-                JSON.parse(
-                  message.text.slice(
-                    "DW_WALLPAPER:"
-                      .length
-                  )
-                );
-
-            }catch(error){
-
-              console.error(
-                "Wallpaper message error:",
-                error
-              );
-
-            }
-
-          }
-
-
-          return `
-
-            <div
-              class="
-                bubble
-                ${
-                  message.sender_id ===
-                  user.id
-                  ? "mine"
-                  : ""
-                }
-              ">
-
-              ${
-                wallpaper
-
-                ?
-
-                `
-                  <div>
-
-                    <b>
-                      Wallpaper ✨
-                    </b>
-
-                    <div
-                      class="msg-wall"
-                      id="mw${esc(message.id)}">
-                    </div>
-
-                    <div
-                      class="small-actions">
-
-                      <button
-                        class="btn"
-                        data-use-message-wall="${esc(message.id)}">
-                        Use it
-                      </button>
-
-                    </div>
-
-                  </div>
-                `
-
-                :
-
-                esc(
-                  message.text || ""
-                )
-              }
-
-              <div class="muted">
-                ${ago(
-                  message.created_at
-                )}
-              </div>
-
-            </div>
-
-          `;
-
-        })
-        .join("");
+      return;
+    }
 
 
     $("chatLog").innerHTML =
-      html ||
-      `
-        <div class="muted">
-          Start the conversation ✨
-        </div>
-      `;
+      messages.map(message => {
+
+        let wallpaper = null;
+
+        if(
+          typeof message.text === "string" &&
+          message.text.startsWith(
+            "DW_WALLPAPER:"
+          )
+        ){
+
+          try{
+
+            wallpaper =
+              JSON.parse(
+                message.text.slice(
+                  "DW_WALLPAPER:".length
+                )
+              );
+
+          }catch(error){
+
+            console.error(
+              "Could not read wallpaper:",
+              error
+            );
+
+          }
+
+        }
 
 
-    for(const message of messages){
+        return `
+
+          <div
+            class="bubble
+            ${message.sender_id === user.id
+              ? "mine"
+              : ""}">
+
+            ${
+              wallpaper
+
+              ? `
+
+                <b>
+                  Wallpaper ✨
+                </b>
+
+                <div
+                  class="msg-wall"
+                  id="message-wall-${message.id}"
+                  style="
+                    width:180px;
+                    aspect-ratio:9/14;
+                    border-radius:10px;
+                    overflow:hidden;
+                    margin-top:8px;
+                  ">
+                </div>
+
+              `
+
+              : esc(message.text || "")
+
+            }
+
+            <div class="muted">
+              ${ago(message.created_at)}
+            </div>
+
+          </div>
+
+        `;
+
+      }).join("");
+
+
+    /* Render wallpaper messages */
+
+    messages.forEach(message => {
 
       if(
-        message.text &&
+        typeof message.text === "string" &&
         message.text.startsWith(
           "DW_WALLPAPER:"
         )
@@ -3381,13 +3021,14 @@ async function loadMessages(){
           const wallpaper =
             JSON.parse(
               message.text.slice(
-                "DW_WALLPAPER:"
-                  .length
+                "DW_WALLPAPER:".length
               )
             );
 
           const element =
-            $("mw" + message.id);
+            document.getElementById(
+              "message-wall-"+message.id
+            );
 
           if(element)
             renderWall(
@@ -3395,33 +3036,15 @@ async function loadMessages(){
               wallpaper
             );
 
-          const button =
-            document.querySelector(
-              `[data-use-message-wall="${message.id}"]`
-            );
-
-          if(button){
-
-            button.onclick =
-              () =>
-                useWallpaper(
-                  wallpaper
-                );
-
-          }
-
         }catch(error){
 
-          console.error(
-            "Could not render wallpaper:",
-            error
-          );
+          console.error(error);
 
         }
 
       }
 
-    }
+    });
 
 
     $("chatLog").scrollTop =
@@ -3431,7 +3054,7 @@ async function loadMessages(){
   }catch(error){
 
     console.error(
-      "Could not load messages:",
+      "MESSAGE ERROR:",
       error
     );
 
@@ -3445,139 +3068,106 @@ async function loadMessages(){
 
         <br><br>
 
-        ${esc(
-          error.message ||
-          "Unknown error"
-        )}
+        <span class="muted">
+          ${esc(
+            error.message ||
+            "Unknown error"
+          )}
+        </span>
 
       </div>
 
     `;
 
   }
-
 }
 
 
+/* SEND NORMAL MESSAGE */
+
 $("sendMessage").onclick =
-  async () => {
+async () => {
 
-    if(!user){
+  if(!user){
 
-      $("authModal")
-        .classList
-        .add("open");
+    $("authModal")
+      .classList.add("open");
 
-      return;
+    return;
+  }
 
-    }
+  if(!chatUser){
 
-    if(!chatUser){
+    alert(
+      "Choose someone to message first."
+    );
 
-      alert(
-        "Choose a person first."
-      );
+    return;
+  }
 
-      return;
+  const text =
+    $("messageInput")
+      .value
+      .trim();
 
-    }
+  if(!text) return;
 
-    const input =
-      $("messageInput");
+  const result =
+    await sb
+      .from("messages")
+      .insert({
+        sender_id:user.id,
+        receiver_id:chatUser.id,
+        text
+      });
 
-    const text =
-      input.value.trim();
+  if(result.error){
 
-    if(!text)
-      return;
+    alert(
+      "Could not send message: " +
+      result.error.message
+    );
 
-    const button =
-      $("sendMessage");
+    return;
+  }
 
-    button.disabled = true;
+  $("messageInput").value = "";
 
-    button.textContent =
-      "Sending...";
-
-    try{
-
-      const result =
-        await sb
-          .from("messages")
-          .insert({
-            sender_id:user.id,
-            receiver_id:chatUser.id,
-            text:text
-          });
-
-      if(result.error)
-        throw result.error;
-
-      input.value = "";
-
-      await loadMessages();
-
-    }catch(error){
-
-      console.error(
-        "Send message error:",
-        error
-      );
-
-      alert(
-        "Could not send message: " +
-        (
-          error.message ||
-          "Unknown error"
-        )
-      );
-
-    }finally{
-
-      button.disabled = false;
-
-      button.textContent =
-        "Send";
-
-    }
-
-  };
+  await loadMessages();
+};
 
 
 $("messageInput").onkeydown =
-  event => {
+event => {
 
-    if(event.key === "Enter"){
+  if(event.key === "Enter"){
 
-      event.preventDefault();
+    event.preventDefault();
 
-      $("sendMessage").click();
+    $("sendMessage").click();
 
-    }
+  }
 
-  };
+};
 
+
+/* SEND WALLPAPER */
 
 async function sendWallpaperTo(
   receiverId,
   wallpaperId
 ){
 
-  if(!user)
-    return;
+  if(!user) return;
 
   const wallpaper =
     wallpapers.find(
-      item =>
-        item.id === wallpaperId
+      x => x.id === wallpaperId
     );
 
-  if(!wallpaper)
-    return;
+  if(!wallpaper) return;
 
   const safeWallpaper = {
-
-    id:wallpaper.id,
 
     background:
       wallpaper.background,
@@ -3596,177 +3186,42 @@ async function sendWallpaperTo(
 
     title:
       wallpaper.title ||
-      "Community wallpaper"
+      "DreamWall wallpaper"
 
   };
 
-  try{
-
-    const result =
-      await sb
-        .from("messages")
-        .insert({
-
-          sender_id:
-            user.id,
-
-          receiver_id:
-            receiverId,
-
-          text:
-            "DW_WALLPAPER:" +
-            JSON.stringify(
-              safeWallpaper
-            )
-
-        });
-
-    if(result.error)
-      throw result.error;
-
-    go("messages");
-
-    await loadMessages();
-
-    alert(
-      "Wallpaper sent 💌"
-    );
-
-  }catch(error){
-
-    alert(
-      "Could not send wallpaper: " +
-      error.message
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   PROFILE WALLPAPERS
-========================================================= */
-
-function renderProfileGrid(){
-
-  const mine =
-    wallpapers.filter(
-      wallpaper =>
-        wallpaper.user_id ===
-        user?.id
-    );
-
-  $("profileGrid").innerHTML =
-    mine
-      .map(
-        wallpaper =>
-          `
-          <div
-            class="tile"
-            data-my="${wallpaper.id}">
-          </div>
-          `
-      )
-      .join("")
-
-      ||
-
-      `
-        <div
-          class="notice"
-          style="grid-column:1/-1">
-
-          You haven't posted any wallpapers yet.
-
-        </div>
-      `;
-
-  mine.forEach(wallpaper => {
-
-    const element =
-      document.querySelector(
-        `[data-my="${wallpaper.id}"]`
-      );
-
-    if(element)
-      renderWall(
-        element,
-        wallpaper
-      );
-
-  });
-
-  $("postCount").textContent =
-    mine.length;
-
-}
-
-
-/* =========================================================
-   ACTIVITY
-========================================================= */
-
-async function renderActivity(){
-
-  if(!user)
-    return;
-
   const result =
     await sb
-      .from("likes")
-      .select("created_at")
-      .eq(
-        "user_id",
-        user.id
-      )
-      .order(
-        "created_at",
-        {ascending:false}
-      )
-      .limit(30);
+      .from("messages")
+      .insert({
+
+        sender_id:user.id,
+
+        receiver_id:receiverId,
+
+        text:
+          "DW_WALLPAPER:" +
+          JSON.stringify(
+            safeWallpaper
+          )
+
+      });
 
   if(result.error){
 
-    $("activityList").innerHTML =
-      `
-        <div class="notice">
-          Could not load activity.
-        </div>
-      `;
+    alert(
+      "Could not send wallpaper: " +
+      result.error.message
+    );
 
     return;
-
   }
 
-  $("activityList").innerHTML =
-    (result.data || [])
-      .map(
-        item =>
-          `
-          <div class="notice">
+  go("messages");
 
-            ♡ You liked a wallpaper.
+  await loadMessages();
 
-            <div class="muted">
-              ${ago(
-                item.created_at
-              )}
-            </div>
-
-          </div>
-          `
-      )
-      .join("")
-
-      ||
-
-      `
-        <div class="notice">
-          Your activity will appear here ✨
-        </div>
-      `;
-
+  alert("Wallpaper sent 💌");
 }
 
 
@@ -3775,7 +3230,7 @@ async function renderActivity(){
 ========================================================= */
 
 const canvas =
-  $("canvas");
+$("canvas");
 
 
 function editorState(){
@@ -3783,8 +3238,7 @@ function editorState(){
   return {
 
     background:
-      canvas.style.background ||
-      "#fff",
+      canvas.style.background || "#fff",
 
     backgroundImage:
       canvas.style.backgroundImage ||
@@ -3799,35 +3253,27 @@ function editorState(){
       "none",
 
     objects:
-      [
-        ...canvas.querySelectorAll(
-          ".obj"
-        )
-      ]
+      [...canvas.querySelectorAll(".obj")]
       .map(object => ({
 
         text:
           object.textContent,
 
         css:
-          object.getAttribute(
-            "style"
-          ) || "",
+          object.getAttribute("style") ||
+          "",
 
         type:
           object.dataset.type,
 
         scale:
-          object.dataset.scale ||
-          1,
+          object.dataset.scale || 1,
 
         rotation:
-          object.dataset.rotation ||
-          0,
+          object.dataset.rotation || 0,
 
         opacity:
-          object.dataset.opacity ||
-          1
+          object.dataset.opacity || 1
 
       }))
 
@@ -3838,16 +3284,18 @@ function editorState(){
 
 function applyObjectTransform(object){
 
-  object.style.transform =
-    `
+  object.style.transform = `
+
     translate(-50%,-50%)
+
     scale(${object.dataset.scale || 1})
+
     rotate(${object.dataset.rotation || 0}deg)
-    `;
+
+  `;
 
   object.style.opacity =
     object.dataset.opacity || 1;
-
 }
 
 
@@ -3862,34 +3310,28 @@ function addObject(
   const object =
     document.createElement("div");
 
-  object.className =
-    "obj";
+  object.className = "obj";
 
   object.dataset.type =
     type;
 
   object.dataset.id =
-    "o" +
-    (++objectNumber);
+    "object"+(++objectNumber);
 
   object.dataset.scale =
-    meta?.scale ??
-    1;
+    meta?.scale ?? 1;
 
   object.dataset.rotation =
-    meta?.rotation ??
-    0;
+    meta?.rotation ?? 0;
 
   object.dataset.opacity =
-    meta?.opacity ??
-    1;
+    meta?.opacity ?? 1;
 
   object.textContent =
     text;
 
   object.style.cssText =
     css ||
-
     `
       left:${20+Math.random()*60}%;
       top:${20+Math.random()*60}%;
@@ -3898,21 +3340,13 @@ function addObject(
         translate(-50%,-50%);
     `;
 
-  applyObjectTransform(
-    object
-  );
+  applyObjectTransform(object);
 
-  canvas.appendChild(
-    object
-  );
+  canvas.appendChild(object);
 
-  bindObject(
-    object
-  );
+  bindObject(object);
 
-  selectObject(
-    object
-  );
+  selectObject(object);
 
   if(save)
     saveHistory();
@@ -3924,96 +3358,91 @@ function addObject(
 function bindObject(object){
 
   object.onpointerdown =
-    event => {
+  event => {
 
-      event.preventDefault();
+    event.preventDefault();
 
-      selectObject(
-        object
-      );
+    selectObject(object);
 
-      const startX =
-        event.clientX;
+    const startX =
+      event.clientX;
 
-      const startY =
-        event.clientY;
+    const startY =
+      event.clientY;
 
-      const startLeft =
-        parseFloat(
-          object.style.left
-        ) || 50;
+    const startLeft =
+      parseFloat(
+        object.style.left
+      ) || 50;
 
-      const startTop =
-        parseFloat(
-          object.style.top
-        ) || 50;
+    const startTop =
+      parseFloat(
+        object.style.top
+      ) || 50;
 
-      const rect =
-        canvas.getBoundingClientRect();
+    const rect =
+      canvas.getBoundingClientRect();
 
-      const move =
-        current => {
 
-          object.style.left =
-            Math.max(
-              0,
-              Math.min(
-                100,
-                startLeft +
-                (
-                  current.clientX -
-                  startX
-                ) /
-                rect.width *
-                100
-              )
-            ) + "%";
+    function move(event){
 
-          object.style.top =
-            Math.max(
-              0,
-              Math.min(
-                100,
-                startTop +
-                (
-                  current.clientY -
-                  startY
-                ) /
-                rect.height *
-                100
-              )
-            ) + "%";
+      object.style.left =
+        Math.max(
+          0,
+          Math.min(
+            100,
+            startLeft +
+            (
+              (event.clientX-startX)
+              /rect.width
+            )*100
+          )
+        )+"%";
 
-        };
+      object.style.top =
+        Math.max(
+          0,
+          Math.min(
+            100,
+            startTop +
+            (
+              (event.clientY-startY)
+              /rect.height
+            )*100
+          )
+        )+"%";
 
-      const stop =
-        () => {
+    }
 
-          removeEventListener(
-            "pointermove",
-            move
-          );
 
-          removeEventListener(
-            "pointerup",
-            stop
-          );
+    function stop(){
 
-          saveHistory();
-
-        };
-
-      addEventListener(
+      removeEventListener(
         "pointermove",
         move
       );
 
-      addEventListener(
+      removeEventListener(
         "pointerup",
         stop
       );
 
-    };
+      saveHistory();
+
+    }
+
+
+    addEventListener(
+      "pointermove",
+      move
+    );
+
+    addEventListener(
+      "pointerup",
+      stop
+    );
+
+  };
 
 }
 
@@ -4022,10 +3451,8 @@ function selectObject(object){
 
   document
     .querySelectorAll(".obj")
-    .forEach(item =>
-      item.classList.remove(
-        "sel"
-      )
+    .forEach(x =>
+      x.classList.remove("sel")
     );
 
   selected =
@@ -4034,64 +3461,49 @@ function selectObject(object){
   if(!object){
 
     $("objectControls")
-      .style.display =
-      "none";
+      .style.display = "none";
+
+    $("textControls")
+      .style.display = "none";
 
     return;
-
   }
 
-  object.classList.add(
-    "sel"
-  );
+  object.classList.add("sel");
 
   $("objectControls")
-    .style.display =
-    "block";
+    .style.display = "block";
 
   $("objSize").value =
-    (+object.dataset.scale || 1) *
-    100;
+    (+object.dataset.scale || 1)*100;
 
   $("objRot").value =
     object.dataset.rotation || 0;
 
   $("objOpacity").value =
-    (+object.dataset.opacity || 1) *
-    100;
+    (+object.dataset.opacity || 1)*100;
 
   $("objSizeOut").textContent =
     Math.round(
-      (+object.dataset.scale || 1) *
-      100
-    ) + "%";
+      (+object.dataset.scale || 1)*100
+    )+"%";
 
   $("objRotOut").textContent =
-    (object.dataset.rotation || 0) +
-    "°";
+    (object.dataset.rotation || 0)+"°";
 
   $("objOpacityOut").textContent =
     Math.round(
-      (+object.dataset.opacity || 1) *
-      100
-    ) + "%";
+      (+object.dataset.opacity || 1)*100
+    )+"%";
 
 
   if(object.dataset.type === "text"){
 
     $("textControls")
-      .style.display =
-      "block";
+      .style.display = "block";
 
     $("textValue").value =
       object.textContent;
-
-    $("textColor").value =
-      rgbHex(
-        getComputedStyle(
-          object
-        ).color
-      );
 
     $("font").value =
       object.style.fontFamily ||
@@ -4105,36 +3517,11 @@ function selectObject(object){
   }else{
 
     $("textControls")
-      .style.display =
-      "none";
+      .style.display = "none";
 
   }
 
   updateLayers();
-
-}
-
-
-function rgbHex(color){
-
-  if(color.startsWith("#"))
-    return color;
-
-  const numbers =
-    color.match(/\d+/g) ||
-    [17,17,17];
-
-  return "#" +
-    numbers
-      .slice(0,3)
-      .map(
-        number =>
-          Number(number)
-            .toString(16)
-            .padStart(2,"0")
-      )
-      .join("");
-
 }
 
 
@@ -4143,7 +3530,7 @@ function saveHistory(){
   history =
     history.slice(
       0,
-      historyPos + 1
+      historyPos+1
     );
 
   history.push(
@@ -4154,15 +3541,13 @@ function saveHistory(){
     history.shift();
 
   historyPos =
-    history.length - 1;
-
+    history.length-1;
 }
 
 
 function applyState(state){
 
-  canvas.innerHTML =
-    "";
+  canvas.innerHTML = "";
 
   canvas.style.background =
     state.background ||
@@ -4189,14 +3574,9 @@ function applyState(state){
         object.type,
         false,
         {
-          scale:
-            object.scale,
-
-          rotation:
-            object.rotation,
-
-          opacity:
-            object.opacity
+          scale:object.scale,
+          rotation:object.rotation,
+          opacity:object.opacity
         }
       );
 
@@ -4205,54 +3585,38 @@ function applyState(state){
   selected = null;
 
   updateLayers();
-
 }
 
 
 function updateLayers(){
 
   const objects =
-    [
-      ...canvas.querySelectorAll(
-        ".obj"
-      )
-    ];
+    [...canvas.querySelectorAll(".obj")];
 
   $("layers").innerHTML =
     objects.length
 
-    ?
+      ? objects.map(object => `
 
-    objects
-      .map(object => `
-
-        <div
-          class="thread"
-          onclick="
-            selectObject(
+          <div
+            class="thread"
+            onclick="selectObject(
               document.querySelector(
-                '[data-id=${object.dataset.id}]'
+                '[data-id=&quot;${object.dataset.id}&quot;]'
               )
-            )
-          ">
+            )">
 
-          ${esc(
-            object.dataset.type === "text"
-              ? "Text: " +
-                object.textContent
-              : "Sticker: " +
-                object.textContent
-          )}
+            ${esc(
+              object.dataset.type === "text"
+                ? "Text: "+object.textContent
+                : "Sticker: "+object.textContent
+            )}
 
-        </div>
+          </div>
 
-      `)
-      .join("")
+        `).join("")
 
-    :
-
-    "No objects yet.";
-
+      : "No objects yet.";
 }
 
 
@@ -4261,623 +3625,544 @@ window.selectObject =
 
 
 canvas.onpointerdown =
-  event => {
+event => {
 
-    if(event.target === canvas)
-      selectObject(null);
+  if(event.target === canvas)
+    selectObject(null);
 
-  };
+};
 
 
-/* =========================================================
-   TEXT TOOLS
-========================================================= */
+/* TEXT */
 
 $("addText").onclick =
-  () =>
-    addObject(
-      "DreamWall",
-      `
-        left:50%;
-        top:50%;
-        font-size:42px;
-        color:#111;
-        font-family:Arial;
-        font-weight:400;
-        transform:
-          translate(-50%,-50%);
-      `,
-      "text"
-    );
+() => {
+
+  addObject(
+    "DreamWall",
+    `
+      left:50%;
+      top:50%;
+      font-size:42px;
+      color:#111;
+      font-family:Arial;
+      font-weight:400;
+      transform:
+        translate(-50%,-50%);
+    `,
+    "text"
+  );
+
+};
 
 
 $("textValue").oninput =
-  () => {
+() => {
 
-    if(selected){
+  if(!selected) return;
 
-      selected.textContent =
-        $("textValue").value;
+  selected.textContent =
+    $("textValue").value;
 
-      updateLayers();
+  updateLayers();
 
-    }
-
-  };
+};
 
 
 $("textColor").oninput =
-  () => {
+() => {
 
-    if(selected)
-      selected.style.color =
-        $("textColor").value;
+  if(selected)
+    selected.style.color =
+      $("textColor").value;
 
-  };
+};
 
 
 $("font").onchange =
-  () => {
+() => {
 
-    if(selected)
-      selected.style.fontFamily =
-        $("font").value;
+  if(selected)
+    selected.style.fontFamily =
+      $("font").value;
 
-  };
+};
 
 
 $("textSize").oninput =
-  () => {
+() => {
 
-    if(selected){
+  if(!selected) return;
 
-      selected.style.fontSize =
-        $("textSize").value +
-        "px";
+  selected.style.fontSize =
+    $("textSize").value+"px";
 
-      $("sizeOut").textContent =
-        $("textSize").value +
-        "px";
+  $("sizeOut").textContent =
+    $("textSize").value+"px";
 
-    }
-
-  };
+};
 
 
 $("bold").onclick =
-  () => {
+() => {
 
-    if(selected){
+  if(!selected) return;
 
-      selected.style.fontWeight =
-        selected.style.fontWeight ===
-        "700"
-        ? "400"
-        : "700";
+  selected.style.fontWeight =
+    selected.style.fontWeight === "700"
+      ? "400"
+      : "700";
 
-    }
-
-  };
+};
 
 
 $("italic").onclick =
-  () => {
+() => {
 
-    if(selected){
+  if(!selected) return;
 
-      selected.style.fontStyle =
-        selected.style.fontStyle ===
-        "italic"
-        ? "normal"
-        : "italic";
+  selected.style.fontStyle =
+    selected.style.fontStyle === "italic"
+      ? "normal"
+      : "italic";
 
-    }
-
-  };
+};
 
 
 $("shadow").onclick =
-  () => {
+() => {
 
-    if(selected){
+  if(!selected) return;
 
-      selected.style.textShadow =
-        selected.style.textShadow
-        ? ""
-        : "3px 4px 12px #0008";
+  selected.style.textShadow =
+    selected.style.textShadow
+      ? ""
+      : "3px 4px 12px #0008";
 
-    }
-
-  };
+};
 
 
-/* =========================================================
-   OBJECT CONTROLS
-========================================================= */
+/* OBJECT CONTROLS */
 
 $("objSize").oninput =
-  () => {
+() => {
 
-    if(selected){
+  if(!selected) return;
 
-      selected.dataset.scale =
-        $("objSize").value /
-        100;
+  selected.dataset.scale =
+    $("objSize").value/100;
 
-      applyObjectTransform(
-        selected
-      );
+  applyObjectTransform(
+    selected
+  );
 
-      selectObject(
-        selected
-      );
+  $("objSizeOut").textContent =
+    $("objSize").value+"%";
 
-    }
-
-  };
+};
 
 
 $("objRot").oninput =
-  () => {
+() => {
 
-    if(selected){
+  if(!selected) return;
 
-      selected.dataset.rotation =
-        $("objRot").value;
+  selected.dataset.rotation =
+    $("objRot").value;
 
-      applyObjectTransform(
-        selected
-      );
+  applyObjectTransform(
+    selected
+  );
 
-      selectObject(
-        selected
-      );
+  $("objRotOut").textContent =
+    $("objRot").value+"°";
 
-    }
-
-  };
+};
 
 
 $("objOpacity").oninput =
-  () => {
+() => {
 
-    if(selected){
+  if(!selected) return;
 
-      selected.dataset.opacity =
-        $("objOpacity").value /
-        100;
+  selected.dataset.opacity =
+    $("objOpacity").value/100;
 
-      applyObjectTransform(
-        selected
-      );
+  applyObjectTransform(
+    selected
+  );
 
-      selectObject(
-        selected
-      );
+  $("objOpacityOut").textContent =
+    $("objOpacity").value+"%";
 
-    }
-
-  };
+};
 
 
 $("delete").onclick =
-  () => {
+() => {
 
-    if(!selected)
-      return;
+  if(!selected) return;
 
-    selected.remove();
+  selected.remove();
 
-    selected = null;
+  selected = null;
 
-    $("objectControls")
-      .style.display =
-      "none";
+  $("objectControls")
+    .style.display = "none";
 
-    saveHistory();
+  saveHistory();
 
-    updateLayers();
+  updateLayers();
 
-  };
+};
 
 
 $("duplicate").onclick =
-  () => {
+() => {
 
-    if(!selected)
-      return;
+  if(!selected) return;
 
-    const source =
-      selected;
-
-    let css =
-      source.getAttribute(
-        "style"
-      ) || "";
-
-    css =
-      css.replace(
-        /transform\s*:[^;]+;?/gi,
-        ""
-      );
-
-    css =
-      css.replace(
-        /opacity\s*:[^;]+;?/gi,
-        ""
-      );
-
-    const copy =
-      addObject(
-        source.textContent,
-        css,
-        source.dataset.type,
-        false,
-        {
-          scale:
-            source.dataset.scale ||
-            1,
-
-          rotation:
-            source.dataset.rotation ||
-            0,
-
-          opacity:
-            source.dataset.opacity ||
-            1
-        }
-      );
-
-    copy.style.left =
-      (
-        parseFloat(
-          source.style.left ||
-          50
-        ) + 6
-      ) + "%";
-
-    copy.style.top =
-      (
-        parseFloat(
-          source.style.top ||
-          50
-        ) + 6
-      ) + "%";
-
-    applyObjectTransform(
-      copy
+  const copy =
+    addObject(
+      selected.textContent,
+      selected.getAttribute("style"),
+      selected.dataset.type,
+      false,
+      {
+        scale:selected.dataset.scale,
+        rotation:selected.dataset.rotation,
+        opacity:selected.dataset.opacity
+      }
     );
 
-    selectObject(
-      copy
-    );
+  copy.style.left =
+    (parseFloat(
+      selected.style.left
+    )+6)+"%";
 
-    saveHistory();
+  copy.style.top =
+    (parseFloat(
+      selected.style.top
+    )+6)+"%";
 
-  };
+  applyObjectTransform(copy);
+
+  selectObject(copy);
+
+  saveHistory();
+
+};
 
 
-/* =========================================================
-   UNDO / REDO
-========================================================= */
+/* UNDO / REDO */
 
 $("undo").onclick =
-  () => {
+() => {
 
-    if(historyPos > 0){
+  if(historyPos > 0){
 
-      historyPos--;
+    historyPos--;
 
-      applyState(
-        history[historyPos]
-      );
+    applyState(
+      history[historyPos]
+    );
 
-    }
+  }
 
-  };
+};
 
 
 $("redo").onclick =
-  () => {
+() => {
 
-    if(
-      historyPos <
-      history.length - 1
-    ){
+  if(
+    historyPos <
+    history.length-1
+  ){
 
-      historyPos++;
+    historyPos++;
 
-      applyState(
-        history[historyPos]
-      );
+    applyState(
+      history[historyPos]
+    );
 
-    }
+  }
 
-  };
+};
 
 
 $("clear").onclick =
-  () => {
+() => {
 
-    canvas.innerHTML =
-      "";
+  canvas.innerHTML = "";
+
+  canvas.style.background =
+    "#fff";
+
+  canvas.style.backgroundImage =
+    "none";
+
+  canvas.style.backgroundSize =
+    "";
+
+  canvas.style.filter =
+    "none";
+
+  selected = null;
+
+  saveHistory();
+
+  updateLayers();
+
+};
+
+
+/* =========================================================
+   WORKING COLOR BACKGROUND
+========================================================= */
+
+$("bgColor").onclick =
+() => {
+
+  $("bgControls").innerHTML = `
+
+    <div class="field">
+
+      <label>
+        Color
+      </label>
+
+      <input
+        id="cp"
+        type="color"
+        value="#ffffff">
+
+    </div>
+
+  `;
+
+  $("cp").oninput =
+  event => {
 
     canvas.style.background =
-      "#fff";
+      event.target.value;
 
     canvas.style.backgroundImage =
       "none";
 
-    canvas.style.backgroundSize =
-      "";
-
-    canvas.style.filter =
-      "none";
-
-    selected = null;
-
-    saveHistory();
-
-    updateLayers();
-
   };
+
+};
 
 
 /* =========================================================
-   COLOR BACKGROUND
-========================================================= */
-
-$("bgColor").onclick =
-  () => {
-
-    $("bgControls").innerHTML = `
-
-      <div class="field">
-
-        <label>
-          Color
-        </label>
-
-        <input
-          id="cp"
-          type="color"
-          value="#ffffff">
-
-      </div>
-
-    `;
-
-    $("cp").oninput =
-      event => {
-
-        canvas.style.background =
-          event.target.value;
-
-        canvas.style.backgroundImage =
-          "none";
-
-        canvas.style.backgroundSize =
-          "";
-
-        saveHistory();
-
-      };
-
-  };
-
-
-/* =========================================================
-   GRADIENT BACKGROUND
+   WORKING GRADIENT
 ========================================================= */
 
 $("bgGradient").onclick =
-  () => {
+() => {
 
-    $("bgControls").innerHTML = `
+  $("bgControls").innerHTML = `
 
-      <div class="field">
+    <div class="field">
 
-        <label>
-          Color 1
-        </label>
-
-        <input
-          id="g1"
-          type="color"
-          value="#ff3cac">
-
-      </div>
-
-      <div class="field">
-
-        <label>
-          Color 2
-        </label>
-
-        <input
-          id="g2"
-          type="color"
-          value="#784cff">
-
-      </div>
-
-      <div class="field">
-
-        <label>
-          Color 3
-        </label>
-
-        <input
-          id="g3"
-          type="color"
-          value="#25d9ff">
-
-      </div>
-
-      <div class="field">
-
-        <label>
-          Gradient type
-        </label>
-
-        <select id="gt">
-
-          <option value="linear">
-            Linear
-          </option>
-
-          <option value="radial">
-            Radial
-          </option>
-
-          <option value="conic">
-            Conic
-          </option>
-
-        </select>
-
-      </div>
-
-      <div class="label">
-
-        Angle
-
-        <span id="gaout">
-          90°
-        </span>
-
-      </div>
+      <label>
+        Color 1
+      </label>
 
       <input
-        id="ga"
-        class="range"
-        type="range"
-        min="0"
-        max="360"
-        value="90">
+        id="g1"
+        type="color"
+        value="#ff3cac">
 
-      <div
-        id="gradientPreview"
-        class="gradient-preview">
-      </div>
+    </div>
 
-    `;
+    <div class="field">
 
+      <label>
+        Color 2
+      </label>
 
-    const updateGradient =
-      () => {
+      <input
+        id="g2"
+        type="color"
+        value="#784cff">
 
-        const color1 =
-          $("g1").value;
+    </div>
 
-        const color2 =
-          $("g2").value;
+    <div class="field">
 
-        const color3 =
-          $("g3").value;
+      <label>
+        Color 3
+      </label>
 
-        const type =
-          $("gt").value;
+      <input
+        id="g3"
+        type="color"
+        value="#25d9ff">
 
-        const angle =
-          $("ga").value;
+    </div>
 
+    <div class="field">
 
-        let gradient = "";
+      <label>
+        Gradient type
+      </label>
 
-        if(type === "linear"){
+      <select id="gt">
 
-          gradient =
-            `
-            linear-gradient(
-              ${angle}deg,
-              ${color1},
-              ${color2},
-              ${color3}
-            )
-            `;
+        <option value="linear">
+          Linear
+        </option>
 
-        }else if(type === "radial"){
+        <option value="radial">
+          Radial
+        </option>
 
-          gradient =
-            `
-            radial-gradient(
-              circle,
-              ${color1},
-              ${color2},
-              ${color3}
-            )
-            `;
+        <option value="conic">
+          Conic
+        </option>
 
-        }else{
+      </select>
 
-          gradient =
-            `
-            conic-gradient(
-              from ${angle}deg,
-              ${color1},
-              ${color2},
-              ${color3}
-            )
-            `;
+    </div>
 
-        }
+    <div class="label">
 
+      Angle
 
-        /*
-          IMPORTANT:
-          backgroundImage is used here instead
-          of background so CSS gradients are
-          preserved correctly.
-        */
+      <span id="gaout">
+        90°
+      </span>
 
-        canvas.style.background =
-          "transparent";
+    </div>
 
-        canvas.style.backgroundImage =
-          gradient;
+    <input
+      id="ga"
+      class="range"
+      type="range"
+      min="0"
+      max="360"
+      value="90">
 
-        canvas.style.backgroundSize =
-          "cover";
+    <button
+      class="tool"
+      id="randomGradient"
+      style="margin-top:10px">
 
-        canvas.style.backgroundColor =
-          "transparent";
+      🎲 Random gradient
 
-        $("gradientPreview").style.background =
-          gradient;
+    </button>
 
-        $("gaout").textContent =
-          angle + "°";
-
-      };
+  `;
 
 
-    [
-      "g1",
-      "g2",
-      "g3",
-      "gt",
-      "ga"
-    ]
-    .forEach(id => {
+  function updateGradient(){
 
-      $(id).oninput =
-        updateGradient;
+    const color1 =
+      $("g1").value;
 
-      $(id).onchange =
-        updateGradient;
+    const color2 =
+      $("g2").value;
 
-    });
+    const color3 =
+      $("g3").value;
 
+    const type =
+      $("gt").value;
+
+    const angle =
+      $("ga").value;
+
+
+    if(type === "linear"){
+
+      canvas.style.background =
+        `linear-gradient(
+          ${angle}deg,
+          ${color1},
+          ${color2},
+          ${color3}
+        )`;
+
+    }
+
+
+    if(type === "radial"){
+
+      canvas.style.background =
+        `radial-gradient(
+          circle,
+          ${color1},
+          ${color2},
+          ${color3}
+        )`;
+
+    }
+
+
+    if(type === "conic"){
+
+      canvas.style.background =
+        `conic-gradient(
+          from ${angle}deg,
+          ${color1},
+          ${color2},
+          ${color3}
+        )`;
+
+    }
+
+
+    $("gaout").textContent =
+      angle+"°";
+
+  }
+
+
+  [
+    "g1",
+    "g2",
+    "g3",
+    "gt",
+    "ga"
+  ].forEach(id => {
+
+    $(id).oninput =
+      updateGradient;
+
+  });
+
+
+  $("randomGradient").onclick =
+  () => {
+
+    const colors =
+      randomItem(colorSets);
+
+    $("g1").value =
+      colors[0];
+
+    $("g2").value =
+      colors[1];
+
+    $("g3").value =
+      colors[2];
+
+    $("ga").value =
+      randomNumber(0,360);
 
     updateGradient();
 
   };
 
 
-/* =========================================================
-   PATTERNS
-========================================================= */
+  updateGradient();
+
+};
+
+
+/* PATTERNS */
 
 const patterns = [
 
@@ -4903,117 +4188,91 @@ const patterns = [
     "Checker",
     "conic-gradient(#888 25%,#fff 0 50%,#888 0 75%,#fff 0)",
     "32px 32px"
-  ],
-
-  [
-    "Bubbles",
-    "radial-gradient(circle at 20% 30%,#fff7 0 12px,transparent 13px),radial-gradient(circle at 80% 70%,#fff5 0 18px,transparent 19px)",
-    "auto"
   ]
 
 ];
 
 
 $("bgPattern").onclick =
-  () => {
+() => {
 
-    $("bgControls").innerHTML =
-      patterns
-        .map(
-          (pattern,index) =>
-            `
-            <button
-              class="tool"
-              data-pattern="${index}">
-              ${pattern[0]}
-            </button>
-            `
-        )
-        .join("");
+  $("bgControls").innerHTML =
+    patterns.map(
+      (pattern,index) => `
+
+        <button
+          class="tool"
+          data-pattern="${index}">
+
+          ${pattern[0]}
+
+        </button>
+
+      `
+    ).join("");
 
 
-    document
-      .querySelectorAll(
-        "[data-pattern]"
-      )
-      .forEach(button => {
+  document
+    .querySelectorAll("[data-pattern]")
+    .forEach(button => {
 
-        button.onclick =
-          () => {
+      button.onclick =
+      () => {
 
-            const pattern =
-              patterns[
-                +button.dataset.pattern
-              ];
+        const pattern =
+          patterns[
+            Number(
+              button.dataset.pattern
+            )
+          ];
 
-            canvas.style.background =
-              "#fff";
+        canvas.style.background =
+          "#fff";
 
-            canvas.style.backgroundImage =
-              pattern[1];
+        canvas.style.backgroundImage =
+          pattern[1];
 
-            canvas.style.backgroundSize =
-              pattern[2];
+        canvas.style.backgroundSize =
+          pattern[2];
 
-            saveHistory();
+      };
 
-          };
+    });
 
-      });
-
-  };
+};
 
 
 /* =========================================================
    STICKERS
 ========================================================= */
 
-const stickers = [
-
-  "✦","✧","★","☆",
-  "♡","♥","✿","❀",
-  "☀","☾","☁","⚡",
-  "◆","◇","●","○",
-  "▲","△","❖","✺",
-  "❋","☘","🌈","🦋",
-  "🌸","🍓","🍋","🍒",
-  "⭐","💫","🎀","🌿",
-  "🍃","☁️","🌙","🪩",
-  "🎵","🍬","🫧","🦄",
-  "🐚","🌺","🌼","🌻",
-  "🍉","🍭","💎","🩷",
-  "💜","💙","🤍","🪻",
-  "🌷","🩵","🧡"
-
-];
-
+const stickers = allStickers;
 
 $("stickers").innerHTML =
-  stickers
-    .map(
-      sticker =>
-        `
-        <button
-          class="tool emoji"
-          data-sticker="${esc(sticker)}">
-          ${sticker}
-        </button>
-        `
-    )
-    .join("");
+  stickers.map(
+    sticker => `
+
+      <button
+        class="tool emoji"
+        data-sticker="${esc(sticker)}">
+
+        ${sticker}
+
+      </button>
+
+    `
+  ).join("");
 
 
 document
-  .querySelectorAll(
-    "[data-sticker]"
-  )
+  .querySelectorAll("[data-sticker]")
   .forEach(button => {
 
     button.onclick =
-      () =>
-        addObject(
-          button.dataset.sticker
-        );
+    () =>
+      addObject(
+        button.dataset.sticker
+      );
 
   });
 
@@ -5024,83 +4283,40 @@ document
 
 const effects = [
 
-  [
-    "brightness",
-    50,
-    150,
-    100,
-    "%"
-  ],
-
-  [
-    "contrast",
-    50,
-    150,
-    100,
-    "%"
-  ],
-
-  [
-    "blur",
-    0,
-    12,
-    0,
-    "px"
-  ],
-
-  [
-    "saturate",
-    0,
-    200,
-    100,
-    "%"
-  ],
-
-  [
-    "grayscale",
-    0,
-    100,
-    0,
-    "%"
-  ],
-
-  [
-    "sepia",
-    0,
-    100,
-    0,
-    "%"
-  ]
+  ["brightness",50,150,100,"%"],
+  ["contrast",50,150,100,"%"],
+  ["blur",0,12,0,"px"],
+  ["saturate",0,200,100,"%"],
+  ["grayscale",0,100,0,"%"],
+  ["sepia",0,100,0,"%"]
 
 ];
 
 
 $("effects").innerHTML =
-  effects
-    .map(
-      effect =>
-        `
-        <div class="label">
+  effects.map(
+    effect => `
 
-          ${effect[0]}
+      <div class="label">
 
-          <span id="${effect[0]}Out">
-            ${effect[3]}${effect[4]}
-          </span>
+        ${effect[0]}
 
-        </div>
+        <span id="${effect[0]}Out">
+          ${effect[3]}${effect[4]}
+        </span>
 
-        <input
-          id="${effect[0]}"
-          class="range"
-          type="range"
-          min="${effect[1]}"
-          max="${effect[2]}"
-          value="${effect[3]}">
+      </div>
 
-        `
-    )
-    .join("");
+      <input
+        id="${effect[0]}"
+        class="range"
+        type="range"
+        min="${effect[1]}"
+        max="${effect[2]}"
+        value="${effect[3]}">
+
+    `
+  ).join("");
 
 
 function updateEffects(){
@@ -5136,11 +4352,9 @@ function updateEffects(){
   effects.forEach(effect => {
 
     $(
-      effect[0] + "Out"
+      effect[0]+"Out"
     ).textContent =
-      $(
-        effect[0]
-      ).value +
+      $(effect[0]).value +
       effect[4];
 
   });
@@ -5157,44 +4371,40 @@ effects.forEach(effect => {
 
 
 /* =========================================================
-   DRAFT
+   SAVE DRAFT
 ========================================================= */
 
 $("saveDraft").onclick =
-  () => {
+() => {
 
-    if(!user){
+  if(!user){
 
-      $("authModal")
-        .classList
-        .add("open");
+    $("authModal")
+      .classList.add("open");
 
-      return;
+    return;
+  }
 
-    }
+  localStorage.setItem(
 
-    localStorage.setItem(
+    "dw_draft_"+user.id,
 
-      "dw_draft_" +
-      user.id,
+    JSON.stringify({
 
-      JSON.stringify({
+      editor:
+        editorState(),
 
-        editor:
-          editorState(),
+      caption:
+        $("caption")
+          .value
 
-        caption:
-          $("caption").value
+    })
 
-      })
+  );
 
-    );
+  alert("Draft saved ✨");
 
-    alert(
-      "Draft saved ✨"
-    );
-
-  };
+};
 
 
 /* =========================================================
@@ -5202,174 +4412,241 @@ $("saveDraft").onclick =
 ========================================================= */
 
 $("publish").onclick =
-  async () => {
+async () => {
 
-    if(!user){
+  if(!user){
 
-      $("authModal")
-        .classList
-        .add("open");
+    $("authModal")
+      .classList.add("open");
 
-      return;
+    return;
+  }
 
-    }
+  const button =
+    $("publish");
 
-    const button =
-      $("publish");
+  button.disabled =
+    true;
 
-    const oldText =
-      button.textContent;
-
-    button.disabled =
-      true;
-
-    button.textContent =
-      "Publishing...";
+  button.textContent =
+    "Publishing...";
 
 
-    try{
+  try{
 
-      const state =
-        editorState();
+    const state =
+      editorState();
 
 
-      /*
-        If a gradient exists,
-        store it in background.
-        This makes it work when
-        the wallpaper is displayed
-        later.
-      */
+    let background =
+      "#fff";
 
-      let background =
+
+    if(
+      state.backgroundImage &&
+      state.backgroundImage !== "none"
+    ){
+
+      background =
+        state.backgroundImage;
+
+    }else{
+
+      background =
+        state.background ||
         "#fff";
 
-
-      if(
-        state.backgroundImage &&
-        state.backgroundImage !==
-        "none"
-      ){
-
-        background =
-          state.backgroundImage;
-
-      }else if(
-        state.background
-      ){
-
-        background =
-          state.background;
-
-      }
-
-
-      const result =
-        await sb
-          .from("wallpapers")
-          .insert({
-
-            user_id:
-              user.id,
-
-            title:
-              "",
-
-            subtitle:
-              "",
-
-            caption:
-              $("caption")
-                .value
-                .trim(),
-
-            background:
-              background,
-
-            text_color:
-              "#111",
-
-            font:
-              "Arial",
-
-            title_size:
-              52,
-
-            subtitle_size:
-              16,
-
-            decorations:
-              state.objects || [],
-
-            brightness:
-              100,
-
-            contrast:
-              100,
-
-            blur:
-              0
-
-          })
-          .select()
-          .single();
-
-
-      if(result.error)
-        throw result.error;
-
-
-      wallpapers =
-        [
-          result.data,
-          ...wallpapers.filter(
-            wallpaper =>
-              wallpaper.id !==
-              result.data.id
-          )
-        ];
-
-
-      $("caption").value =
-        "";
-
-      await loadLikes();
-
-      renderEverything();
-
-      go("home");
-
-      alert(
-        "Wallpaper published! 🎉"
-      );
-
-
-    }catch(error){
-
-      console.error(
-        "Publish error:",
-        error
-      );
-
-      alert(
-        "Could not publish: " +
-        (
-          error.message ||
-          "Please try again."
-        )
-      );
-
-    }finally{
-
-      button.disabled =
-        false;
-
-      button.textContent =
-        oldText;
-
     }
 
-  };
+
+    const result =
+      await sb
+        .from("wallpapers")
+        .insert({
+
+          user_id:user.id,
+
+          title:"",
+
+          subtitle:"",
+
+          caption:
+            $("caption")
+              .value
+              .trim(),
+
+          background,
+
+          text_color:"#111",
+
+          font:"Arial",
+
+          title_size:52,
+
+          subtitle_size:16,
+
+          decorations:
+            state.objects || [],
+
+          brightness:100,
+
+          contrast:100,
+
+          blur:0
+
+        })
+        .select()
+        .single();
+
+
+    if(result.error)
+      throw result.error;
+
+
+    wallpapers =
+      [
+        result.data,
+        ...wallpapers
+      ];
+
+
+    $("caption").value = "";
+
+    await loadLikes();
+
+    renderEverything();
+
+    go("home");
+
+    alert(
+      "Wallpaper published! 🎉"
+    );
+
+
+  }catch(error){
+
+    console.error(error);
+
+    alert(
+      "Could not publish: " +
+      (
+        error.message ||
+        "Please try again."
+      )
+    );
+
+  }finally{
+
+    button.disabled =
+      false;
+
+    button.textContent =
+      "✦ Publish";
+
+  }
+
+};
+
+
+/* =========================================================
+   PROFILE GRID
+========================================================= */
+
+function renderProfileGrid(){
+
+  if(!user) return;
+
+  const mine =
+    wallpapers.filter(
+      wallpaper =>
+        wallpaper.user_id ===
+        user.id
+    );
+
+  $("profileGrid").innerHTML =
+    mine.map(wallpaper => `
+
+      <div
+        class="tile"
+        data-my-wall="${wallpaper.id}">
+      </div>
+
+    `).join("")
+
+    ||
+
+    `
+      <div
+        class="notice"
+        style="grid-column:1/-1">
+
+        You haven't posted any
+        wallpapers yet.
+
+      </div>
+    `;
+
+
+  mine.forEach(wallpaper => {
+
+    const element =
+      document.querySelector(
+        `[data-my-wall="${wallpaper.id}"]`
+      );
+
+    if(element)
+      renderWall(
+        element,
+        wallpaper
+      );
+
+  });
+
+
+  $("postCount").textContent =
+    mine.length;
+}
+
+
+/* =========================================================
+   ACTIVITY
+========================================================= */
+
+async function renderActivity(){
+
+  if(!user) return;
+
+  const result =
+    await sb
+      .from("likes")
+      .select("created_at")
+      .eq("user_id",user.id)
+      .order("created_at",{ascending:false})
+      .limit(30);
+
+  $("activityList").innerHTML =
+    (result.data || []).map(item => `
+
+      <div class="notice">
+
+        ♡ You liked a wallpaper.
+
+        <div class="muted">
+          ${ago(item.created_at)}
+        </div>
+
+      </div>
+
+    `).join("")
+
+    ||
+
+    `
+      <div class="notice">
+        Your activity will appear here ✨
+      </div>
+    `;
+}
 
 
 /* =========================================================
@@ -5400,22 +4677,17 @@ const challenges = [
 
   [
     "Rainbow Pop",
-    "Use three bright colors and a rainbow sticker."
+    "Use bright colors and a rainbow sticker."
   ],
 
   [
-    "Purple Dream",
-    "Make a purple gradient with stars and text."
+    "Space Dream",
+    "Create a galaxy wallpaper with stars and planets."
   ],
 
   [
-    "Sunset Sky",
-    "Use orange, pink and purple in a gradient."
-  ],
-
-  [
-    "Sparkle Party",
-    "Use at least five sparkly stickers."
+    "Cute Day",
+    "Make the cutest wallpaper you can."
   ]
 
 ];
@@ -5424,29 +4696,17 @@ const challenges = [
 function newChallenge(){
 
   const challenge =
-    challenges[
-      Math.floor(
-        Math.random() *
-        challenges.length
-      )
-    ];
+    randomItem(
+      challenges
+    );
 
   $("challengeTitle")
     .textContent =
-    challenge[0];
+      challenge[0];
 
   $("challengeText")
     .textContent =
-    challenge[1];
-
-}
-
-
-function randomizeChallenge(){
-
-  newChallenge();
-
-  go("create");
+      challenge[1];
 
 }
 
@@ -5455,191 +4715,217 @@ newChallenge();
 
 
 /* =========================================================
-   AUTH
+   SETTINGS
 ========================================================= */
 
-let authMode =
-  "signin";
+$("themeToggle").onclick =
+() => {
 
+  document.body
+    .classList.toggle("dark");
+
+  localStorage.setItem(
+    "dw_dark",
+    document.body.classList.contains("dark")
+  );
+
+};
+
+
+if(
+  localStorage.getItem("dw_dark") ===
+  "true"
+){
+
+  document.body
+    .classList.add("dark");
+
+}
+
+
+/* =========================================================
+   AUTHENTICATION
+========================================================= */
 
 $("authSwitch").onclick =
-  () => {
+() => {
 
-    authMode =
-      authMode ===
-      "signin"
+  authMode =
+    authMode === "signin"
       ? "signup"
       : "signin";
 
-    $("authTitle")
-      .textContent =
-      authMode ===
-      "signin"
-      ? "Welcome to DreamWall"
-      : "Create your DreamWall account";
 
-    $("authSubmit")
-      .textContent =
-      authMode ===
-      "signin"
-      ? "Sign in"
-      : "Create account";
+  $("authTitle")
+    .textContent =
+      authMode === "signin"
+        ? "Welcome to DreamWall"
+        : "Create your DreamWall account";
 
-    $("authSwitch")
-      .textContent =
-      authMode ===
-      "signin"
-      ? "Create account"
-      : "I already have an account";
 
-    $("authMsg")
-      .textContent =
-      "";
+  $("authSubmit")
+    .textContent =
+      authMode === "signin"
+        ? "Sign in"
+        : "Create account";
 
-  };
+
+  $("authSwitch")
+    .textContent =
+      authMode === "signin"
+        ? "Create account"
+        : "I already have an account";
+
+};
 
 
 $("authSubmit").onclick =
-  async () => {
+async () => {
 
-    const email =
-      $("authEmail")
-        .value
-        .trim();
+  const email =
+    $("authEmail")
+      .value
+      .trim();
 
-    const password =
-      $("authPassword")
-        .value;
+  const password =
+    $("authPassword")
+      .value;
 
 
-    if(!email || !password){
+  if(!email || !password){
 
-      $("authMsg")
-        .textContent =
-        "Enter your email and password.";
+    $("authMsg").textContent =
+      "Enter your email and password.";
+
+    return;
+  }
+
+
+  $("authMsg").textContent =
+    "Working...";
+
+
+  let result;
+
+
+  if(authMode === "signin"){
+
+    result =
+      await sb.auth.signInWithPassword({
+
+        email,
+
+        password
+
+      });
+
+  }else{
+
+    result =
+      await sb.auth.signUp({
+
+        email,
+
+        password
+
+      });
+
+  }
+
+
+  if(result.error){
+
+    $("authMsg").textContent =
+      result.error.message;
+
+    return;
+  }
+
+
+  if(
+    authMode === "signup" &&
+    !result.data.session
+  ){
+
+    $("authMsg").textContent =
+      "Account created! Check your email if email confirmation is enabled.";
+
+    return;
+  }
+
+
+  await loadApp();
+
+};
+
+
+$("signOut").onclick =
+async () => {
+
+  await sb.auth.signOut();
+
+  user = null;
+
+  location.reload();
+
+};
+
+
+/* =========================================================
+   LOAD APP
+========================================================= */
+
+async function loadApp(){
+
+  try{
+
+    const session =
+      await sb.auth.getSession();
+
+    user =
+      session.data.session?.user ||
+      null;
+
+
+    if(!user){
+
+      $("authModal")
+        .classList.add("open");
 
       return;
 
     }
 
 
-    $("authMsg")
-      .textContent =
-      "Working...";
+    $("authModal")
+      .classList.remove("open");
 
 
-    try{
+    await ensureProfile();
 
-      let result;
+    await loadPeople();
 
+    await loadWallpapers();
 
-      if(authMode === "signin"){
+    await loadLikes();
 
-        result =
-          await sb.auth
-            .signInWithPassword({
+    renderEverything();
 
-              email,
-              password
-
-            });
-
-      }else{
-
-        result =
-          await sb.auth
-            .signUp({
-
-              email,
-              password
-
-            });
-
-      }
+    go("home");
 
 
-      if(result.error)
-        throw result.error;
+  }catch(error){
 
-
-      if(
-        authMode === "signup" &&
-        !result.data.session
-      ){
-
-        $("authMsg")
-          .textContent =
-          "Account created! Check your email if email confirmation is enabled.";
-
-        return;
-
-      }
-
-
-      await loadApp();
-
-
-    }catch(error){
-
-      console.error(
-        "Auth error:",
-        error
-      );
-
-      $("authMsg")
-        .textContent =
-        error.message ||
-        "Could not sign in.";
-
-    }
-
-  };
-
-
-/* =========================================================
-   SIGN OUT
-========================================================= */
-
-$("signOut").onclick =
-  async () => {
-
-    await sb.auth.signOut();
-
-    location.reload();
-
-  };
-
-
-/* =========================================================
-   DARK MODE
-========================================================= */
-
-$("themeToggle").onclick =
-  () => {
-
-    document.body
-      .classList
-      .toggle("dark");
-
-    localStorage.setItem(
-      "dw_dark",
-      document.body.classList.contains(
-        "dark"
-      )
+    console.error(
+      "APP LOAD ERROR:",
+      error
     );
 
-  };
+    $("authMsg").textContent =
+      "Could not load DreamWall: " +
+      error.message;
 
-
-if(
-  localStorage.getItem(
-    "dw_dark"
-  ) === "true"
-){
-
-  document.body
-    .classList
-    .add("dark");
+  }
 
 }
 
@@ -5670,104 +4956,14 @@ function renderEverything(){
 
 
 /* =========================================================
-   LOAD APP
-========================================================= */
-
-let loadingApp =
-  false;
-
-
-async function loadApp(){
-
-  if(loadingApp)
-    return;
-
-  loadingApp =
-    true;
-
-  try{
-
-    const sessionResult =
-      await sb.auth.getSession();
-
-    user =
-      sessionResult
-        .data
-        .session
-        ?.user ||
-      null;
-
-
-    if(!user){
-
-      $("authModal")
-        .classList
-        .add("open");
-
-      return;
-
-    }
-
-
-    $("authModal")
-      .classList
-      .remove("open");
-
-
-    await ensureProfile();
-
-    await loadPeople();
-
-    await loadWallpapers();
-
-    await loadLikes();
-
-    renderEverything();
-
-    go("home");
-
-  }catch(error){
-
-    console.error(
-      "Could not load DreamWall:",
-      error
-    );
-
-  }finally{
-
-    loadingApp =
-      false;
-
-  }
-
-}
-
-
-/* =========================================================
-   AUTH STATE CHANGES
+   SUPABASE AUTH LISTENER
 ========================================================= */
 
 sb.auth.onAuthStateChange(
   (event,session) => {
 
     setTimeout(
-      () => {
-
-        if(event === "SIGNED_OUT"){
-
-          user = null;
-
-          $("authModal")
-            .classList
-            .add("open");
-
-        }else{
-
-          loadApp();
-
-        }
-
-      },
+      loadApp,
       0
     );
 
@@ -5776,21 +4972,13 @@ sb.auth.onAuthStateChange(
 
 
 /* =========================================================
-   START EDITOR
+   START
 ========================================================= */
 
 canvas.style.background =
-  "#fff";
-
-canvas.style.backgroundImage =
-  "none";
+  "#ffffff";
 
 saveHistory();
-
-
-/* =========================================================
-   START DREAMWALL
-========================================================= */
 
 loadApp();
 
