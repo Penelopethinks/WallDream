@@ -9,777 +9,673 @@
 
 <style>
 :root{
-  --bg:#fff;
-  --text:#171717;
-  --muted:#737373;
-  --line:#e8e8e8;
-  --soft:#f7f7f7;
-  --card:#fff;
+--bg:#fff;
+--text:#171717;
+--muted:#737373;
+--line:#e8e8e8;
+--soft:#f7f7f7;
+--card:#fff;
 }
 
 *{box-sizing:border-box}
 
 html,body{
-  margin:0;
-  background:var(--bg);
-  color:var(--text);
-  font-family:Arial,Helvetica,sans-serif;
+margin:0;
+background:var(--bg);
+color:var(--text);
+font-family:Arial,Helvetica,sans-serif;
 }
 
 body.dark{
-  --bg:#050505;
-  --text:#f5f5f5;
-  --muted:#999;
-  --line:#252525;
-  --soft:#121212;
-  --card:#0d0d0d;
+--bg:#050505;
+--text:#f5f5f5;
+--muted:#999;
+--line:#252525;
+--soft:#121212;
+--card:#0d0d0d;
 }
 
-button,input,textarea,select{
-  font:inherit;
-}
-
-button{
-  cursor:pointer;
-}
-
-.app{
-  min-height:100vh;
-}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
 
 .sidebar{
-  position:fixed;
-  left:0;
-  top:0;
-  bottom:0;
-  width:245px;
-  border-right:1px solid var(--line);
-  background:var(--bg);
-  padding:28px 15px;
-  z-index:50;
+position:fixed;
+left:0;
+top:0;
+bottom:0;
+width:245px;
+border-right:1px solid var(--line);
+background:var(--bg);
+padding:28px 15px;
+z-index:50;
 }
 
 .logo{
-  font-size:29px;
-  font-weight:900;
-  margin:5px 13px 35px;
-  background:linear-gradient(90deg,#ff3cac,#784cff,#25d9ff);
-  color:transparent;
-  background-clip:text;
-  -webkit-background-clip:text;
+font-size:29px;
+font-weight:900;
+margin:5px 13px 35px;
+background:linear-gradient(90deg,#ff3cac,#784cff,#25d9ff);
+color:transparent;
+background-clip:text;
+-webkit-background-clip:text;
 }
 
 .nav{
-  display:flex;
-  flex-direction:column;
-  gap:4px;
+display:flex;
+flex-direction:column;
+gap:4px;
 }
 
 .nav button{
-  border:0;
-  background:transparent;
-  color:var(--text);
-  padding:14px;
-  border-radius:12px;
-  text-align:left;
-  font-size:15px;
+border:0;
+background:transparent;
+color:var(--text);
+padding:14px;
+border-radius:12px;
+text-align:left;
+font-size:15px;
 }
 
 .nav button:hover,
 .nav button.active{
-  background:var(--soft);
-  font-weight:700;
+background:var(--soft);
+font-weight:700;
 }
 
 .bottom{
-  position:absolute;
-  bottom:20px;
-  left:15px;
-  right:15px;
+position:absolute;
+bottom:20px;
+left:15px;
+right:15px;
 }
 
 .main{
-  margin-left:245px;
-  max-width:1100px;
-  padding:28px 38px;
+margin-left:245px;
+max-width:1100px;
+padding:28px 38px;
 }
 
-.page{
-  display:none;
-}
-
-.page.active{
-  display:block;
-}
+.page{display:none}
+.page.active{display:block}
 
 .top{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin-bottom:25px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+margin-bottom:25px;
 }
 
-.top h1{
-  margin:0;
-  font-size:25px;
-}
+.top h1{margin:0;font-size:25px}
 
 .btn{
-  border:1px solid var(--line);
-  background:var(--card);
-  color:var(--text);
-  padding:10px 15px;
-  border-radius:10px;
-  font-weight:700;
+border:1px solid var(--line);
+background:var(--card);
+color:var(--text);
+padding:10px 15px;
+border-radius:10px;
+font-weight:700;
 }
 
 .primary{
-  border:0;
-  color:white;
-  background:linear-gradient(90deg,#ff3cac,#784cff,#25d9ff);
+border:0;
+color:white;
+background:linear-gradient(90deg,#ff3cac,#784cff,#25d9ff);
 }
 
 .feed{
-  max-width:650px;
-  margin:auto;
+max-width:650px;
+margin:auto;
 }
 
-/* 24 HOUR PEOPLE */
-
 .people-bar{
-  max-width:650px;
-  margin:0 auto 25px;
-  padding:14px 4px 18px;
-  border-bottom:1px solid var(--line);
+max-width:650px;
+margin:0 auto 25px;
+padding:14px 4px 18px;
+border-bottom:1px solid var(--line);
 }
 
 .people-title{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:13px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:13px;
 }
 
 .people-row{
-  display:flex;
-  gap:17px;
-  overflow-x:auto;
-  scrollbar-width:none;
+display:flex;
+gap:17px;
+overflow-x:auto;
+scrollbar-width:none;
 }
 
-.people-row::-webkit-scrollbar{
-  display:none;
-}
+.people-row::-webkit-scrollbar{display:none}
 
 .person{
-  width:70px;
-  min-width:70px;
-  text-align:center;
-  cursor:pointer;
+width:70px;
+min-width:70px;
+text-align:center;
+cursor:pointer;
 }
 
 .person-avatar{
-  width:64px;
-  height:64px;
-  border-radius:50%;
-  padding:2px;
-  background:linear-gradient(135deg,#ff3cac,#784cff,#25d9ff);
-  margin:auto;
+width:64px;
+height:64px;
+border-radius:50%;
+padding:2px;
+background:linear-gradient(135deg,#ff3cac,#784cff,#25d9ff);
+margin:auto;
 }
 
 .person-inner{
-  width:100%;
-  height:100%;
-  border-radius:50%;
-  overflow:hidden;
-  background:var(--soft);
-  border:3px solid var(--bg);
-  display:grid;
-  place-items:center;
-  font-weight:900;
+width:100%;
+height:100%;
+border-radius:50%;
+overflow:hidden;
+background:var(--soft);
+border:3px solid var(--bg);
+display:grid;
+place-items:center;
+font-weight:900;
 }
 
 .person-inner img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
+width:100%;
+height:100%;
+object-fit:cover;
 }
 
 .person-name{
-  font-size:11px;
-  margin-top:6px;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
+font-size:11px;
+margin-top:6px;
+white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis;
 }
 
-/* POSTS */
-
 .post{
-  border:1px solid var(--line);
-  border-radius:16px;
-  background:var(--card);
-  margin-bottom:22px;
-  overflow:hidden;
+border:1px solid var(--line);
+border-radius:16px;
+background:var(--card);
+margin-bottom:22px;
+overflow:hidden;
 }
 
 .posthead{
-  display:flex;
-  align-items:center;
-  gap:11px;
-  padding:14px;
-  cursor:pointer;
+display:flex;
+align-items:center;
+gap:11px;
+padding:14px;
+cursor:pointer;
 }
 
 .avatar{
-  width:42px;
-  height:42px;
-  border-radius:50%;
-  overflow:hidden;
-  background:linear-gradient(135deg,#ff3cac,#784cff,#25d9ff);
-  display:grid;
-  place-items:center;
-  color:white;
-  font-weight:900;
-  flex:none;
+width:42px;
+height:42px;
+border-radius:50%;
+overflow:hidden;
+background:linear-gradient(135deg,#ff3cac,#784cff,#25d9ff);
+display:grid;
+place-items:center;
+color:white;
+font-weight:900;
+flex:none;
 }
 
 .avatar img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
+width:100%;
+height:100%;
+object-fit:cover;
 }
 
-.postname{
-  font-weight:800;
-}
-
-.handle{
-  font-size:12px;
-  color:var(--muted);
-}
-
-.post-time{
-  font-size:11px;
-  color:var(--muted);
-  margin-top:2px;
-}
+.postname{font-weight:800}
+.handle{font-size:12px;color:var(--muted)}
+.post-time{font-size:11px;color:var(--muted);margin-top:2px}
 
 .wall{
-  aspect-ratio:9/14;
-  overflow:hidden;
-  background:#fff;
+aspect-ratio:9/14;
+overflow:hidden;
+background:#fff;
 }
 
 .renderedWall{
-  width:100%;
-  height:100%;
-  position:relative;
+width:100%;
+height:100%;
+position:relative;
+overflow:hidden;
 }
 
 .actions{
-  display:flex;
-  gap:4px;
-  padding:5px 10px 8px;
+display:flex;
+gap:4px;
+padding:5px 10px 8px;
 }
 
 .iconbtn{
-  border:0;
-  background:transparent;
-  color:var(--text);
-  font-size:23px;
-  padding:7px;
+border:0;
+background:transparent;
+color:var(--text);
+font-size:23px;
+padding:7px;
 }
 
-.iconbtn.save{
-  margin-left:auto;
-}
+.iconbtn.save{margin-left:auto}
 
 .likes{
-  font-size:13px;
-  font-weight:700;
-  padding:0 14px 8px;
+font-size:13px;
+font-weight:700;
+padding:0 14px 8px;
 }
 
 .caption{
-  padding:10px 14px 15px;
-  font-size:14px;
+padding:10px 14px 15px;
+font-size:14px;
 }
 
-/* GENERAL */
-
 .muted{
-  color:var(--muted);
-  font-size:13px;
+color:var(--muted);
+font-size:13px;
 }
 
 .notice{
-  padding:18px;
-  border:1px solid var(--line);
-  border-radius:14px;
-  background:var(--soft);
-  margin-bottom:18px;
+padding:18px;
+border:1px solid var(--line);
+border-radius:14px;
+background:var(--soft);
+margin-bottom:18px;
 }
 
 .grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:8px;
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:8px;
 }
 
 .tile{
-  aspect-ratio:1;
-  border-radius:10px;
-  overflow:hidden;
-  background:var(--soft);
-  cursor:pointer;
+aspect-ratio:1;
+border-radius:10px;
+overflow:hidden;
+background:var(--soft);
+cursor:pointer;
 }
 
-.field{
-  margin:12px 0;
+.profile{
+max-width:760px;
+margin:auto;
 }
+
+.profilehead{
+display:flex;
+gap:25px;
+align-items:center;
+padding:20px 0 30px;
+border-bottom:1px solid var(--line);
+}
+
+.bigavatar{
+width:105px;
+height:105px;
+border-radius:50%;
+overflow:hidden;
+background:linear-gradient(135deg,#ff3cac,#784cff,#25d9ff);
+display:grid;
+place-items:center;
+color:white;
+font-size:40px;
+font-weight:900;
+flex:none;
+}
+
+.bigavatar img{
+width:100%;
+height:100%;
+object-fit:cover;
+}
+
+.stats{
+display:flex;
+gap:30px;
+margin:18px 0;
+}
+
+.stats b{
+display:block;
+}
+
+.field{margin:12px 0}
 
 .field label{
-  display:block;
-  font-size:12px;
-  font-weight:700;
-  margin-bottom:6px;
+display:block;
+font-size:12px;
+font-weight:700;
+margin-bottom:6px;
 }
 
 .field input,
 .field textarea,
 .field select,
 .search{
-  width:100%;
-  padding:11px;
-  border:1px solid var(--line);
-  border-radius:9px;
-  background:var(--soft);
-  color:var(--text);
-  outline:none;
+width:100%;
+padding:11px;
+border:1px solid var(--line);
+border-radius:9px;
+background:var(--soft);
+color:var(--text);
+outline:none;
 }
 
 .field textarea{
-  min-height:90px;
-  resize:vertical;
+min-height:90px;
+resize:vertical;
 }
-
-.row{
-  display:flex;
-  gap:7px;
-  flex-wrap:wrap;
-}
-
-/* MODALS */
 
 .modal{
-  position:fixed;
-  inset:0;
-  background:#0008;
-  display:none;
-  place-items:center;
-  z-index:100;
-  padding:20px;
+position:fixed;
+inset:0;
+background:#0008;
+display:none;
+place-items:center;
+z-index:100;
+padding:20px;
 }
 
-.modal.open{
-  display:grid;
-}
+.modal.open{display:grid}
 
 .modalbox{
-  width:min(460px,100%);
-  max-height:90vh;
-  overflow:auto;
-  background:var(--card);
-  color:var(--text);
-  border-radius:18px;
-  padding:22px;
+width:min(460px,100%);
+max-height:90vh;
+overflow:auto;
+background:var(--card);
+color:var(--text);
+border-radius:18px;
+padding:22px;
 }
 
 .close{
-  float:right;
-  border:0;
-  background:transparent;
-  color:var(--muted);
-  font-size:23px;
+float:right;
+border:0;
+background:transparent;
+color:var(--muted);
+font-size:23px;
 }
-
-/* USER WALLPAPER VIEW */
-
-.profile-view{
-  width:min(760px,100%);
-  max-height:90vh;
-  overflow:auto;
-}
-
-.profile-view-head{
-  display:flex;
-  gap:15px;
-  align-items:center;
-  padding-bottom:20px;
-  border-bottom:1px solid var(--line);
-}
-
-.profile-view-avatar{
-  width:70px;
-  height:70px;
-  border-radius:50%;
-  overflow:hidden;
-  background:linear-gradient(135deg,#ff3cac,#784cff,#25d9ff);
-  display:grid;
-  place-items:center;
-  color:white;
-  font-size:28px;
-  font-weight:900;
-  flex:none;
-}
-
-.profile-view-avatar img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-}
-
-.recent-grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:8px;
-  margin-top:18px;
-}
-
-.recent-tile{
-  aspect-ratio:9/14;
-  border-radius:10px;
-  overflow:hidden;
-  background:var(--soft);
-}
-
-/* PROFILE */
-
-.profile{
-  max-width:760px;
-  margin:auto;
-}
-
-.profilehead{
-  display:flex;
-  gap:25px;
-  align-items:center;
-  padding:20px 0 30px;
-  border-bottom:1px solid var(--line);
-}
-
-.bigavatar{
-  width:105px;
-  height:105px;
-  border-radius:50%;
-  overflow:hidden;
-  background:linear-gradient(135deg,#ff3cac,#784cff,#25d9ff);
-  display:grid;
-  place-items:center;
-  color:white;
-  font-size:40px;
-  font-weight:900;
-  flex:none;
-}
-
-.bigavatar img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-}
-
-.stats{
-  display:flex;
-  gap:30px;
-  margin:18px 0;
-}
-
-.stats b{
-  display:block;
-}
-
-/* MESSAGES */
 
 .messages{
-  display:grid;
-  grid-template-columns:240px 1fr;
-  border:1px solid var(--line);
-  border-radius:15px;
-  min-height:560px;
-  overflow:hidden;
+display:grid;
+grid-template-columns:240px 1fr;
+border:1px solid var(--line);
+border-radius:15px;
+min-height:560px;
+overflow:hidden;
 }
 
 .threads{
-  border-right:1px solid var(--line);
-  padding:10px;
+border-right:1px solid var(--line);
+padding:10px;
 }
 
 .thread{
-  padding:12px;
-  border-radius:10px;
-  cursor:pointer;
+padding:12px;
+border-radius:10px;
+cursor:pointer;
 }
 
-.thread:hover{
-  background:var(--soft);
-}
+.thread:hover{background:var(--soft)}
 
 .chat{
-  display:flex;
-  flex-direction:column;
+display:flex;
+flex-direction:column;
 }
 
 .chatlog{
-  flex:1;
-  padding:18px;
-  overflow:auto;
+flex:1;
+padding:18px;
+overflow:auto;
 }
 
 .bubble{
-  padding:9px 12px;
-  border-radius:15px;
-  background:var(--soft);
-  margin:7px 0;
-  max-width:70%;
+padding:9px 12px;
+border-radius:15px;
+background:var(--soft);
+margin:7px 0;
+max-width:70%;
 }
 
 .mine{
-  margin-left:auto;
-  background:#e8ddff;
-  color:#171717;
+margin-left:auto;
+background:#e8ddff;
+color:#171717;
 }
 
 .composer{
-  display:flex;
-  gap:8px;
-  padding:12px;
-  border-top:1px solid var(--line);
+display:flex;
+gap:8px;
+padding:12px;
+border-top:1px solid var(--line);
 }
 
-.composer input{
-  flex:1;
-}
-
-/* EDITOR */
+.composer input{flex:1}
 
 .editor{
-  display:grid;
-  grid-template-columns:1fr 340px;
-  gap:18px;
+display:grid;
+grid-template-columns:1fr 340px;
+gap:18px;
 }
 
 .editorPreview{
-  background:#111;
-  border-radius:16px;
-  padding:28px;
-  display:grid;
-  place-items:center;
-  min-height:650px;
+background:#111;
+border-radius:16px;
+padding:28px;
+display:grid;
+place-items:center;
+min-height:650px;
 }
 
 .canvas{
-  width:min(100%,390px);
-  aspect-ratio:9/16;
-  background:white;
-  position:relative;
-  overflow:hidden;
-  border-radius:7px;
+width:min(100%,390px);
+aspect-ratio:9/16;
+background:#fff;
+position:relative;
+overflow:hidden;
+border-radius:7px;
 }
 
 .obj{
-  position:absolute;
-  user-select:none;
-  touch-action:none;
-  cursor:move;
-  transform-origin:center;
-  white-space:pre-wrap;
+position:absolute;
+user-select:none;
+touch-action:none;
+cursor:move;
+transform-origin:center;
 }
 
 .obj.sel{
-  outline:2px dashed white;
-  outline-offset:4px;
+outline:2px dashed white;
+outline-offset:4px;
 }
 
 .panel{
-  border:1px solid var(--line);
-  border-radius:16px;
-  padding:16px;
-  background:var(--card);
-  max-height:760px;
-  overflow:auto;
+border:1px solid var(--line);
+border-radius:16px;
+padding:16px;
+background:var(--card);
+max-height:760px;
+overflow:auto;
 }
 
 .section{
-  border-bottom:1px solid var(--line);
-  padding-bottom:18px;
-  margin-bottom:18px;
+border-bottom:1px solid var(--line);
+padding-bottom:18px;
+margin-bottom:18px;
 }
 
-.section:last-child{
-  border:0;
-}
+.section:last-child{border:0}
 
 .section h3{
-  font-size:14px;
-  margin:0 0 12px;
+font-size:14px;
+margin:0 0 12px;
+}
+
+.row{
+display:flex;
+gap:7px;
+flex-wrap:wrap;
 }
 
 .tool{
-  border:1px solid var(--line);
-  background:var(--soft);
-  color:var(--text);
-  padding:9px 11px;
-  border-radius:9px;
+border:1px solid var(--line);
+background:var(--soft);
+color:var(--text);
+padding:9px 11px;
+border-radius:9px;
 }
 
 .tools{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:7px;
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:7px;
 }
 
 .emoji{
-  font-size:23px;
-  height:48px;
+font-size:23px;
+height:48px;
 }
 
-.range{
-  width:100%;
-}
+.range{width:100%}
 
 .label{
-  display:flex;
-  justify-content:space-between;
-  color:var(--muted);
-  font-size:12px;
-  margin:9px 0 5px;
+display:flex;
+justify-content:space-between;
+color:var(--muted);
+font-size:12px;
+margin:9px 0 5px;
 }
 
-/* RESPONSIVE */
+.profile-view{
+width:min(760px,100%);
+max-height:90vh;
+overflow:auto;
+}
+
+.profile-view-head{
+padding-bottom:22px;
+border-bottom:1px solid var(--line);
+}
+
+.recent-title{
+margin-top:20px;
+}
+
+.recent-grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:8px;
+margin-top:15px;
+}
+
+.recent-tile{
+aspect-ratio:9/14;
+border-radius:10px;
+overflow:hidden;
+background:var(--soft);
+}
 
 @media(max-width:850px){
+.sidebar{
+width:72px;
+padding:18px 7px;
+}
 
-  .sidebar{
-    width:72px;
-    padding:18px 7px;
-  }
+.logo{
+font-size:0;
+text-align:center;
+}
 
-  .logo{
-    font-size:0;
-    text-align:center;
-  }
+.logo:after{
+content:"DW";
+font-size:19px;
+}
 
-  .logo:after{
-    content:"DW";
-    font-size:19px;
-  }
+.nav button{
+font-size:0;
+text-align:center;
+}
 
-  .nav button{
-    font-size:0;
-    text-align:center;
-  }
+.nav button:first-letter{
+font-size:21px;
+}
 
-  .nav button:first-letter{
-    font-size:21px;
-  }
+.main{
+margin-left:72px;
+padding:22px;
+}
 
-  .main{
-    margin-left:72px;
-    padding:22px;
-  }
-
-  .editor{
-    grid-template-columns:1fr;
-  }
-
+.editor{grid-template-columns:1fr}
 }
 
 @media(max-width:600px){
+.sidebar{
+top:auto;
+bottom:0;
+width:100%;
+height:64px;
+border-right:0;
+border-top:1px solid var(--line);
+padding:4px;
+}
 
-  .sidebar{
-    top:auto;
-    bottom:0;
-    width:100%;
-    height:64px;
-    border-right:0;
-    border-top:1px solid var(--line);
-    padding:4px;
-  }
+.logo,.bottom{display:none}
 
-  .logo,
-  .bottom{
-    display:none;
-  }
+.nav{
+flex-direction:row;
+justify-content:space-around;
+}
 
-  .nav{
-    flex-direction:row;
-    justify-content:space-around;
-  }
+.main{
+margin:0;
+padding:15px 14px 82px;
+}
 
-  .main{
-    margin:0;
-    padding:15px 14px 82px;
-  }
+.grid{grid-template-columns:repeat(2,1fr)}
 
-  .grid{
-    grid-template-columns:repeat(2,1fr);
-  }
+.messages{grid-template-columns:1fr}
 
-  .messages{
-    grid-template-columns:1fr;
-  }
+.threads{display:none}
 
-  .threads{
-    display:none;
-  }
+.profilehead{flex-wrap:wrap}
 
-  .profilehead{
-    flex-wrap:wrap;
-  }
+.bigavatar{
+width:85px;
+height:85px;
+}
 
-  .bigavatar{
-    width:85px;
-    height:85px;
-  }
+.editorPreview{
+min-height:500px;
+padding:15px;
+}
 
-  .editorPreview{
-    min-height:500px;
-    padding:15px;
-  }
-
-  .recent-grid{
-    grid-template-columns:repeat(2,1fr);
-  }
-
+.recent-grid{
+grid-template-columns:repeat(2,1fr);
+}
 }
 </style>
 </head>
 
 <body>
 
-<div class="app">
-
 <aside class="sidebar">
 
 <div class="logo">DreamWall</div>
 
 <nav class="nav">
-
 <button data-page="home">⌂ Home</button>
 <button data-page="search">⌕ Search</button>
 <button data-page="explore">✦ Explore</button>
 <button data-page="create">＋ Create</button>
 <button data-page="activity">♡ Activity</button>
 <button data-page="messages">✉ Messages</button>
-
 </nav>
 
 <nav class="nav bottom">
-
 <button data-page="profile">◎ Profile</button>
 <button data-page="settings">⚙ Settings</button>
-
 </nav>
 
 </aside>
@@ -787,33 +683,18 @@ button{
 <main class="main">
 
 <!-- HOME -->
-
 <section id="home" class="page">
 
 <div class="top">
-
 <h1>Home</h1>
-
-<button class="btn primary" data-page="create">
-＋ Create
-</button>
-
+<button class="btn primary" data-page="create">＋ Create</button>
 </div>
 
 <div class="people-bar">
 
 <div class="people-title">
-
-<b>New DreamWallers</b>
-
-<button class="btn" id="refreshPeople">
-Refresh
-</button>
-
-</div>
-
-<div class="muted" style="margin-bottom:12px">
-Wallpapers posted in the last 24 hours
+<b>DreamWallers</b>
+<button class="btn" id="refreshPeople">Refresh</button>
 </div>
 
 <div id="peopleRow" class="people-row"></div>
@@ -824,28 +705,20 @@ Wallpapers posted in the last 24 hours
 
 </section>
 
-
 <!-- SEARCH -->
-
 <section id="search" class="page">
 
 <div class="top">
 <h1>Search</h1>
 </div>
 
-<input
-id="searchInput"
-class="search"
-placeholder="Search people..."
->
+<input id="searchInput" class="search" placeholder="Search people...">
 
 <div id="searchResults" style="margin-top:18px"></div>
 
 </section>
 
-
 <!-- EXPLORE -->
-
 <section id="explore" class="page">
 
 <div class="top">
@@ -856,9 +729,7 @@ placeholder="Search people..."
 
 </section>
 
-
 <!-- CREATE -->
-
 <section id="create" class="page">
 
 <div class="top">
@@ -870,35 +741,23 @@ placeholder="Search people..."
 <div>
 
 <div class="editorPreview">
-
 <div id="canvas" class="canvas"></div>
-
 </div>
 
 <div class="field">
-
 <label>Caption</label>
-
-<textarea
-id="postCaption"
-maxlength="220"
-placeholder="Write a caption..."
-></textarea>
-
+<textarea id="postCaption" maxlength="220" placeholder="Write a caption..."></textarea>
 </div>
 
 <div class="row">
-
 <button class="btn" id="undo">↶ Undo</button>
 <button class="btn" id="redo">↷ Redo</button>
 <button class="btn" id="clear">Clear</button>
 <button class="btn" id="saveDraft">💾 Save</button>
 <button class="btn primary" id="publish">✦ Publish</button>
-
 </div>
 
 </div>
-
 
 <aside class="panel">
 
@@ -907,108 +766,75 @@ placeholder="Write a caption..."
 <h3>Background</h3>
 
 <div class="row">
-
 <button class="tool" id="bgColor">Color</button>
 <button class="tool" id="bgGradient">Gradient</button>
 <button class="tool" id="bgPattern">Pattern</button>
-
 </div>
 
 <div id="bgControls"></div>
 
 </div>
 
-
 <div class="section">
 
 <h3>Text</h3>
 
-<button class="tool" id="addText">
-＋ Add text
-</button>
+<button class="tool" id="addText">＋ Add text</button>
 
 <div id="textControls" style="display:none">
 
 <div class="field">
-
 <label>Text</label>
-
 <input id="textValue" value="DreamWall">
-
 </div>
 
 <div class="field">
-
 <label>Color</label>
-
 <input id="textColor" type="color" value="#111111">
-
 </div>
 
 <div class="field">
-
 <label>Font</label>
-
 <select id="font">
-
 <option>Arial</option>
 <option>Georgia</option>
 <option>Verdana</option>
 <option>Trebuchet MS</option>
 <option>Courier New</option>
 <option>Impact</option>
-
 </select>
-
 </div>
 
 <div class="label">
-
 Size
-
 <span id="sizeOut">42px</span>
-
 </div>
 
-<input
-id="textSize"
-class="range"
-type="range"
-min="10"
-max="150"
-value="42"
->
+<input id="textSize" class="range" type="range" min="10" max="150" value="42">
 
 <div class="row">
-
 <button class="tool" id="bold">Bold</button>
 <button class="tool" id="italic">Italic</button>
 <button class="tool" id="shadow">Shadow</button>
-
 </div>
 
 </div>
 
 </div>
-
 
 <div class="section">
 
 <h3>Effects</h3>
-
 <div id="effectControls"></div>
 
 </div>
 
-
 <div class="section">
 
 <h3>Decorations</h3>
-
 <div id="decorationTools" class="tools"></div>
 
 </div>
-
 
 <div class="section" id="objectSection" style="display:none">
 
@@ -1019,72 +845,42 @@ Size
 <span id="objSizeOut">100%</span>
 </div>
 
-<input
-id="objSize"
-class="range"
-type="range"
-min="20"
-max="300"
-value="100"
->
+<input id="objSize" class="range" type="range" min="20" max="300" value="100">
 
 <div class="label">
 Rotation
 <span id="objRotOut">0°</span>
 </div>
 
-<input
-id="objRot"
-class="range"
-type="range"
-min="-180"
-max="180"
-value="0"
->
+<input id="objRot" class="range" type="range" min="-180" max="180" value="0">
 
 <div class="label">
 Opacity
 <span id="objOpacityOut">100%</span>
 </div>
 
-<input
-id="objOpacity"
-class="range"
-type="range"
-min="0"
-max="100"
-value="100"
->
+<input id="objOpacity" class="range" type="range" min="0" max="100" value="100">
 
 <div class="row">
-
 <button class="tool" id="duplicate">Duplicate</button>
 <button class="tool" id="delete">Delete</button>
-
 </div>
 
 </div>
-
 
 <div class="section">
 
 <h3>Layers</h3>
-
-<div id="layers" class="muted">
-No objects yet.
-</div>
+<div id="layers" class="muted">No objects yet.</div>
 
 </div>
 
 </aside>
-
 </div>
 
 </section>
 
-
 <!-- ACTIVITY -->
-
 <section id="activity" class="page">
 
 <div class="top">
@@ -1095,9 +891,7 @@ No objects yet.
 
 </section>
 
-
 <!-- MESSAGES -->
-
 <section id="messages" class="page">
 
 <div class="top">
@@ -1110,27 +904,15 @@ No objects yet.
 
 <div class="chat">
 
-<div
-id="chatTitle"
-style="padding:15px;border-bottom:1px solid var(--line);font-weight:800"
->
+<div id="chatTitle" style="padding:15px;border-bottom:1px solid var(--line);font-weight:800">
 Select a creator
 </div>
 
 <div id="chatLog" class="chatlog"></div>
 
 <div class="composer">
-
-<input
-id="messageInput"
-class="search"
-placeholder="Message..."
->
-
-<button class="btn primary" id="sendMessage">
-Send
-</button>
-
+<input id="messageInput" class="search" placeholder="Message...">
+<button class="btn primary" id="sendMessage">Send</button>
 </div>
 
 </div>
@@ -1139,38 +921,25 @@ Send
 
 </section>
 
-
 <!-- PROFILE -->
-
 <section id="profile" class="page">
 
 <div class="top">
-
 <h1>Profile</h1>
-
-<button class="btn" id="editProfile">
-Edit profile
-</button>
-
+<button class="btn" id="editProfile">Edit profile</button>
 </div>
 
 <div class="profile">
 
 <div class="profilehead">
 
-<div id="bigAvatar" class="bigavatar">
-P
-</div>
+<div id="bigAvatar" class="bigavatar">P</div>
 
 <div>
 
-<h2 id="profileName">
-Your profile
-</h2>
+<h2 id="profileName">Your profile</h2>
 
-<div id="profileHandle" class="muted">
-@username
-</div>
+<div id="profileHandle" class="muted">@username</div>
 
 <p id="profileBio" class="muted">
 Add a bio in Edit profile.
@@ -1207,9 +976,7 @@ following
 
 </section>
 
-
 <!-- SETTINGS -->
-
 <section id="settings" class="page">
 
 <div class="top">
@@ -1224,13 +991,8 @@ following
 Not signed in
 </p>
 
-<button class="btn" id="signOut">
-Sign out
-</button>
-
-<button class="btn" id="resetDevice">
-Reset this device
-</button>
+<button class="btn" id="signOut">Sign out</button>
+<button class="btn" id="resetDevice">Reset this device</button>
 
 </div>
 
@@ -1250,146 +1012,91 @@ Toggle dark mode
 
 </main>
 
-</div>
-
-
 <!-- AUTH -->
-
 <div id="authModal" class="modal open">
 
 <div class="modalbox">
 
-<h2 id="authTitle">
-Welcome to DreamWall
-</h2>
+<h2 id="authTitle">Welcome to DreamWall</h2>
 
 <p class="muted">
 Sign in to your own DreamWall account.
 </p>
 
 <div class="field">
-
 <label>Email</label>
-
 <input id="authEmail" type="email">
-
 </div>
 
 <div class="field">
-
 <label>Password</label>
-
 <input id="authPassword" type="password">
-
 </div>
 
-<button
-class="btn primary"
-style="width:100%"
-id="authSubmit"
->
+<button class="btn primary" style="width:100%" id="authSubmit">
 Sign in
 </button>
 
-<button
-class="btn"
-style="width:100%;margin-top:8px"
-id="authSwitch"
->
+<button class="btn" style="width:100%;margin-top:8px" id="authSwitch">
 Create account
 </button>
 
 <p id="authMsg" class="muted"></p>
 
 </div>
-
 </div>
 
-
 <!-- EDIT PROFILE -->
-
 <div id="profileModal" class="modal">
 
 <div class="modalbox">
 
-<button class="close" id="closeProfile">
-×
-</button>
+<button class="close" id="closeProfile">×</button>
 
 <h2>Edit profile</h2>
 
 <div class="field">
-
 <label>Your name</label>
-
-<input id="editName">
-
+<input id="editName" placeholder="Your name">
 </div>
 
 <div class="field">
-
 <label>Username</label>
-
-<input
-id="editUsername"
-maxlength="30"
->
-
+<input id="editUsername" placeholder="yourusername" maxlength="30">
 </div>
 
 <div class="field">
-
 <label>Bio</label>
-
-<textarea id="editBio"></textarea>
-
+<textarea id="editBio" placeholder="Tell people about yourself..."></textarea>
 </div>
 
 <div class="field">
-
 <label>Profile photo URL</label>
-
-<input id="editAvatar">
-
+<input id="editAvatar" placeholder="https://...">
 </div>
 
-<button
-class="btn primary"
-style="width:100%"
-id="saveProfile"
->
+<button class="btn primary" style="width:100%" id="saveProfile">
 Save profile
 </button>
 
 <p id="profileMsg" class="muted"></p>
 
 </div>
-
 </div>
 
-
-<!-- WALLPAPERS FROM USER -->
-
+<!-- USER WALLPAPERS -->
 <div id="userProfileModal" class="modal">
 
 <div class="modalbox profile-view">
 
-<button class="close" id="closeUserProfile">
-×
-</button>
+<button class="close" id="closeUserProfile">×</button>
 
 <div id="userProfileContent"></div>
 
 </div>
-
 </div>
 
-
 <script>
-
-/* =========================================================
-   SUPABASE
-========================================================= */
 
 const SUPABASE_URL =
 "https://kcybwrdtnlflevndmzfn.supabase.co";
@@ -1403,11 +1110,6 @@ SUPABASE_URL,
 SUPABASE_KEY
 );
 
-
-/* =========================================================
-   APP VARIABLES
-========================================================= */
-
 let user=null;
 let profile=null;
 let people=[];
@@ -1418,16 +1120,9 @@ let historyPos=-1;
 let objectNumber=0;
 let chatUser=null;
 
-const $=id=>
-document.getElementById(id);
-
-
-/* =========================================================
-   HELPERS
-========================================================= */
+const $=id=>document.getElementById(id);
 
 function esc(value){
-
 return String(value ?? "")
 .replace(/[&<>"']/g,char=>({
 "&":"&amp;",
@@ -1436,152 +1131,93 @@ return String(value ?? "")
 '"':"&quot;",
 "'":"&#39;"
 }[char]));
-
 }
-
 
 function goPage(name){
 
-document
-.querySelectorAll(".page")
-.forEach(p=>
-p.classList.toggle(
-"active",
-p.id===name
-)
-);
+document.querySelectorAll(".page")
+.forEach(p=>p.classList.toggle("active",p.id===name));
 
-document
-.querySelectorAll("[data-page]")
-.forEach(b=>
-b.classList.toggle(
+document.querySelectorAll("[data-page]")
+.forEach(b=>b.classList.toggle(
 "active",
 b.dataset.page===name
-)
-);
+));
 
 window.scrollTo(0,0);
 
 }
 
-
-document
-.querySelectorAll("[data-page]")
+document.querySelectorAll("[data-page]")
 .forEach(button=>{
-
-button.onclick=()=>{
-goPage(button.dataset.page);
-};
-
+button.onclick=()=>goPage(button.dataset.page);
 });
-
 
 function avatarHTML(p){
 
 if(p && p.avatar_url){
-
-return `
-<img
-src="${esc(p.avatar_url)}"
-onerror="this.style.display='none'"
->
-`;
-
+return `<img src="${esc(p.avatar_url)}"
+onerror="this.style.display='none'">`;
 }
 
 const letter=
-(
-p?.real_name ||
+(p?.real_name ||
 p?.username ||
-"D"
-)
-.charAt(0)
-.toUpperCase();
+"P").charAt(0).toUpperCase();
 
 return letter;
-
 }
-
 
 function timeAgo(date){
 
 const seconds=
-Math.floor(
-(Date.now()-date.getTime())/1000
-);
+Math.floor((Date.now()-date.getTime())/1000);
 
-if(seconds<60)
-return "Just now";
-
-if(seconds<3600)
-return Math.floor(seconds/60)+"m ago";
-
-if(seconds<86400)
-return Math.floor(seconds/3600)+"h ago";
+if(seconds<60)return "Just now";
+if(seconds<3600)return Math.floor(seconds/60)+"m ago";
+if(seconds<86400)return Math.floor(seconds/3600)+"h ago";
 
 return Math.floor(seconds/86400)+"d ago";
-
 }
-
 
 function recent(date){
-
-return Date.now()-
-new Date(date).getTime()
-<86400000;
-
+return Date.now()-new Date(date).getTime()<86400000;
 }
 
-
-/* =========================================================
-   PROFILE
-========================================================= */
+/* PROFILE */
 
 async function ensureProfile(){
 
 const result=
-await sb
-.from("profiles")
+await sb.from("profiles")
 .select("*")
 .eq("id",user.id)
 .maybeSingle();
 
 if(result.error){
-
 console.error(result.error);
 return;
-
 }
 
 if(!result.data){
 
-const username=
-"dw_"+user.id.slice(0,8);
+const username="dw_"+user.id.slice(0,8);
 
 const insert=
-await sb
-.from("profiles")
+await sb.from("profiles")
 .insert({
-
 id:user.id,
-
 username:username,
-
 real_name:"",
-
 bio:"",
-
 avatar_url:""
-
 })
 .select()
 .single();
 
 if(insert.error){
-
 console.error(insert.error);
 return;
-
 }
 
 profile=insert.data;
@@ -1593,9 +1229,7 @@ profile=result.data;
 }
 
 renderProfile();
-
 }
-
 
 function renderProfile(){
 
@@ -1606,11 +1240,7 @@ profile.real_name?.trim() ||
 "Your profile";
 
 $("profileHandle").textContent=
-"@"+
-(
-profile.username?.trim() ||
-"username"
-)
+"@"+(profile.username?.trim() || "username")
 .replace(/^@/,"");
 
 $("profileBio").textContent=
@@ -1621,54 +1251,63 @@ $("bigAvatar").innerHTML=
 avatarHTML(profile);
 
 $("accountStatus").textContent=
-user?.email
-?
-"Signed in as "+user.email
-:
+user?.email ?
+"Signed in as "+user.email :
 "Not signed in";
 
 }
-
 
 async function saveProfile(){
 
 if(!user)return;
 
-const username=
-$("editUsername")
-.value
-.trim()
+const oldName=
+profile?.real_name || "";
+
+const oldUsername=
+profile?.username || "";
+
+const oldBio=
+profile?.bio || "";
+
+const oldAvatar=
+profile?.avatar_url || "";
+
+const typedName=$("editName").value.trim();
+const typedUsername=
+$("editUsername").value.trim()
 .replace(/^@/,"")
 .toLowerCase();
 
+const typedBio=$("editBio").value.trim();
+const typedAvatar=$("editAvatar").value.trim();
+
+/*
+Do NOT erase an existing value just because the field
+was accidentally left blank.
+*/
+
+const username=
+typedUsername || oldUsername;
+
 const realName=
-$("editName")
-.value
-.trim();
+typedName || oldName;
 
 const bio=
-$("editBio")
-.value
-.trim();
+typedBio || oldBio;
 
 const avatar=
-$("editAvatar")
-.value
-.trim();
+typedAvatar || oldAvatar;
 
-$("profileMsg").textContent=
-"Saving...";
+$("profileMsg").textContent="Saving...";
 
 const result=
-await sb
-.from("profiles")
+await sb.from("profiles")
 .update({
-
 username:username,
 real_name:realName,
 bio:bio,
 avatar_url:avatar
-
 })
 .eq("id",user.id)
 .select()
@@ -1677,20 +1316,14 @@ avatar_url:avatar
 if(result.error){
 
 if(result.error.code==="23505"){
-
 $("profileMsg").textContent=
 "That username is already taken.";
-
 }else{
-
 $("profileMsg").textContent=
-"Could not save: "+
-result.error.message;
-
+"Could not save: "+result.error.message;
 }
 
 return;
-
 }
 
 profile=result.data;
@@ -1698,14 +1331,11 @@ profile=result.data;
 renderProfile();
 
 await loadPeople();
-
 renderPeople();
 
-$("profileModal")
-.classList.remove("open");
+$("profileModal").classList.remove("open");
 
 }
-
 
 $("editProfile").onclick=()=>{
 
@@ -1721,209 +1351,59 @@ profile?.bio || "";
 $("editAvatar").value=
 profile?.avatar_url || "";
 
-$("profileModal")
-.classList.add("open");
+$("profileModal").classList.add("open");
 
 };
 
-
-$("saveProfile").onclick=
-saveProfile;
-
+$("saveProfile").onclick=saveProfile;
 
 $("closeProfile").onclick=()=>
-$("profileModal")
-.classList.remove("open");
+$("profileModal").classList.remove("open");
 
-
-/* =========================================================
-   WALLPAPERS
-   IMPORTANT:
-   Profiles are loaded separately.
-   There is NO ambiguous profiles(...) join.
-========================================================= */
-
-async function loadWallpapers(){
-
-const result=
-await sb
-.from("wallpapers")
-.select("*")
-.order("created_at",{ascending:false})
-.limit(100);
-
-if(result.error){
-
-console.error(
-"Could not load wallpapers:",
-result.error
-);
-
-wallpapers=[];
-return;
-
-}
-
-const rows=
-result.data || [];
-
-const userIds=[
-...new Set(
-rows
-.map(w=>w.user_id)
-.filter(Boolean)
-)
-];
-
-let profileMap={};
-
-if(userIds.length){
-
-const profilesResult=
-await sb
-.from("profiles")
-.select(
-"id,username,real_name,avatar_url,bio"
-)
-.in("id",userIds);
-
-if(profilesResult.error){
-
-console.error(
-"Could not load wallpaper profiles:",
-profilesResult.error
-);
-
-}else{
-
-(profilesResult.data || [])
-.forEach(p=>{
-profileMap[String(p.id)]=p;
-});
-
-}
-
-}
-
-wallpapers=
-rows.map(w=>({
-
-...w,
-
-profiles:
-profileMap[String(w.user_id)]
-||
-{
-id:w.user_id,
-username:"DreamWaller",
-real_name:"DreamWaller",
-avatar_url:"",
-bio:""
-}
-
-}));
-
-}
-
-
-/* =========================================================
-   PEOPLE
-   ONLY USERS WHO POSTED IN LAST 24 HOURS
-========================================================= */
+/* PEOPLE */
 
 async function loadPeople(){
 
 const result=
-await sb
-.from("profiles")
-.select(
-"id,username,real_name,avatar_url,bio,created_at"
-)
+await sb.from("profiles")
+.select("*")
 .order("created_at",{ascending:true});
 
 if(result.error){
-
-console.error(
-"Could not load people:",
-result.error
-);
-
-people=[];
+console.error(result.error);
 return;
-
 }
 
-const allPeople=
-result.data || [];
-
-const recentUserIds=
-new Set(
-
-wallpapers
-
-.filter(w=>
-recent(w.created_at)
-)
-
-.map(w=>
-String(w.user_id)
-)
-
-);
-
-people=
-allPeople.filter(p=>
-recentUserIds.has(
-String(p.id)
-)
-);
+people=result.data || [];
 
 }
-
 
 function renderPeople(){
 
 if(!people.length){
 
-$("peopleRow").innerHTML=`
-
-<div class="muted">
-No new wallpapers in the last 24 hours.
-</div>
-
-`;
+$("peopleRow").innerHTML=
+`<div class="muted">No DreamWallers yet.</div>`;
 
 return;
-
 }
 
 $("peopleRow").innerHTML=
-
 people.map(p=>`
 
-<div
-class="person"
-onclick="openUserWallpapers('${p.id}')"
->
+<div class="person"
+onclick="openUserProfile('${p.id}')">
 
 <div class="person-avatar">
 
 <div class="person-inner">
-
 ${avatarHTML(p)}
-
 </div>
 
 </div>
 
 <div class="person-name">
-
-${esc(
-p.real_name ||
-p.username ||
-"DreamWaller"
-)}
-
+${esc(p.real_name || p.username || "DreamWaller")}
 </div>
 
 </div>
@@ -1932,53 +1412,121 @@ p.username ||
 
 }
 
+/* WALLPAPERS */
 
-/* =========================================================
-   WALLPAPER RENDERING
-========================================================= */
+/*
+IMPORTANT FIX:
+
+We no longer ask Supabase to automatically join
+profiles to wallpapers.
+
+That was causing the "more than 1 relation" error.
+
+Instead:
+1. Get wallpapers.
+2. Get profiles.
+3. Match them ourselves.
+*/
+
+async function loadWallpapers(){
+
+const wallpapersResult=
+await sb.from("wallpapers")
+.select("*")
+.order("created_at",{ascending:false})
+.limit(100);
+
+if(wallpapersResult.error){
+
+console.error(
+"Wallpaper loading error:",
+wallpapersResult.error
+);
+
+wallpapers=[];
+return;
+}
+
+const rows=
+wallpapersResult.data || [];
+
+const profileResult=
+await sb.from("profiles")
+.select("id,username,real_name,avatar_url,bio");
+
+if(profileResult.error){
+
+console.error(
+"Profile loading error:",
+profileResult.error
+);
+
+wallpapers=
+rows.map(w=>({
+...w,
+profiles:null
+}));
+
+return;
+}
+
+const profileMap={};
+
+(profileResult.data || []).forEach(p=>{
+profileMap[String(p.id)]=p;
+});
+
+wallpapers=
+rows.map(w=>({
+...w,
+profiles:profileMap[String(w.user_id)] || null
+}));
+
+}
+
+/*
+The wallpaper's background is stored as a complete CSS
+background value.
+
+That means:
+#ffffff
+linear-gradient(...)
+radial-gradient(...)
+etc.
+
+all work.
+*/
+
+function wallpaperData(w){
+
+return {
+background:w.background || "#fff",
+filter:
+`brightness(${w.brightness ?? 100}%)
+contrast(${w.contrast ?? 100}%)
+blur(${w.blur ?? 0}px)`
+};
+
+}
 
 function renderWallpaper(el,w){
 
 el.innerHTML="";
 
-el.style.position="relative";
+const d=wallpaperData(w);
 
-el.style.background=
-w.background || "#fff";
+el.style.background=d.background;
+el.style.filter=d.filter;
 
-el.style.backgroundImage=
-w.background_image ||
-"none";
+const objects=w.decorations || [];
 
-el.style.backgroundSize=
-w.background_size ||
-"auto";
+objects.forEach(obj=>{
 
-el.style.backgroundPosition=
-"center";
+const item=document.createElement("div");
 
-el.style.backgroundRepeat=
-"repeat";
+item.textContent=obj.text || "";
 
-el.style.filter=`
-
-brightness(${w.brightness ?? 100}%)
-contrast(${w.contrast ?? 100}%)
-blur(${w.blur ?? 0}px)
-
-`;
-
-(w.decorations || [])
-.forEach(obj=>{
-
-const item=
-document.createElement("div");
-
-item.textContent=
-obj.text || "";
-
-item.style.cssText=
-obj.css || "";
+item.style.cssText=obj.css || "";
 
 el.appendChild(item);
 
@@ -1986,28 +1534,19 @@ el.appendChild(item);
 
 }
 
-
-/* =========================================================
-   HOME
-========================================================= */
+/* HOME */
 
 function renderHome(){
 
 const feed=
-wallpapers
-.map(postCard)
-.join("");
+wallpapers.map(postCard).join("");
 
 $("homeFeed").innerHTML=
 feed ||
-
 `
-
 <div class="notice">
 
-<b>
-Welcome to DreamWall ✨
-</b>
+<b>Welcome to DreamWall ✨</b>
 
 <br><br>
 
@@ -2016,137 +1555,90 @@ There aren't any wallpapers yet.
 Be the first person to create one!
 
 </div>
-
 `;
 
-document
-.querySelectorAll(".homeWall")
+document.querySelectorAll(".homeWall")
 .forEach(el=>{
 
 const w=
-wallpapers.find(
-x=>String(x.id)===
-String(el.dataset.id)
-);
+wallpapers.find(x=>String(x.id)===String(el.dataset.id));
 
-if(w)
-renderWallpaper(el,w);
+if(w)renderWallpaper(el,w);
 
 });
 
 }
 
-
 function postCard(w){
 
-const p=
-w.profiles || {};
+const p=w.profiles || {};
 
 return `
 
 <article class="post">
 
-<div
-class="posthead"
-onclick="openUserWallpapers('${p.id}')"
->
+<div class="posthead"
+onclick="openUserProfile('${p.id || w.user_id}')">
 
 <div class="avatar">
-
 ${avatarHTML(p)}
-
 </div>
 
 <div>
 
 <div class="postname">
-
-${esc(
-p.real_name ||
-p.username ||
-"DreamWaller"
-)}
-
+${esc(p.real_name || p.username || "DreamWaller")}
 </div>
 
 <div class="handle">
-
-@${esc(
-p.username ||
-"username"
-)}
-
+@${esc(p.username || "username")}
 </div>
 
 <div class="post-time">
-
-${timeAgo(
-new Date(w.created_at)
-)}
-
+${timeAgo(new Date(w.created_at))}
 </div>
 
 </div>
 
 </div>
-
 
 <div class="wall">
 
-<div
-class="renderedWall homeWall"
-data-id="${w.id}"
-></div>
+<div class="renderedWall homeWall"
+data-id="${esc(w.id)}">
+</div>
 
 </div>
 
-
 <div class="actions">
 
-<button
-class="iconbtn"
-onclick="event.stopPropagation();likeWallpaper('${w.id}')"
->
+<button class="iconbtn"
+onclick="likeWallpaper('${w.id}');event.stopPropagation()">
 ♡
 </button>
 
-<button
-class="iconbtn"
-onclick="event.stopPropagation();openUserWallpapers('${p.id}')"
->
+<button class="iconbtn"
+onclick="openUserProfile('${p.id || w.user_id}');event.stopPropagation()">
 💬
 </button>
 
-<button
-class="iconbtn save"
->
+<button class="iconbtn save">
 🔖
 </button>
 
 </div>
 
-
 <div class="likes">
-
-${likeCounts[w.id] || 0}
-likes
-
+${likeCounts[w.id] || 0} likes
 </div>
-
 
 <div class="caption">
 
 <b>
-@${esc(
-p.username ||
-"dreamwall"
-)}
+@${esc(p.username || "dreamwall")}
 </b>
 
-${esc(
-w.caption ||
-""
-)}
+${esc(w.caption || "")}
 
 </div>
 
@@ -2156,10 +1648,7 @@ w.caption ||
 
 }
 
-
-/* =========================================================
-   LIKES
-========================================================= */
+/* LIKES */
 
 const likeCounts={};
 
@@ -2173,21 +1662,17 @@ await sb
 .select("*",{count:"exact",head:true})
 .eq("wallpaper_id",w.id);
 
-likeCounts[w.id]=
-r.count || 0;
+likeCounts[w.id]=r.count || 0;
 
 }
 
 }
-
 
 async function likeWallpaper(id){
 
 if(!user){
 
-$("authModal")
-.classList.add("open");
-
+$("authModal").classList.add("open");
 return;
 
 }
@@ -2202,115 +1687,84 @@ await sb
 
 if(existing.data){
 
-await sb
-.from("likes")
+await sb.from("likes")
 .delete()
 .eq("user_id",user.id)
 .eq("wallpaper_id",id);
 
 }else{
 
-await sb
-.from("likes")
+await sb.from("likes")
 .insert({
-
 user_id:user.id,
 wallpaper_id:id
-
 });
 
 }
 
 await loadLikeCounts();
-
 renderHome();
 
 }
 
+/* USER WALLPAPERS */
 
-/* =========================================================
-   CLICKING A DREAMWALLER
-   SHOWS WALLPAPERS ONLY
-========================================================= */
-
-window.openUserWallpapers=
-async function(id){
+window.openUserProfile=async function(id){
 
 const p=
-people.find(
-x=>String(x.id)===
-String(id)
-);
+people.find(x=>String(x.id)===String(id));
 
 if(!p)return;
 
+/*
+ONLY wallpapers from the last 24 hours.
+No account/profile information is displayed here.
+*/
+
 const recentPosts=
 wallpapers.filter(w=>
-
-String(w.user_id)===
-String(id)
-
-&&
-
+String(w.user_id)===String(id) &&
 recent(w.created_at)
-
 );
 
 $("userProfileContent").innerHTML=`
 
-<div class="profile-view-head">
-
-<div class="profile-view-avatar">
-
-${avatarHTML(p)}
-
-</div>
-
 <div>
 
-<h2 style="margin:0">
-
-${esc(
-p.real_name ||
-p.username ||
-"DreamWaller"
-)}
-
+<h2 style="margin:0 0 5px">
+${esc(p.real_name || p.username || "DreamWaller")}
 </h2>
 
 <div class="muted">
-
-Wallpapers from the last 24 hours
-
+Wallpapers posted in the last 24 hours
 </div>
 
 </div>
 
-</div>
+<div class="recent-title">
 
+<b>
+${recentPosts.length}
+recent wallpaper${recentPosts.length===1?"":"s"}
+</b>
+
+</div>
 
 <div class="recent-grid">
 
 ${
-
 recentPosts.length
 
 ?
 
 recentPosts.map(w=>`
 
-<div
-class="recent-tile"
->
+<div class="recent-tile">
 
-<div
-class="renderedUserWall"
-data-id="${w.id}"
-style="
-width:100%;
-height:100%;
-"
-></div>
+<div class="renderedUserWall"
+data-id="${esc(w.id)}"
+style="width:100%;height:100%">
+</div>
 
 </div>
 
@@ -2319,409 +1773,70 @@ height:100%;
 :
 
 `
-
-<div
-class="notice"
-style="grid-column:1/-1"
->
+<div class="notice"
+style="grid-column:1/-1">
 
 No wallpapers posted in the last 24 hours.
 
 </div>
-
 `
 
 }
 
 </div>
-
 `;
 
-$("userProfileModal")
-.classList.add("open");
+$("userProfileModal").classList.add("open");
 
-
-document
-.querySelectorAll(".renderedUserWall")
+document.querySelectorAll(".renderedUserWall")
 .forEach(el=>{
 
 const w=
-wallpapers.find(
-x=>String(x.id)===
-String(el.dataset.id)
+wallpapers.find(x=>
+String(x.id)===String(el.dataset.id)
 );
 
-if(w)
-renderWallpaper(el,w);
+if(w)renderWallpaper(el,w);
 
 });
 
 };
-
 
 $("closeUserProfile").onclick=()=>
-$("userProfileModal")
-.classList.remove("open");
+$("userProfileModal").classList.remove("open");
 
-
-/* =========================================================
-   SEARCH
-========================================================= */
-
-$("searchInput").oninput=
-function(){
-
-const q=
-this.value
-.toLowerCase()
-.trim();
-
-const results=
-people.filter(p=>
-
-(
-(p.username || "")+
-" "+
-(p.real_name || "")
-)
-.toLowerCase()
-.includes(q)
-
-);
-
-$("searchResults").innerHTML=
-
-results.map(p=>`
-
-<div
-class="post"
-onclick="openUserWallpapers('${p.id}')"
-style="padding:8px"
->
-
-<div class="posthead">
-
-<div class="avatar">
-
-${avatarHTML(p)}
-
-</div>
-
-<div>
-
-<b>
-
-${esc(
-p.real_name ||
-"DreamWaller"
-)}
-
-</b>
-
-<div class="muted">
-
-@${esc(
-p.username ||
-"username"
-)}
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-`).join("")
-
-||
-
-`
-
-<div class="notice">
-
-No people found.
-
-</div>
-
-`;
-
-};
-
-
-/* =========================================================
-   EXPLORE
-========================================================= */
-
-function renderExplore(){
-
-$("exploreGrid").innerHTML=
-
-wallpapers.map(w=>`
-
-<div class="tile">
-
-<div
-class="renderedExplore"
-data-id="${w.id}"
-style="
-width:100%;
-height:100%;
-"
-></div>
-
-</div>
-
-`).join("")
-
-||
-
-`
-
-<div
-class="notice"
-style="grid-column:1/-1"
->
-
-No wallpapers yet.
-
-</div>
-
-`;
-
-document
-.querySelectorAll(".renderedExplore")
-.forEach(el=>{
-
-const w=
-wallpapers.find(
-x=>String(x.id)===
-String(el.dataset.id)
-);
-
-if(w)
-renderWallpaper(el,w);
-
-});
-
-}
-
-
-/* =========================================================
-   PROFILE GRID
-========================================================= */
-
-function renderProfileGrid(){
-
-const mine=
-wallpapers.filter(
-w=>String(w.user_id)===
-String(user?.id)
-);
-
-$("profileGrid").innerHTML=
-
-mine.map(w=>`
-
-<div class="tile">
-
-<div
-class="renderedProfile"
-data-id="${w.id}"
-style="
-width:100%;
-height:100%;
-"
-></div>
-
-</div>
-
-`).join("")
-
-||
-
-`
-
-<div
-class="notice"
-style="grid-column:1/-1"
->
-
-You haven't posted any wallpapers yet.
-
-</div>
-
-`;
-
-document
-.querySelectorAll(".renderedProfile")
-.forEach(el=>{
-
-const w=
-wallpapers.find(
-x=>String(x.id)===
-String(el.dataset.id)
-);
-
-if(w)
-renderWallpaper(el,w);
-
-});
-
-$("postCount").textContent=
-mine.length;
-
-}
-
-
-/* =========================================================
-   ACTIVITY
-========================================================= */
-
-async function renderActivity(){
-
-if(!user)return;
-
-const likes=
-await sb
-.from("likes")
-.select("created_at,wallpaper_id")
-.order("created_at",{ascending:false})
-.limit(30);
-
-const follows=
-await sb
-.from("follows")
-.select("created_at,follower_id")
-.eq("following_id",user.id)
-.order("created_at",{ascending:false})
-.limit(30);
-
-let html="";
-
-(likes.data || [])
-.forEach(x=>{
-
-html+=`
-
-<div class="notice">
-
-♡ Someone liked a wallpaper.
-
-<div class="muted">
-
-${timeAgo(
-new Date(x.created_at)
-)}
-
-</div>
-
-</div>
-
-`;
-
-});
-
-
-(follows.data || [])
-.forEach(x=>{
-
-html+=`
-
-<div class="notice">
-
-👤 Someone started following you.
-
-<div class="muted">
-
-${timeAgo(
-new Date(x.created_at)
-)}
-
-</div>
-
-</div>
-
-`;
-
-});
-
-
-$("activityList").innerHTML=
-html ||
-
-`
-
-<div class="notice">
-
-Your activity will appear here.
-
-</div>
-
-`;
-
-}
-
-
-/* =========================================================
-   MESSAGES
-========================================================= */
+/* MESSAGES */
 
 function renderThreads(){
 
 const others=
-people.filter(
-p=>p.id!==user?.id
-);
+people.filter(p=>p.id!==user?.id);
 
 $("threads").innerHTML=
-
 others.map(p=>`
 
-<div
-class="thread"
-onclick="openChat('${p.id}')"
->
+<div class="thread"
+onclick="openChat('${p.id}')">
 
 <b>
-
-${esc(
-p.real_name ||
-p.username ||
-"DreamWaller"
-)}
-
+${esc(p.real_name || p.username || "DreamWaller")}
 </b>
 
 <div class="muted">
-
-@${esc(
-p.username ||
-"username"
-)}
-
+@${esc(p.username || "username")}
 </div>
 
 </div>
 
-`).join("")
+`).join("") ||
 
-||
-
-`
-
-<div class="muted">
+`<div class="muted">
 No other users yet.
-</div>
-
-`;
+</div>`;
 
 }
 
-
-window.openChat=
-async function(id){
+window.openChat=async function(id){
 
 chatUser=
 people.find(p=>p.id===id);
@@ -2739,17 +1854,12 @@ await loadMessages();
 
 };
 
+window.messageUser=function(id){
 
-window.messageUser=
-function(id){
-
-$("userProfileModal")
-.classList.remove("open");
-
+$("userProfileModal").classList.remove("open");
 openChat(id);
 
 };
-
 
 async function loadMessages(){
 
@@ -2765,74 +1875,47 @@ await sb
 .order("created_at",{ascending:true});
 
 if(result.error){
-
 console.error(result.error);
 return;
-
 }
 
 $("chatLog").innerHTML=
-(result.data || [])
-.map(m=>`
+(result.data || []).map(m=>`
 
-<div
-class="bubble ${
-m.sender_id===user.id
-?"mine"
-:""
-}"
->
-
+<div class="bubble ${m.sender_id===user.id?"mine":""}">
 ${esc(m.text)}
-
 </div>
 
-`).join("")
+`).join("") ||
 
-||
-
-`
-
-<div class="muted">
+`<div class="muted">
 Start the conversation ✨
-</div>
-
-`;
+</div>`;
 
 $("chatLog").scrollTop=
 $("chatLog").scrollHeight;
 
 }
 
-
-$("sendMessage").onclick=
-async function(){
+$("sendMessage").onclick=async function(){
 
 if(!user || !chatUser)return;
 
 const text=
-$("messageInput")
-.value
-.trim();
+$("messageInput").value.trim();
 
 if(!text)return;
 
 const result=
-await sb
-.from("messages")
-.insert({
-
+await sb.from("messages").insert({
 sender_id:user.id,
 receiver_id:chatUser.id,
 text:text
-
 });
 
 if(result.error){
-
 alert(result.error.message);
 return;
-
 }
 
 $("messageInput").value="";
@@ -2841,29 +1924,170 @@ await loadMessages();
 
 };
 
-
-$("messageInput")
-.addEventListener(
+$("messageInput").addEventListener(
 "keydown",
 e=>{
-
 if(e.key==="Enter"){
-
 e.preventDefault();
-
 $("sendMessage").click();
-
 }
+});
+
+/* SEARCH */
+
+$("searchInput").oninput=function(){
+
+const q=this.value.toLowerCase().trim();
+
+const results=
+people.filter(p=>
+(
+(p.username||"")+" "+
+(p.real_name||"")+" "+
+(p.bio||"")
+).toLowerCase().includes(q)
+);
+
+$("searchResults").innerHTML=
+results.map(p=>`
+
+<div class="post"
+onclick="openUserProfile('${p.id}')"
+style="padding:8px">
+
+<div class="posthead">
+
+<div class="avatar">
+${avatarHTML(p)}
+</div>
+
+<div>
+
+<b>
+${esc(p.real_name || "DreamWaller")}
+</b>
+
+<div class="muted">
+@${esc(p.username || "username")}
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+`).join("") ||
+
+`<div class="notice">
+No people found.
+</div>`;
+
+};
+
+/* EXPLORE */
+
+function renderExplore(){
+
+$("exploreGrid").innerHTML=
+wallpapers.map(w=>`
+
+<div class="tile">
+
+<div class="renderedExplore"
+data-id="${esc(w.id)}"
+style="width:100%;height:100%">
+</div>
+
+</div>
+
+`).join("") ||
+
+`
+<div class="notice"
+style="grid-column:1/-1">
+No wallpapers yet.
+</div>
+`;
+
+document.querySelectorAll(".renderedExplore")
+.forEach(el=>{
+
+const w=
+wallpapers.find(x=>
+String(x.id)===String(el.dataset.id)
+);
+
+if(w)renderWallpaper(el,w);
 
 });
 
+}
 
-/* =========================================================
-   AUTH
-========================================================= */
+/* PROFILE GRID */
+
+function renderProfileGrid(){
+
+const mine=
+wallpapers.filter(w=>
+String(w.user_id)===String(user?.id)
+);
+
+$("profileGrid").innerHTML=
+mine.map(w=>`
+
+<div class="tile">
+
+<div class="renderedProfile"
+data-id="${esc(w.id)}"
+style="width:100%;height:100%">
+</div>
+
+</div>
+
+`).join("") ||
+
+`
+<div class="notice"
+style="grid-column:1/-1">
+You haven't posted any wallpapers yet.
+</div>
+`;
+
+document.querySelectorAll(".renderedProfile")
+.forEach(el=>{
+
+const w=
+wallpapers.find(x=>
+String(x.id)===String(el.dataset.id)
+);
+
+if(w)renderWallpaper(el,w);
+
+});
+
+$("postCount").textContent=mine.length;
+
+}
+
+/* ACTIVITY */
+
+async function renderActivity(){
+
+if(!user)return;
+
+$("activityList").innerHTML=
+`
+<div class="notice">
+Your activity will appear here.
+</div>
+`;
+
+}
+
+/* AUTH */
 
 let authMode="signin";
-
 
 $("authSwitch").onclick=()=>{
 
@@ -2873,43 +2097,26 @@ authMode==="signin"
 :"signin";
 
 $("authTitle").textContent=
-
 authMode==="signin"
-?
-"Welcome to DreamWall"
-:
-"Create your DreamWall account";
+?"Welcome to DreamWall"
+:"Create your DreamWall account";
 
 $("authSubmit").textContent=
-
 authMode==="signin"
-?
-"Sign in"
-:
-"Create account";
+?"Sign in"
+:"Create account";
 
 $("authSwitch").textContent=
-
 authMode==="signin"
-?
-"Create account"
-:
-"I already have an account";
+?"Create account"
+:"I already have an account";
 
 };
 
+$("authSubmit").onclick=async()=>{
 
-$("authSubmit").onclick=
-async()=>{
-
-const email=
-$("authEmail")
-.value
-.trim();
-
-const password=
-$("authPassword")
-.value;
+const email=$("authEmail").value.trim();
+const password=$("authPassword").value;
 
 if(!email || !password){
 
@@ -2917,11 +2124,9 @@ $("authMsg").textContent=
 "Enter your email and password.";
 
 return;
-
 }
 
-$("authMsg").textContent=
-"Working...";
+$("authMsg").textContent="Working...";
 
 let result;
 
@@ -2949,7 +2154,6 @@ $("authMsg").textContent=
 result.error.message;
 
 return;
-
 }
 
 if(
@@ -2961,7 +2165,6 @@ $("authMsg").textContent=
 "Account created! Check your email if confirmation is enabled.";
 
 return;
-
 }
 
 $("authEmail").value="";
@@ -2972,36 +2175,27 @@ await loadApp();
 
 };
 
-
-$("signOut").onclick=
-async()=>{
+$("signOut").onclick=async()=>{
 
 await sb.auth.signOut();
-
 location.reload();
 
 };
 
-
-$("resetDevice").onclick=
-async()=>{
+$("resetDevice").onclick=async()=>{
 
 if(confirm(
 "Sign out of this device? Your DreamWall account will NOT be deleted."
 )){
 
 await sb.auth.signOut();
-
 location.reload();
 
 }
 
 };
 
-
-/* =========================================================
-   THEME
-========================================================= */
+/* THEME */
 
 $("themeToggle").onclick=()=>{
 
@@ -3014,23 +2208,13 @@ document.body.classList.contains("dark")
 
 };
 
-
-if(
-localStorage.getItem("dw_dark")==="true"
-){
-
+if(localStorage.getItem("dw_dark")==="true"){
 document.body.classList.add("dark");
-
 }
 
+/* EDITOR */
 
-/* =========================================================
-   WALLPAPER EDITOR
-========================================================= */
-
-const canvas=
-$("canvas");
-
+const canvas=$("canvas");
 
 function editorState(){
 
@@ -3039,23 +2223,14 @@ return {
 background:
 canvas.style.background || "#fff",
 
-backgroundImage:
-canvas.style.backgroundImage || "none",
-
-backgroundSize:
-canvas.style.backgroundSize || "auto",
-
 filter:
 canvas.style.filter || "none",
 
 objects:
-[...canvas.querySelectorAll(".obj")]
-.map(o=>({
+[...canvas.querySelectorAll(".obj")].map(o=>({
 
 text:o.textContent,
-
 css:o.getAttribute("style"),
-
 type:o.dataset.type
 
 }))
@@ -3064,7 +2239,6 @@ type:o.dataset.type
 
 }
 
-
 function applyEditorState(state){
 
 canvas.innerHTML="";
@@ -3072,17 +2246,10 @@ canvas.innerHTML="";
 canvas.style.background=
 state.background || "#fff";
 
-canvas.style.backgroundImage=
-state.backgroundImage || "none";
-
-canvas.style.backgroundSize=
-state.backgroundSize || "auto";
-
 canvas.style.filter=
 state.filter || "none";
 
-(state.objects || [])
-.forEach(o=>{
+(state.objects || []).forEach(o=>{
 
 addObject(
 o.text,
@@ -3099,74 +2266,45 @@ updateLayers();
 
 }
 
-
 function saveEditorHistory(){
 
-history=
-history.slice(
-0,
-historyPos+1
-);
+history=history.slice(0,historyPos+1);
 
-history.push(
-editorState()
-);
+history.push(editorState());
 
 if(history.length>30)
 history.shift();
 
-historyPos=
-history.length-1;
+historyPos=history.length-1;
 
 }
 
+function addObject(text,css,type="decoration",save=true){
 
-function addObject(
-text,
-css,
-type="decoration",
-save=true
-){
-
-const obj=
-document.createElement("div");
+const obj=document.createElement("div");
 
 obj.className="obj";
-
 obj.dataset.type=type;
-
-obj.dataset.id=
-"obj"+
-(++objectNumber);
-
+obj.dataset.id="obj"+(++objectNumber);
 obj.textContent=text;
 
 obj.style.cssText=
 css ||
-
 `
 left:${20+Math.random()*60}%;
-
 top:${20+Math.random()*60}%;
-
 font-size:55px;
-
-transform:
-translate(-50%,-50%);
-
+transform:translate(-50%,-50%);
 `;
 
 canvas.appendChild(obj);
 
 bindObject(obj);
-
 selectObject(obj);
 
-if(save)
-saveEditorHistory();
+if(save)saveEditorHistory();
 
 }
-
 
 function bindObject(obj){
 
@@ -3179,17 +2317,12 @@ selectObject(obj);
 const startX=e.clientX;
 const startY=e.clientY;
 
-const left=
-parseFloat(obj.style.left) || 50;
+const left=parseFloat(obj.style.left)||50;
+const top=parseFloat(obj.style.top)||50;
 
-const top=
-parseFloat(obj.style.top) || 50;
+const rect=canvas.getBoundingClientRect();
 
-const rect=
-canvas.getBoundingClientRect();
-
-const move=
-event=>{
+const move=event=>{
 
 obj.style.left=
 Math.max(
@@ -3197,8 +2330,7 @@ Math.max(
 Math.min(
 100,
 left+
-(event.clientX-startX)/
-rect.width*100
+(event.clientX-startX)/rect.width*100
 )
 )+"%";
 
@@ -3208,8 +2340,7 @@ Math.max(
 Math.min(
 100,
 top+
-(event.clientY-startY)/
-rect.height*100
+(event.clientY-startY)/rect.height*100
 )
 )+"%";
 
@@ -3217,87 +2348,58 @@ rect.height*100
 
 const stop=()=>{
 
-removeEventListener(
-"pointermove",
-move
-);
-
-removeEventListener(
-"pointerup",
-stop
-);
+removeEventListener("pointermove",move);
+removeEventListener("pointerup",stop);
 
 saveEditorHistory();
 
 };
 
-addEventListener(
-"pointermove",
-move
-);
-
-addEventListener(
-"pointerup",
-stop
-);
+addEventListener("pointermove",move);
+addEventListener("pointerup",stop);
 
 };
 
 }
 
-
 function selectObject(obj){
 
-document
-.querySelectorAll(".obj")
-.forEach(x=>
-x.classList.remove("sel")
-);
+document.querySelectorAll(".obj")
+.forEach(x=>x.classList.remove("sel"));
 
 selected=obj;
 
 if(!obj){
 
-$("objectSection")
-.style.display="none";
-
+$("objectSection").style.display="none";
 return;
 
 }
 
 obj.classList.add("sel");
 
-$("objectSection")
-.style.display="block";
+$("objectSection").style.display="block";
 
 syncObject();
 
 if(obj.dataset.type==="text"){
 
-$("textControls")
-.style.display="block";
+$("textControls").style.display="block";
 
-$("textValue").value=
-obj.textContent;
+$("textValue").value=obj.textContent;
 
 $("textColor").value=
-rgbToHex(
-getComputedStyle(obj).color
-);
+rgbToHex(getComputedStyle(obj).color);
 
 $("font").value=
-obj.style.fontFamily ||
-"Arial";
+obj.style.fontFamily || "Arial";
 
 $("textSize").value=
-parseInt(
-obj.style.fontSize
-) || 42;
+parseInt(obj.style.fontSize)||42;
 
 }else{
 
-$("textControls")
-.style.display="none";
+$("textControls").style.display="none";
 
 }
 
@@ -3305,79 +2407,54 @@ updateLayers();
 
 }
 
-
 function rgbToHex(color){
 
 if(color.startsWith("#"))
 return color;
 
 const numbers=
-color.match(/\d+/g)
-||
-[17,17,17];
+color.match(/\d+/g)||[17,17,17];
 
 return "#"+
-numbers
-.slice(0,3)
-.map(n=>
-Number(n)
-.toString(16)
-.padStart(2,"0")
-)
-.join("");
+numbers.slice(0,3).map(n=>
+Number(n).toString(16).padStart(2,"0")
+).join("");
 
 }
-
 
 function syncObject(){
 
 if(!selected)return;
 
 const scale=
-Number(
-selected.dataset.scale || 1
-);
+Number(selected.dataset.scale||1);
 
 const rotation=
-Number(
-selected.dataset.rotation || 0
-);
+Number(selected.dataset.rotation||0);
 
 const opacity=
-Number(
-selected.dataset.opacity || 1
-);
+Number(selected.dataset.opacity||1);
 
-$("objSize").value=
-scale*100;
+$("objSize").value=scale*100;
+$("objSizeOut").textContent=Math.round(scale*100)+"%";
 
-$("objSizeOut").textContent=
-Math.round(scale*100)+"%";
+$("objRot").value=rotation;
+$("objRotOut").textContent=rotation+"°";
 
-$("objRot").value=
-rotation;
-
-$("objRotOut").textContent=
-rotation+"°";
-
-$("objOpacity").value=
-opacity*100;
-
-$("objOpacityOut").textContent=
-Math.round(opacity*100)+"%";
+$("objOpacity").value=opacity*100;
+$("objOpacityOut").textContent=Math.round(opacity*100)+"%";
 
 }
-
 
 function transformObject(){
 
 if(!selected)return;
 
 const scale=
-selected.dataset.scale || 1;
+selected.dataset.scale||1;
 
 const rotation=
-selected.dataset.rotation || 0;
+selected.dataset.rotation||0;
 
 selected.style.transform=
 `
@@ -3388,17 +2465,12 @@ rotate(${rotation}deg)
 
 }
 
-
-/* =========================================================
-   TEXT
-========================================================= */
+/* TEXT */
 
 $("addText").onclick=()=>{
 
 addObject(
-
 "DreamWall",
-
 `
 left:50%;
 top:50%;
@@ -3408,43 +2480,31 @@ font-family:Arial;
 font-weight:400;
 transform:translate(-50%,-50%);
 `,
-
 "text"
-
 );
 
 };
 
-
 $("textValue").oninput=()=>{
 
-if(selected){
-
-selected.textContent=
-$("textValue").value;
-
-}
+if(selected)
+selected.textContent=$("textValue").value;
 
 };
-
 
 $("textColor").oninput=()=>{
 
 if(selected)
-selected.style.color=
-$("textColor").value;
+selected.style.color=$("textColor").value;
 
 };
-
 
 $("font").onchange=()=>{
 
 if(selected)
-selected.style.fontFamily=
-$("font").value;
+selected.style.fontFamily=$("font").value;
 
 };
-
 
 $("textSize").oninput=()=>{
 
@@ -3460,58 +2520,34 @@ $("textSize").value+"px";
 
 };
 
-
 $("bold").onclick=()=>{
 
-if(selected){
-
+if(selected)
 selected.style.fontWeight=
 selected.style.fontWeight==="700"
-?
-"400"
-:
-"700";
-
-}
+?"400":"700";
 
 };
-
 
 $("italic").onclick=()=>{
 
-if(selected){
-
+if(selected)
 selected.style.fontStyle=
 selected.style.fontStyle==="italic"
-?
-"normal"
-:
-"italic";
-
-}
+?"normal":"italic";
 
 };
-
 
 $("shadow").onclick=()=>{
 
-if(selected){
-
+if(selected)
 selected.style.textShadow=
 selected.style.textShadow
-?
-""
-:
-"3px 4px 12px #0008";
-
-}
+?"":"3px 4px 12px #0008";
 
 };
 
-
-/* =========================================================
-   BACKGROUND
-========================================================= */
+/* BACKGROUND COLOR */
 
 $("bgColor").onclick=()=>{
 
@@ -3528,24 +2564,27 @@ value="#ffffff"
 >
 
 </div>
-
 `;
 
 $("colorPicker").oninput=e=>{
 
-canvas.style.background=
-e.target.value;
+canvas.style.background=e.target.value;
 
-canvas.style.backgroundImage=
-"none";
+/* Clear any previous gradient */
+canvas.style.backgroundImage="none";
 
-canvas.style.backgroundSize=
-"auto";
+saveEditorHistory();
 
 };
 
 };
 
+/*
+FIXED GRADIENT SYSTEM
+
+The gradient is stored directly in canvas.style.background.
+When published, editorState() saves that exact CSS value.
+*/
 
 $("bgGradient").onclick=()=>{
 
@@ -3579,9 +2618,7 @@ value="#784cff"
 
 Angle
 
-<span id="gradientAngleOut">
-90°
-</span>
+<span id="gradientAngleOut">90°</span>
 
 </div>
 
@@ -3598,40 +2635,29 @@ value="90"
 
 function updateGradient(){
 
+const c1=$("gradient1").value;
+const c2=$("gradient2").value;
+const angle=$("gradientAngle").value;
+
 canvas.style.background=
-`
-linear-gradient(
-${$("gradientAngle").value}deg,
-${$("gradient1").value},
-${$("gradient2").value}
-)
-`;
+`linear-gradient(${angle}deg,${c1},${c2})`;
 
-canvas.style.backgroundImage=
-"none";
-
-canvas.style.backgroundSize=
-"auto";
-
-$("gradientAngleOut")
-.textContent=
-$("gradientAngle").value+"°";
+$("gradientAngleOut").textContent=
+angle+"°";
 
 }
 
-$("gradient1").oninput=
-updateGradient;
-
-$("gradient2").oninput=
-updateGradient;
-
-$("gradientAngle").oninput=
-updateGradient;
+$("gradient1").oninput=updateGradient;
+$("gradient2").oninput=updateGradient;
+$("gradientAngle").oninput=updateGradient;
 
 updateGradient();
 
+saveEditorHistory();
+
 };
 
+/* PATTERNS */
 
 const patterns=[
 
@@ -3661,48 +2687,35 @@ const patterns=[
 
 ];
 
-
 $("bgPattern").onclick=()=>{
 
 $("bgControls").innerHTML=
-
 `
 <div class="tools">
-
 ${patterns.map((p,i)=>`
 
-<button
-class="tool"
-data-pattern="${i}"
->
+<button class="tool" data-pattern="${i}">
 ${p[0]}
 </button>
 
 `).join("")}
-
 </div>
 `;
 
-document
-.querySelectorAll("[data-pattern]")
+document.querySelectorAll("[data-pattern]")
 .forEach(button=>{
 
 button.onclick=()=>{
 
 const p=
-patterns[
-Number(
-button.dataset.pattern
-)
-];
+patterns[Number(button.dataset.pattern)];
 
-canvas.style.background="#fff";
+canvas.style.background=
+"#fff";
 
-canvas.style.backgroundImage=
-p[1];
+canvas.style.backgroundImage=p[1];
 
-canvas.style.backgroundSize=
-p[2];
+canvas.style.backgroundSize=p[2];
 
 saveEditorHistory();
 
@@ -3712,53 +2725,37 @@ saveEditorHistory();
 
 };
 
-
-/* =========================================================
-   DECORATIONS
-========================================================= */
+/* DECORATIONS */
 
 const decorations=[
-
-"✦","✧","★","☆","♡","♥",
-"✿","❀","🌿","🍃","☀","☾",
-"☁","⚡","◆","◇","●","○",
-"▲","△","❖","✺","❋","☘"
-
+"✦","✧","★","☆","♡","♥","✿","❀",
+"🌿","🍃","☀","☾","☁","⚡","◆","◇",
+"●","○","▲","△","❖","✺","❋","☘"
 ];
 
-
 $("decorationTools").innerHTML=
-
 decorations.map(x=>`
 
 <button
 class="tool emoji"
-data-decoration="${x}"
->
+data-decoration="${x}">
 ${x}
 </button>
 
 `).join("");
 
-
-document
-.querySelectorAll("[data-decoration]")
+document.querySelectorAll("[data-decoration]")
 .forEach(button=>{
 
 button.onclick=()=>{
 
-addObject(
-button.dataset.decoration
-);
+addObject(button.dataset.decoration);
 
 };
 
 });
 
-
-/* =========================================================
-   EFFECTS
-========================================================= */
+/* EFFECTS */
 
 const effects=[
 
@@ -3771,9 +2768,7 @@ const effects=[
 
 ];
 
-
 $("effectControls").innerHTML=
-
 effects.map(e=>`
 
 <div class="label">
@@ -3781,9 +2776,7 @@ effects.map(e=>`
 ${e[0]}
 
 <span id="${e[0]}Out">
-
 ${e[3]}${e[4]}
-
 </span>
 
 </div>
@@ -3799,45 +2792,34 @@ value="${e[3]}"
 
 `).join("");
 
-
 function updateFilters(){
 
-const value=id=>
-$(id).value;
+const value=id=>$(id).value;
 
-canvas.style.filter=`
-
+canvas.style.filter=
+`
 brightness(${value("brightness")}%)
 contrast(${value("contrast")}%)
 blur(${value("blur")}px)
 grayscale(${value("grayscale")}%)
-sepia(${value("sepia")}%)
+sepia(${value("sepia")}%) 
 saturate(${value("saturate")}%)
-
 `;
 
 effects.forEach(e=>{
 
 $(`${e[0]}Out`).textContent=
-$(e[0]).value+
-e[4];
+$(e[0]).value+e[4];
 
 });
 
 }
 
-
 effects.forEach(e=>{
-
-$(e[0]).oninput=
-updateFilters;
-
+$(e[0]).oninput=updateFilters;
 });
 
-
-/* =========================================================
-   OBJECT CONTROLS
-========================================================= */
+/* OBJECT CONTROLS */
 
 $("objSize").oninput=()=>{
 
@@ -3847,11 +2829,9 @@ selected.dataset.scale=
 $("objSize").value/100;
 
 transformObject();
-
 syncObject();
 
 };
-
 
 $("objRot").oninput=()=>{
 
@@ -3861,11 +2841,9 @@ selected.dataset.rotation=
 $("objRot").value;
 
 transformObject();
-
 syncObject();
 
 };
-
 
 $("objOpacity").oninput=()=>{
 
@@ -3881,7 +2859,6 @@ syncObject();
 
 };
 
-
 $("delete").onclick=()=>{
 
 if(!selected)return;
@@ -3890,106 +2867,65 @@ selected.remove();
 
 selected=null;
 
-$("objectSection")
-.style.display="none";
+$("objectSection").style.display="none";
 
 updateLayers();
-
 saveEditorHistory();
 
 };
-
 
 $("duplicate").onclick=()=>{
 
 if(!selected)return;
 
-const old=
-selected;
+const original=selected;
 
 addObject(
-
-old.textContent,
-
-old.getAttribute("style"),
-
-old.dataset.type
-
+original.textContent,
+original.getAttribute("style"),
+original.dataset.type
 );
 
 if(selected){
 
 selected.style.left=
-(parseFloat(
-selected.style.left
-)+5)+"%";
+(parseFloat(original.style.left)+5)+"%";
 
 selected.style.top=
-(parseFloat(
-selected.style.top
-)+5)+"%";
+(parseFloat(original.style.top)+5)+"%";
 
 }
 
 };
 
-
 function updateLayers(){
 
 const objects=
-[
-...canvas.querySelectorAll(".obj")
-];
+[...canvas.querySelectorAll(".obj")];
 
 $("layers").innerHTML=
-
 objects.length
-
 ?
+objects.reverse().map(o=>`
 
-objects.reverse()
-.map(o=>`
-
-<div
-class="thread"
-onclick="selectObject(
-document.querySelector(
-'[data-id=${o.dataset.id}]'
-)
-)"
->
+<div class="thread"
+onclick="selectObject(document.querySelector('[data-id=${o.dataset.id}]'))">
 
 ${esc(
-
 o.dataset.type==="text"
-
-?
-
-"Text: "+
-o.textContent
-
-:
-
-"Decoration: "+
-o.textContent
-
+?"Text: "+o.textContent
+:"Decoration: "+o.textContent
 )}
 
 </div>
 
-`)
-.join("")
-
+`).join("")
 :
-
 "No objects yet.";
 
 }
 
-
-window.selectObject=
-selectObject;
-
+window.selectObject=selectObject;
 
 canvas.onpointerdown=e=>{
 
@@ -3998,32 +2934,20 @@ selectObject(null);
 
 };
 
-
-/* =========================================================
-   EDITOR RESET
-========================================================= */
+/* EDITOR RESET */
 
 $("clear").onclick=()=>{
 
 canvas.innerHTML="";
-
 canvas.style.background="#fff";
-
-canvas.style.backgroundImage=
-"none";
-
-canvas.style.backgroundSize=
-"auto";
-
-canvas.style.filter=
-"none";
+canvas.style.backgroundImage="none";
+canvas.style.filter="none";
 
 selectObject(null);
 
 saveEditorHistory();
 
 };
-
 
 $("undo").onclick=()=>{
 
@@ -4039,7 +2963,6 @@ history[historyPos]
 
 };
 
-
 $("redo").onclick=()=>{
 
 if(historyPos<history.length-1){
@@ -4054,95 +2977,70 @@ history[historyPos]
 
 };
 
-
-/* =========================================================
-   DRAFT
-========================================================= */
+/* DRAFT */
 
 $("saveDraft").onclick=()=>{
 
 if(!user){
 
-$("authModal")
-.classList.add("open");
-
+$("authModal").classList.add("open");
 return;
 
 }
 
 localStorage.setItem(
-
 "dw_draft_"+user.id,
-
 JSON.stringify({
-
 editor:editorState(),
-
-caption:
-$("postCaption").value
-
+caption:$("postCaption").value
 })
-
 );
 
-alert(
-"Draft saved ✨"
-);
+alert("Draft saved ✨");
 
 };
 
+/*
+PUBLISHING
 
-/* =========================================================
-   PUBLISH
-   THIS IS THE FIXED VERSION
-========================================================= */
+IMPORTANT:
+We insert ONLY the wallpaper columns.
 
-$("publish").onclick=
-async()=>{
+We DO NOT ask Supabase for a profiles relationship
+after inserting.
+
+Then we reload everything using the safe separate-query
+system above.
+*/
+
+$("publish").onclick=async()=>{
 
 if(!user){
 
-$("authModal")
-.classList.add("open");
-
+$("authModal").classList.add("open");
 return;
 
 }
 
-const button=
-$("publish");
+const button=$("publish");
 
 const caption=
-$("postCaption")
-.value
-.trim();
+$("postCaption").value.trim();
 
-const state=
-editorState();
+const state=editorState();
 
 const decorations=
 state.objects.map(o=>({
-
 text:o.text,
 css:o.css,
 type:o.type
-
 }));
 
 button.disabled=true;
-
-const oldText=
-button.textContent;
-
-button.textContent=
-"Publishing...";
+const oldText=button.textContent;
+button.textContent="Publishing...";
 
 try{
-
-/*
-  NO profiles(...) JOIN HERE.
-  This prevents the ambiguous relationship error.
-*/
 
 const result=
 await sb
@@ -4157,17 +3055,17 @@ subtitle:"",
 
 caption:caption,
 
+/*
+THIS SAVES THE ENTIRE CSS BACKGROUND.
+
+Examples:
+#ffffff
+linear-gradient(...)
+radial-gradient(...)
+*/
+
 background:
-state.background ||
-"#fff",
-
-background_image:
-state.backgroundImage ||
-"none",
-
-background_size:
-state.backgroundSize ||
-"auto",
+state.background || "#fff",
 
 text_color:"#111111",
 
@@ -4189,160 +3087,58 @@ blur:0
 .select("*")
 .single();
 
-
-if(result.error){
-
+if(result.error)
 throw result.error;
 
-}
-
-
-const saved=
-result.data;
-
+$("postCaption").value="";
 
 /*
-  Load our profile separately.
+Reload from Supabase so the new wallpaper is definitely
+using the exact same rendering code as everyone else's.
 */
 
-const profileResult=
-await sb
-.from("profiles")
-.select(
-"id,username,real_name,avatar_url,bio"
-)
-.eq("id",user.id)
-.maybeSingle();
-
-
-const savedWallpaper={
-
-...saved,
-
-profiles:
-profileResult.data ||
-profile ||
-{
-
-id:user.id,
-
-username:"DreamWaller",
-
-real_name:"DreamWaller",
-
-avatar_url:"",
-
-bio:""
-
-}
-
-};
-
-
-/*
-  PUT THE NEW WALLPAPER
-  DIRECTLY INTO THE FEED.
-*/
-
-wallpapers=[
-
-savedWallpaper,
-
-...wallpapers.filter(
-w=>
-String(w.id)!==
-String(saved.id)
-)
-
-];
-
-
-/*
-  Clear caption.
-*/
-
-$("postCaption")
-.value="";
-
-
-/*
-  Refresh everything.
-*/
-
-await loadPeople();
-
+await loadWallpapers();
 await loadLikeCounts();
 
 renderEverything();
 
-
-/*
-  Go directly to Home.
-*/
-
 goPage("home");
 
-
-alert(
-"Wallpaper published! 🎉"
-);
-
+alert("Wallpaper published! 🎉");
 
 }catch(error){
 
-console.error(
-"DreamWall publish error:",
-error
-);
+console.error("DreamWall publish error:",error);
 
 alert(
-
 "Could not publish:\n\n"+
-(
-error?.message ||
-"Please try again."
-)
-
+(error?.message || "Please try again.")
 );
 
 }finally{
 
 button.disabled=false;
-
-button.textContent=
-oldText;
+button.textContent=oldText;
 
 }
 
 };
 
-
-/* =========================================================
-   EVERYTHING
-========================================================= */
+/* EVERYTHING */
 
 function renderEverything(){
 
 renderPeople();
-
 renderHome();
-
 renderExplore();
-
 renderProfileGrid();
-
 renderThreads();
-
 renderActivity();
-
 renderProfile();
 
 }
 
-
-/* =========================================================
-   APP LOADING
-========================================================= */
+/* APP */
 
 async function loadApp(){
 
@@ -4350,27 +3146,20 @@ const session=
 await sb.auth.getSession();
 
 user=
-session.data.session?.user ||
-null;
+session.data.session?.user || null;
 
 if(!user){
 
-$("authModal")
-.classList.add("open");
-
+$("authModal").classList.add("open");
 return;
 
 }
 
-$("authModal")
-.classList.remove("open");
+$("authModal").classList.remove("open");
 
 await ensureProfile();
-
-await loadWallpapers();
-
 await loadPeople();
-
+await loadWallpapers();
 await loadLikeCounts();
 
 renderEverything();
@@ -4379,10 +3168,7 @@ goPage("home");
 
 }
 
-
-/* =========================================================
-   AUTH STATE
-========================================================= */
+/* AUTH STATE */
 
 sb.auth.onAuthStateChange(
 (event,session)=>{
@@ -4394,45 +3180,22 @@ setTimeout(
 
 });
 
-
-/* =========================================================
-   INITIAL EDITOR
-========================================================= */
+/* INITIAL EDITOR */
 
 canvas.style.background="#fff";
 
-canvas.style.backgroundImage=
-"none";
-
-canvas.style.backgroundSize=
-"auto";
-
 saveEditorHistory();
 
+/* REFRESH PEOPLE */
 
-/* =========================================================
-   REFRESH
-========================================================= */
-
-$("refreshPeople").onclick=
-async()=>{
-
-await loadWallpapers();
+$("refreshPeople").onclick=async()=>{
 
 await loadPeople();
-
-await loadLikeCounts();
-
 renderPeople();
-
-renderHome();
 
 };
 
-
-/* =========================================================
-   START
-========================================================= */
+/* START */
 
 loadApp();
 
