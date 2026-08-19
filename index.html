@@ -51,5 +51,6 @@ function sendMessage(i){let x=document.getElementById('messageInput');if(!x||!x.
 document.getElementById('search').addEventListener('input',function(){let q=this.value.toLowerCase().trim();if(!q){showHome();return}let r=db.posts.filter(p=>p.title.toLowerCase().includes(q)||p.creator.toLowerCase().includes(q)||p.caption.toLowerCase().includes(q));document.getElementById('main').innerHTML=r.length?r.map(renderPost).join(''):'<div class="card"><div class="empty"><div class="empty-icon">🔎</div><h2>No results</h2><p>Nothing has been posted that matches "'+esc(q)+'".</p></div></div>'});
 theme();showHome();
 </script>
+<script src="studio-addon.js"></script>
 </body>
 </html>
