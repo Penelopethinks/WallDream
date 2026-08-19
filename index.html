@@ -1,44 +1,1430 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DreamWall</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>DreamWall</title>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
-:root{--p:#c9a4ff;--q:#ff9fc5;--m:#9ee8d5;--ink:#493957;--line:#eadff1}*{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#fffafd,#f7f3ff);color:var(--ink);font:15px Arial,sans-serif}button,input,textarea,select{font:inherit}button{cursor:pointer}.wrap{max-width:1100px;margin:auto;padding:16px}.top{position:sticky;top:0;z-index:10;background:#fffE;backdrop-filter:blur(12px);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;padding:12px;flex-wrap:wrap}.logo{font-size:30px;font-weight:900;background:linear-gradient(90deg,var(--p),var(--q),var(--m));-webkit-background-clip:text;color:transparent}.nav{margin-left:auto;display:flex;gap:7px;flex-wrap:wrap}.btn{padding:10px 14px;border-radius:13px;background:#fff;border:1px solid var(--line);color:var(--ink);font-weight:700}.primary{background:linear-gradient(100deg,var(--p),var(--q));color:#fff;border:0}.danger{background:#ffe5ec;color:#9b3554}.card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:18px;margin:16px 0;box-shadow:0 8px 30px #57376b0d}.auth{max-width:470px;margin:9vh auto}.field{width:100%;padding:13px;border:1px solid #ddd2e4;border-radius:12px;margin:6px 0;outline:0}.muted{color:#8a7c91}.feed{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:18px}.post{padding:0;overflow:hidden}.wall{min-height:400px;display:grid;place-items:center;text-align:center;padding:30px;background-size:cover;background-position:center}.wall h2{font-size:48px;line-height:1;margin:8px 0}.info{padding:14px}.row{display:flex;align-items:center;gap:10px}.grow{flex:1}.avatar{width:45px;height:45px;border-radius:50%;object-fit:cover;background:linear-gradient(135deg,var(--p),var(--m));display:grid;place-items:center;font-weight:900}.avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}.badge{font-size:10px;padding:5px 7px;border-radius:8px;background:#eee6ff}.ai{background:#e9e9e9}.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.people{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}.person{border:1px solid var(--line);border-radius:17px;padding:14px}.builder{display:grid;grid-template-columns:390px 1fr;gap:18px}.preview{min-height:540px;border-radius:23px;display:grid;place-items:center;text-align:center;padding:30px;background-size:cover;background-position:center}.empty{text-align:center;padding:55px 15px}@media(max-width:750px){.builder{grid-template-columns:1fr}.nav{width:100%;margin-left:0}}
-</style></head>
-<body><div id="app"></div>
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    min-height:100vh;
+    font-family:Arial,Helvetica,sans-serif;
+    color:#493957;
+
+    background:
+        radial-gradient(
+            circle at 10% 10%,
+            #eadbff 0,
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 90% 90%,
+            #d8fff3 0,
+            transparent 30%
+        ),
+        #fffaff;
+}
+
+button,
+input{
+    font:inherit;
+}
+
+button{
+    cursor:pointer;
+}
+
+.page{
+    min-height:100vh;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    padding:25px;
+}
+
+.card{
+    width:100%;
+    max-width:480px;
+
+    background:white;
+
+    border:1px solid #eadff1;
+    border-radius:28px;
+
+    padding:32px;
+
+    box-shadow:
+        0 20px 60px
+        rgba(70,40,90,.12);
+}
+
+.logo{
+    text-align:center;
+
+    font-size:40px;
+    font-weight:900;
+
+    background:
+        linear-gradient(
+            90deg,
+            #b58aff,
+            #ff9fc5,
+            #83ddc5
+        );
+
+    -webkit-background-clip:text;
+    background-clip:text;
+
+    color:transparent;
+}
+
+.tagline{
+    text-align:center;
+
+    color:#887a91;
+
+    margin-top:8px;
+    margin-bottom:28px;
+}
+
+h1{
+    text-align:center;
+    margin:10px 0 22px;
+}
+
+.field{
+    width:100%;
+
+    padding:15px;
+
+    margin:7px 0;
+
+    border:
+        1px solid
+        #ddd3e5;
+
+    border-radius:14px;
+
+    outline:none;
+
+    background:white;
+
+    color:#493957;
+}
+
+.field:focus{
+    border-color:#b58aff;
+
+    box-shadow:
+        0 0 0 4px
+        rgba(181,138,255,.12);
+}
+
+.primary{
+    width:100%;
+
+    padding:15px;
+
+    margin-top:10px;
+
+    border:0;
+
+    border-radius:15px;
+
+    color:white;
+
+    font-weight:700;
+
+    background:
+        linear-gradient(
+            100deg,
+            #b58aff,
+            #ff9fc5
+        );
+}
+
+.secondary{
+    width:100%;
+
+    padding:13px;
+
+    margin-top:10px;
+
+    border:
+        1px solid
+        #eadff1;
+
+    border-radius:15px;
+
+    background:white;
+
+    color:#493957;
+}
+
+.message{
+    padding:14px;
+
+    margin-top:15px;
+
+    border-radius:14px;
+
+    line-height:1.45;
+
+    display:none;
+}
+
+.message.show{
+    display:block;
+}
+
+.message.error{
+    background:#fff0f3;
+    color:#a13d58;
+}
+
+.message.success{
+    background:#eafff7;
+    color:#28745e;
+}
+
+.message.info{
+    background:#f1edff;
+    color:#654c91;
+}
+
+.small{
+    font-size:13px;
+
+    color:#8b7e93;
+
+    text-align:center;
+
+    margin-top:20px;
+
+    line-height:1.5;
+}
+
+.back{
+    background:none;
+
+    border:0;
+
+    color:#7655a0;
+
+    padding:0;
+
+    margin-bottom:12px;
+}
+
+.account{
+    text-align:center;
+
+    padding:18px;
+
+    border-radius:16px;
+
+    background:#faf7ff;
+
+    margin-top:15px;
+}
+
+.loading{
+    opacity:.6;
+
+    pointer-events:none;
+}
+
+@media(max-width:520px){
+
+    .page{
+        padding:12px;
+    }
+
+    .card{
+        padding:24px 18px;
+    }
+
+    .logo{
+        font-size:34px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div id="app"></div>
+
 <script>
-const SUPABASE_URL='https://kcybwrdtnlflevndmzfn.supabase.co';
-const SUPABASE_KEY='sb_publishable_XhOq8P5tdMgjWDKZEvgsgg_hcALWg48';
-const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-let session=null,me=null,profiles=[],walls=[];
-const el=id=>document.getElementById(id);
-function esc(x){return String(x==null?'':x).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
-function msg(x){alert(x)}
-function avatar(p){if(p&&p.avatar_url)return '<div class="avatar"><img src="'+esc(p.avatar_url)+'"></div>';return '<div class="avatar">'+esc(((p&&p.username)||'?')[0].toUpperCase())+'</div>'}
-async function start(){try{var r=await db.auth.getSession();session=r.data.session;if(session){await loadMe();if(me)home();else profileForm()}else welcome()}catch(e){app.innerHTML='<div class="wrap"><div class="card auth"><h2>DreamWall could not start</h2><p>'+esc(e.message)+'</p></div></div>'}}
-function welcome(){app.innerHTML='<div class="wrap"><div class="card auth"><div class="logo">DreamWall</div><h1>Your wall. Your world. ✨</h1><p class="muted">A wallpaper community with shared accounts.</p><button class="btn primary" onclick="authBox(\'signup\')">Create account</button> <button class="btn" onclick="authBox(\'login\')">Sign in</button></div></div>'}
-function authBox(mode){app.innerHTML='<div class="wrap"><div class="card auth"><div class="logo">DreamWall</div><h2>'+(mode==='signup'?'Create your account':'Welcome back')+'</h2><form onsubmit="'+(mode==='signup'?'signup(event)':'login(event)')+'"><input class="field" id="email" type="email" placeholder="Email" required><input class="field" id="password" type="password" minlength="6" placeholder="Password" required><button class="btn primary">'+(mode==='signup'?'Create account':'Sign in')+'</button></form><br><button class="btn" onclick="authBox(\''+(mode==='signup'?'login':'signup')+'\')">'+(mode==='signup'?'I already have an account':'Create an account')+'</button></div></div>'}
-async function signup(e){e.preventDefault();var r=await db.auth.signUp({email:el('email').value.trim(),password:el('password').value});if(r.error)return msg(r.error.message);if(!r.data.session){msg('Account created! Check your email to confirm it, then come back and sign in.');return}session=r.data.session;profileForm()}
-async function login(e){e.preventDefault();var r=await db.auth.signInWithPassword({email:el('email').value.trim(),password:el('password').value});if(r.error)return msg(r.error.message);session=r.data.session;await loadMe();if(me)home();else profileForm()}
-async function loadMe(){if(!session)return;var r=await db.from('profiles').select('*').eq('id',session.user.id).maybeSingle();if(r.error){msg('Supabase profiles error: '+r.error.message);me=null;return}me=r.data||null}
-function profileForm(){app.innerHTML='<div class="wrap"><div class="card auth"><div class="logo">DreamWall</div><h2>Finish your profile ✨</h2><p class="muted">Your username must be different from your real name.</p><input class="field" id="username" placeholder="Username"><input class="field" id="realname" placeholder="Real name"><input class="field" id="avatarurl" placeholder="Profile picture URL (optional)"><textarea class="field" id="bio" placeholder="Bio (optional)"></textarea><button class="btn primary" onclick="saveProfile()">Save profile</button> <button class="btn" onclick="logout()">Log out</button></div></div>'}
-async function saveProfile(){var u=el('username').value.trim().toLowerCase().replace(/\s+/g,'_'),rname=el('realname').value.trim();if(!u||!rname)return msg('Enter your username and real name.');if(u.replace(/_/g,'')===rname.toLowerCase().replace(/\s+/g,''))return msg('Your username cannot be your real name.');var q=await db.from('profiles').select('id').ilike('username',u).neq('id',session.user.id).maybeSingle();if(q.error)return msg(q.error.message);if(q.data)return msg('That username is already taken. Choose another.');var row={id:session.user.id,username:u,real_name:rname,avatar_url:el('avatarurl').value.trim(),bio:el('bio').value.trim(),account_type:'real'};var r=await db.from('profiles').upsert(row,{onConflict:'id'});if(r.error)return msg(r.error.message);me=row;home()}
-async function loadData(){var p=await db.from('profiles').select('*').order('created_at',{ascending:true});var w=await db.from('wallpapers').select('*').order('created_at',{ascending:false});if(p.error){msg('Profiles error: '+p.error.message);return false}if(w.error){msg('Wallpapers error: '+w.error.message);return false}profiles=p.data||[];walls=w.data||[];return true}
-function header(){return '<header class="top"><div class="logo">DreamWall</div><div class="nav"><button class="btn" onclick="home()">🏠 Home</button><button class="btn" onclick="people()">👥 People</button><button class="btn primary" onclick="studio()">＋ Create</button><button class="btn" onclick="profileView(\''+session.user.id+'\')">👤 Profile</button><button class="btn" onclick="logout()">Log out</button></div></header>'}
-async function home(){if(!await loadData())return;app.innerHTML='<div class="wrap">'+header()+'<div class="card"><h1>DreamWall ✨</h1><p class="muted">Real people. Real wallpapers. No pretend activity.</p></div><div class="feed">'+(walls.length?walls.map(post).join(''):'<div class="card empty"><h2>No wallpapers yet!</h2><p>Be the first creator.</p><button class="btn primary" onclick="studio()">Create a wallpaper</button></div>')+'</div></div>'}
-function post(w){var p=profiles.find(function(x){return x.id===w.user_id})||{};var ai=p.account_type==='ai';var dec=Array.isArray(w.decorations)?w.decorations.join(' '):'';return '<article class="card post"><div class="wall" style="background:'+esc(w.background||'#fff')+';color:'+esc(w.text_color||'#493957')+';filter:brightness('+(w.brightness||100)+'%) contrast('+(w.contrast||100)+'%)"><div><div style="font-size:45px">'+esc(dec)+'</div><h2 style="font-family:'+esc(w.font||'Arial')+';font-size:'+(w.title_size||52)+'px">'+esc(w.title)+'</h2><p>'+esc(w.subtitle||'')+'</p></div></div><div class="info"><div class="row">'+avatar(p)+'<button class="btn" onclick="profileView(\''+p.id+'\')">@'+esc(p.username||'unknown')+'</button><span class="grow"></span><span class="badge '+(ai?'ai':'')+'">'+(ai?'🤖 AI CREATOR':'✓ REAL CREATOR')+'</span></div><p>'+esc(w.caption||'')+'</p><div class="actions"><button class="btn" onclick="like(\''+w.id+'\')">❤️ Like</button><button class="btn" onclick="comment(\''+w.id+'\')">💬 Comment</button><button class="btn" onclick="recreate(\''+w.id+'\')">🎨 Recreate</button>'+(w.user_id===session.user.id?'<button class="btn danger" onclick="delWall(\''+w.id+'\')">🗑️ Delete</button>':'')+'</div></div></article>'}
-async function like(id){var q=await db.from('likes').select('*').eq('user_id',session.user.id).eq('wallpaper_id',id).maybeSingle();if(q.error)return msg(q.error.message);if(q.data)await db.from('likes').delete().eq('user_id',session.user.id).eq('wallpaper_id',id);else await db.from('likes').insert({user_id:session.user.id,wallpaper_id:id});msg(q.data?'Unliked':'Liked ❤️')}
-async function comment(id){var t=prompt('Write a comment:');if(!t||!t.trim())return;var r=await db.from('comments').insert({wallpaper_id:id,user_id:session.user.id,text:t.trim()});if(r.error)return msg(r.error.message);msg('Comment posted! 💬')}
-async function delWall(id){if(!confirm('Delete this wallpaper?'))return;var r=await db.from('wallpapers').delete().eq('id',id).eq('user_id',session.user.id);if(r.error)return msg(r.error.message);home()}
-async function people(){if(!await loadData())return;app.innerHTML='<div class="wrap">'+header()+'<div class="card"><h1>People on DreamWall 👥</h1><p class="muted">Everyone shown here comes from the shared database.</p></div><div class="people">'+profiles.map(function(p){return '<div class="person"><div class="row">'+avatar(p)+'<div><b>@'+esc(p.username)+'</b><div class="muted">'+(p.account_type==='ai'?'🤖 AI creator':'✓ Real creator')+'</div></div></div><br><button class="btn" onclick="profileView(\''+p.id+'\')">View profile</button></div>'}).join('')+'</div></div>'}
-async function profileView(id){if(!await loadData())return;var p=profiles.find(function(x){return x.id===id});if(!p)return;var ws=walls.filter(function(w){return w.user_id===id});app.innerHTML='<div class="wrap">'+header()+'<div class="card"><div class="row">'+avatar(p)+'<div><h2>@'+esc(p.username)+'</h2><p>'+esc(p.real_name)+'</p><span class="badge '+(p.account_type==='ai'?'ai':'')+'">'+(p.account_type==='ai'?'🤖 AI CREATOR':'✓ REAL CREATOR')+'</span></div></div><p>'+esc(p.bio||'')+'</p>'+(id!==session.user.id&&p.account_type!=='ai'?'<button class="btn primary" onclick="follow(\''+id+'\')">＋ Follow</button> <button class="btn" onclick="messageUser(\''+id+'\')">💌 Message</button>':'')+'</div><div class="feed">'+(ws.length?ws.map(post).join(''):'<div class="card empty">No wallpapers yet.</div>')+'</div></div>'}
-async function follow(id){var q=await db.from('follows').select('*').eq('follower_id',session.user.id).eq('following_id',id).maybeSingle();if(q.error)return msg(q.error.message);if(q.data)await db.from('follows').delete().eq('follower_id',session.user.id).eq('following_id',id);else await db.from('follows').insert({follower_id:session.user.id,following_id:id});msg(q.data?'Unfollowed':'Following!')}
-async function messageUser(id){var p=profiles.find(function(x){return x.id===id});if(!p||p.account_type==='ai')return msg('AI creators cannot receive messages.');var t=prompt('Message @'+p.username+':');if(!t||!t.trim())return;var r=await db.from('messages').insert({sender_id:session.user.id,receiver_id:id,text:t.trim()});if(r.error)return msg(r.error.message);msg('Message sent! 💌')}
-function studio(old){var w=old||{};app.innerHTML='<div class="wrap">'+header()+'<div class="builder"><div class="card"><h1>Create a wallpaper 🎨</h1><input class="field" id="title" value="'+esc(w.title||'Dreamy')+'" placeholder="Title"><input class="field" id="sub" value="'+esc(w.subtitle||'Make your world beautiful')+'" placeholder="Subtitle"><textarea class="field" id="cap" placeholder="Caption">'+esc(w.caption||'')+'</textarea><input class="field" id="bg" value="'+esc(w.background||'linear-gradient(135deg,#c9a4ff,#9ee8d5)')+'" placeholder="CSS color, gradient, or image URL"><label>Text color <input id="color" type="color" value="'+(w.text_color||'#493957')+'"></label><select class="field" id="font"><option>Arial</option><option>Georgia</option><option>Verdana</option><option>Trebuchet MS</option><option>Courier New</option><option>Impact</option></select><label>Title size <input id="size" type="range" min="20" max="100" value="'+(w.title_size||52)+'"></label><input class="field" id="dec" value="'+esc(Array.isArray(w.decorations)?w.decorations.join(' '):'✨ 🌸 ☁️')+'" placeholder="Decorations"><label>Brightness <input id="bright" type="range" min="50" max="150" value="'+(w.brightness||100)+'"></label><label>Contrast <input id="contrast" type="range" min="50" max="150" value="'+(w.contrast||100)+'"></label><button class="btn primary" onclick="publish()">Publish wallpaper ✨</button></div><div class="card"><h2>Preview</h2><div id="preview" class="preview"></div></div></div></div>';['title','sub','bg','color','font','size','dec','bright','contrast'].forEach(function(id){el(id).addEventListener('input',preview)});preview()}
-function preview(){var p=el('preview');if(!p)return;p.style.background=el('bg').value;p.style.color=el('color').value;p.style.filter='brightness('+el('bright').value+'%) contrast('+el('contrast').value+'%)';p.innerHTML='<div><div style="font-size:45px">'+esc(el('dec').value)+'</div><h2 style="font-family:'+esc(el('font').value)+';font-size:'+el('size').value+'px;margin:8px 0">'+esc(el('title').value)+'</h2><p>'+esc(el('sub').value)+'</p></div>'}
-async function publish(){var r=await db.from('wallpapers').insert({user_id:session.user.id,title:el('title').value.trim(),subtitle:el('sub').value.trim(),caption:el('cap').value.trim(),background:el('bg').value.trim(),text_color:el('color').value,font:el('font').value,title_size:Number(el('size').value),decorations:el('dec').value.split(/\s+/).filter(Boolean),brightness:Number(el('bright').value),contrast:Number(el('contrast').value)});if(r.error)return msg('Could not publish: '+r.error.message);msg('Wallpaper published! ✨');home()}
-function recreate(id){var w=walls.find(function(x){return x.id===id});if(w)studio(w)}
-async function logout(){await db.auth.signOut();session=null;me=null;welcome()}
+
+/* =========================================================
+   DREAMWALL SUPABASE CONNECTION
+   ========================================================= */
+
+const SUPABASE_URL =
+"https://kcybwrdtnlflevndmzfn.supabase.co";
+
+const SUPABASE_PUBLISHABLE_KEY =
+"sb_publishable_XhOq8P5tdMgjWDKZEvgsgg_hcALWg48";
+
+let client = null;
+
+let currentUser = null;
+
+
+/* =========================================================
+   START APPLICATION
+   ========================================================= */
+
+function start(){
+
+    try{
+
+        client =
+            window.supabase.createClient(
+                SUPABASE_URL,
+                SUPABASE_PUBLISHABLE_KEY
+            );
+
+    }catch(error){
+
+        showErrorPage(
+            "DreamWall could not connect to Supabase."
+        );
+
+        return;
+    }
+
+    checkSession();
+}
+
+
+/* =========================================================
+   CHECK EXISTING SESSION
+   ========================================================= */
+
+async function checkSession(){
+
+    try{
+
+        const result =
+            await client.auth.getSession();
+
+        if(result.error){
+
+            showLogin(
+                result.error.message,
+                "error"
+            );
+
+            return;
+        }
+
+        if(result.data.session){
+
+            currentUser =
+                result.data.session.user;
+
+            showLoggedIn();
+
+        }else{
+
+            showLogin();
+
+        }
+
+    }catch(error){
+
+        showLogin(
+            "DreamWall could not check your login.",
+            "error"
+        );
+    }
+}
+
+
+/* =========================================================
+   LOGIN SCREEN
+   ========================================================= */
+
+function showLogin(
+    message="",
+    type=""
+){
+
+    document.getElementById("app").innerHTML=`
+
+        <div class="page">
+
+            <div class="card">
+
+                <div class="logo">
+                    DreamWall
+                </div>
+
+                <p class="tagline">
+                    Your wallpaper world ✨
+                </p>
+
+                <h1>
+                    Welcome back
+                </h1>
+
+                <form id="loginForm">
+
+                    <input
+                        id="loginEmail"
+                        class="field"
+                        type="email"
+                        autocomplete="email"
+                        placeholder="Email"
+                        required
+                    >
+
+                    <input
+                        id="loginPassword"
+                        class="field"
+                        type="password"
+                        autocomplete="current-password"
+                        placeholder="Password"
+                        required
+                    >
+
+                    <button
+                        id="loginButton"
+                        class="primary"
+                        type="submit"
+                    >
+                        Sign in
+                    </button>
+
+                </form>
+
+                <div
+                    id="message"
+                    class="message"
+                ></div>
+
+                <button
+                    class="secondary"
+                    onclick="showSignup()"
+                >
+                    Create a new account
+                </button>
+
+                <p class="small">
+                    Your account is stored with
+                    Supabase so you can use DreamWall
+                    on different devices.
+                </p>
+
+            </div>
+
+        </div>
+    `;
+
+    if(message){
+
+        displayMessage(
+            message,
+            type
+        );
+    }
+
+    document
+        .getElementById("loginForm")
+        .addEventListener(
+            "submit",
+            login
+        );
+}
+
+
+/* =========================================================
+   SIGNUP SCREEN
+   ========================================================= */
+
+function showSignup(
+    message="",
+    type=""
+){
+
+    document.getElementById("app").innerHTML=`
+
+        <div class="page">
+
+            <div class="card">
+
+                <button
+                    class="back"
+                    onclick="showLogin()"
+                >
+                    ← Back to sign in
+                </button>
+
+                <div class="logo">
+                    DreamWall
+                </div>
+
+                <p class="tagline">
+                    Create your wallpaper world ✨
+                </p>
+
+                <h1>
+                    Create account
+                </h1>
+
+                <form id="signupForm">
+
+                    <input
+                        id="realName"
+                        class="field"
+                        type="text"
+                        autocomplete="name"
+                        placeholder="Your real name"
+                        required
+                    >
+
+                    <input
+                        id="username"
+                        class="field"
+                        type="text"
+                        autocomplete="username"
+                        placeholder="Choose a username"
+                        minlength="3"
+                        maxlength="30"
+                        required
+                    >
+
+                    <input
+                        id="signupEmail"
+                        class="field"
+                        type="email"
+                        autocomplete="email"
+                        placeholder="Email"
+                        required
+                    >
+
+                    <input
+                        id="signupPassword"
+                        class="field"
+                        type="password"
+                        autocomplete="new-password"
+                        placeholder="Password (6+ characters)"
+                        minlength="6"
+                        required
+                    >
+
+                    <input
+                        id="avatar"
+                        class="field"
+                        type="url"
+                        placeholder="Profile picture URL (optional)"
+                    >
+
+                    <button
+                        id="signupButton"
+                        class="primary"
+                        type="submit"
+                    >
+                        Create my DreamWall
+                    </button>
+
+                </form>
+
+                <div
+                    id="message"
+                    class="message"
+                ></div>
+
+            </div>
+
+        </div>
+    `;
+
+    if(message){
+
+        displayMessage(
+            message,
+            type
+        );
+    }
+
+    document
+        .getElementById("signupForm")
+        .addEventListener(
+            "submit",
+            signup
+        );
+}
+
+
+/* =========================================================
+   LOGIN
+   ========================================================= */
+
+async function login(event){
+
+    event.preventDefault();
+
+    const button =
+        document.getElementById(
+            "loginButton"
+        );
+
+    const email =
+        document.getElementById(
+            "loginEmail"
+        ).value.trim();
+
+    const password =
+        document.getElementById(
+            "loginPassword"
+        ).value;
+
+    if(!email || !password){
+
+        displayMessage(
+            "Please enter your email and password.",
+            "error"
+        );
+
+        return;
+    }
+
+    button.textContent =
+        "Signing in...";
+
+    button.classList.add(
+        "loading"
+    );
+
+    try{
+
+        const result =
+            await client.auth.signInWithPassword({
+
+                email:email,
+
+                password:password
+
+            });
+
+        if(result.error){
+
+            handleAuthError(
+                result.error
+            );
+
+            button.textContent =
+                "Sign in";
+
+            button.classList.remove(
+                "loading"
+            );
+
+            return;
+        }
+
+        currentUser =
+            result.data.user;
+
+        showLoggedIn();
+
+    }catch(error){
+
+        displayMessage(
+            "Something went wrong while signing in.",
+            "error"
+        );
+
+        button.textContent =
+            "Sign in";
+
+        button.classList.remove(
+            "loading"
+        );
+    }
+}
+
+
+/* =========================================================
+   SIGN UP
+   ========================================================= */
+
+async function signup(event){
+
+    event.preventDefault();
+
+    const button =
+        document.getElementById(
+            "signupButton"
+        );
+
+    const realName =
+        document.getElementById(
+            "realName"
+        ).value.trim();
+
+    const username =
+        document.getElementById(
+            "username"
+        ).value
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g,"_");
+
+    const email =
+        document.getElementById(
+            "signupEmail"
+        ).value.trim();
+
+    const password =
+        document.getElementById(
+            "signupPassword"
+        ).value;
+
+    const avatar =
+        document.getElementById(
+            "avatar"
+        ).value.trim();
+
+    if(username.length < 3){
+
+        displayMessage(
+            "Your username needs at least 3 characters.",
+            "error"
+        );
+
+        return;
+    }
+
+    if(password.length < 6){
+
+        displayMessage(
+            "Your password needs at least 6 characters.",
+            "error"
+        );
+
+        return;
+    }
+
+    button.textContent =
+        "Checking username...";
+
+    button.classList.add(
+        "loading"
+    );
+
+    try{
+
+        /*
+         Check whether the username
+         already exists.
+        */
+
+        const usernameCheck =
+            await client
+                .from("profiles")
+                .select("id")
+                .eq(
+                    "username",
+                    username
+                )
+                .maybeSingle();
+
+        if(usernameCheck.error){
+
+            displayMessage(
+                "DreamWall couldn't check usernames. "+
+                usernameCheck.error.message,
+                "error"
+            );
+
+            resetSignupButton();
+
+            return;
+        }
+
+        if(usernameCheck.data){
+
+            displayMessage(
+                "That username is already taken. Please choose another.",
+                "error"
+            );
+
+            resetSignupButton();
+
+            return;
+        }
+
+        button.textContent =
+            "Creating account...";
+
+
+        /*
+         Create the Supabase
+         authentication account.
+        */
+
+        const result =
+            await client.auth.signUp({
+
+                email:email,
+
+                password:password
+
+            });
+
+        if(result.error){
+
+            handleAuthError(
+                result.error
+            );
+
+            resetSignupButton();
+
+            return;
+        }
+
+        if(!result.data.user){
+
+            displayMessage(
+                "The account could not be created.",
+                "error"
+            );
+
+            resetSignupButton();
+
+            return;
+        }
+
+        currentUser =
+            result.data.user;
+
+
+        /*
+         Email confirmation can mean
+         there is no session yet.
+        */
+
+        if(!result.data.session){
+
+            displayMessage(
+                "Account created! 🎉 Check your email and confirm your email address. Then return to DreamWall and sign in.",
+                "success"
+            );
+
+            button.textContent =
+                "Account created!";
+
+            button.classList.remove(
+                "loading"
+            );
+
+            return;
+        }
+
+
+        /*
+         Create public profile.
+        */
+
+        const profileResult =
+            await client
+                .from("profiles")
+                .insert({
+
+                    id:currentUser.id,
+
+                    username:username,
+
+                    real_name:realName,
+
+                    avatar_url:avatar,
+
+                    account_type:"real"
+
+                });
+
+
+        if(profileResult.error){
+
+            displayMessage(
+                "Your login was created, but your DreamWall profile could not be created. "+
+                profileResult.error.message,
+                "error"
+            );
+
+            resetSignupButton();
+
+            return;
+        }
+
+        showLoggedIn();
+
+    }catch(error){
+
+        displayMessage(
+            "Something unexpected happened. Please try again.",
+            "error"
+        );
+
+        resetSignupButton();
+    }
+}
+
+
+/* =========================================================
+   RESET SIGNUP BUTTON
+   ========================================================= */
+
+function resetSignupButton(){
+
+    const button =
+        document.getElementById(
+            "signupButton"
+        );
+
+    if(button){
+
+        button.textContent =
+            "Create my DreamWall";
+
+        button.classList.remove(
+            "loading"
+        );
+    }
+}
+
+
+/* =========================================================
+   AUTH ERROR HANDLER
+   ========================================================= */
+
+function handleAuthError(error){
+
+    const text =
+        String(
+            error?.message || ""
+        ).toLowerCase();
+
+
+    if(
+        text.includes("already registered") ||
+        text.includes("already been registered") ||
+        text.includes("user already exists")
+    ){
+
+        displayMessage(
+            "That email already has an account. Try signing in instead.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    if(
+        text.includes("rate limit") ||
+        text.includes("too many") ||
+        text.includes("email rate")
+    ){
+
+        displayMessage(
+            "Supabase has temporarily limited email requests. Please wait a little while before requesting another confirmation email.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    if(
+        text.includes("email") &&
+        text.includes("confirm")
+    ){
+
+        displayMessage(
+            "Your email hasn't been confirmed yet. Check your email for the confirmation message.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    if(
+        text.includes("invalid login") ||
+        text.includes("invalid credentials") ||
+        text.includes("invalid email or password")
+    ){
+
+        displayMessage(
+            "That email and password don't match. Check them and try again.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    if(
+        text.includes("password")
+    ){
+
+        displayMessage(
+            error.message,
+            "error"
+        );
+
+        return;
+    }
+
+
+    displayMessage(
+        error.message ||
+        "Something went wrong.",
+        "error"
+    );
+}
+
+
+/* =========================================================
+   MESSAGE
+   ========================================================= */
+
+function displayMessage(
+    text,
+    type="info"
+){
+
+    const box =
+        document.getElementById(
+            "message"
+        );
+
+    if(!box) return;
+
+    box.textContent =
+        text;
+
+    box.className =
+        "message show "+
+        (
+            type==="success"
+                ? "success"
+                :
+            type==="error"
+                ? "error"
+                :
+                "info"
+        );
+}
+
+
+/* =========================================================
+   LOGGED IN SCREEN
+   ========================================================= */
+
+function showLoggedIn(){
+
+    document.getElementById("app").innerHTML=`
+
+        <div class="page">
+
+            <div class="card">
+
+                <div class="logo">
+                    DreamWall
+                </div>
+
+                <h1>
+                    You're in! 🎉
+                </h1>
+
+                <div class="account">
+
+                    <b>
+                        ✓ Successfully signed in
+                    </b>
+
+                    <p class="small">
+                        ${escapeHTML(
+                            currentUser.email || ""
+                        )}
+                    </p>
+
+                </div>
+
+                <br>
+
+                <button
+                    class="primary"
+                    onclick="openProfile()"
+                >
+                    Continue to DreamWall
+                </button>
+
+                <button
+                    class="secondary"
+                    onclick="logout()"
+                >
+                    Sign out
+                </button>
+
+            </div>
+
+        </div>
+    `;
+}
+
+
+/* =========================================================
+   PROFILE
+   ========================================================= */
+
+async function openProfile(){
+
+    const result =
+        await client
+            .from("profiles")
+            .select("*")
+            .eq(
+                "id",
+                currentUser.id
+            )
+            .maybeSingle();
+
+    if(result.error){
+
+        displayMessage(
+            result.error.message,
+            "error"
+        );
+
+        return;
+    }
+
+    if(result.data){
+
+        showMainApp(
+            result.data
+        );
+
+        return;
+    }
+
+
+    /*
+     If the profile doesn't exist,
+     create it now.
+    */
+
+    showProfileSetup();
+}
+
+
+/* =========================================================
+   PROFILE SETUP
+   ========================================================= */
+
+function showProfileSetup(){
+
+    document.getElementById("app").innerHTML=`
+
+        <div class="page">
+
+            <div class="card">
+
+                <div class="logo">
+                    DreamWall
+                </div>
+
+                <h1>
+                    Finish your profile ✨
+                </h1>
+
+                <form id="profileForm">
+
+                    <input
+                        id="profileName"
+                        class="field"
+                        placeholder="Your name"
+                        required
+                    >
+
+                    <input
+                        id="profileUsername"
+                        class="field"
+                        placeholder="Choose a username"
+                        minlength="3"
+                        maxlength="30"
+                        required
+                    >
+
+                    <input
+                        id="profileAvatar"
+                        class="field"
+                        type="url"
+                        placeholder="Profile picture URL (optional)"
+                    >
+
+                    <button
+                        class="primary"
+                        type="submit"
+                    >
+                        Save profile
+                    </button>
+
+                </form>
+
+                <div
+                    id="message"
+                    class="message"
+                ></div>
+
+            </div>
+
+        </div>
+    `;
+
+
+    document
+        .getElementById(
+            "profileForm"
+        )
+        .addEventListener(
+            "submit",
+            saveProfile
+        );
+}
+
+
+/* =========================================================
+   SAVE PROFILE
+   ========================================================= */
+
+async function saveProfile(event){
+
+    event.preventDefault();
+
+    const name =
+        document.getElementById(
+            "profileName"
+        ).value.trim();
+
+    const username =
+        document.getElementById(
+            "profileUsername"
+        ).value
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g,"_");
+
+    const avatar =
+        document.getElementById(
+            "profileAvatar"
+        ).value.trim();
+
+
+    /*
+     Check username first.
+    */
+
+    const usernameCheck =
+        await client
+            .from("profiles")
+            .select("id")
+            .eq(
+                "username",
+                username
+            )
+            .maybeSingle();
+
+    if(usernameCheck.error){
+
+        displayMessage(
+            usernameCheck.error.message,
+            "error"
+        );
+
+        return;
+    }
+
+    if(usernameCheck.data){
+
+        displayMessage(
+            "That username is already taken.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    const result =
+        await client
+            .from("profiles")
+            .insert({
+
+                id:currentUser.id,
+
+                real_name:name,
+
+                username:username,
+
+                avatar_url:avatar,
+
+                account_type:"real"
+
+            });
+
+
+    if(result.error){
+
+        displayMessage(
+            result.error.message,
+            "error"
+        );
+
+        return;
+    }
+
+
+    showMainApp({
+
+        id:currentUser.id,
+
+        real_name:name,
+
+        username:username,
+
+        avatar_url:avatar,
+
+        account_type:"real"
+
+    });
+}
+
+
+/* =========================================================
+   MAIN APP
+   ========================================================= */
+
+function showMainApp(profile){
+
+    document.getElementById("app").innerHTML=`
+
+        <div class="page">
+
+            <div class="card">
+
+                <div class="logo">
+                    DreamWall
+                </div>
+
+                <h1>
+                    Welcome, @${escapeHTML(
+                        profile.username
+                    )}! ✨
+                </h1>
+
+                <div class="account">
+
+                    <b>
+                        ✓ Your account works!
+                    </b>
+
+                    <p class="small">
+                        Email:
+                        ${escapeHTML(
+                            currentUser.email
+                        )}
+                    </p>
+
+                    <p class="small">
+                        Username:
+                        @${escapeHTML(
+                            profile.username
+                        )}
+                    </p>
+
+                </div>
+
+                <br>
+
+                <button
+                    class="primary"
+                    onclick="alert('Your DreamWall feed will be added here next!')"
+                >
+                    Open DreamWall
+                </button>
+
+                <button
+                    class="secondary"
+                    onclick="logout()"
+                >
+                    Sign out
+                </button>
+
+            </div>
+
+        </div>
+    `;
+}
+
+
+/* =========================================================
+   LOGOUT
+   ========================================================= */
+
+async function logout(){
+
+    if(client){
+
+        await client.auth.signOut();
+
+    }
+
+    currentUser=null;
+
+    showLogin();
+}
+
+
+/* =========================================================
+   ESCAPE HTML
+   ========================================================= */
+
+function escapeHTML(value){
+
+    return String(value ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+}
+
+
+/* =========================================================
+   START
+   ========================================================= */
+
 start();
-</script></body></html>
+
+</script>
+
+</body>
+</html>
