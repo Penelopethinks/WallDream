@@ -3680,8 +3680,7 @@ alert("Draft saved ✨");
 
 /* PUBLISH */
 
-$("publish").onclick=
-async()=>{
+$("publish").onclick=async()=>{
 
 if(!user){
 
@@ -3691,77 +3690,64 @@ return;
 
 }
 
-const state=
-editorState();
-
-const decorations=
-state.objects.map(o=>({
+const button=$("publish");
+const caption=$("postCaption").value.trim();
+const state=editorState();
+const decorations=state.objects.map(o=>({
 text:o.text,
 css:o.css,
 type:o.type
 }));
 
-const result=
-await sb
-.from("wallpapers")
-.insert({
+button.disabled=true;
+const oldText=button.textContent;
+button.textContent="Publishing...";
 
+try{
+
+const result=await sb.from("wallpapers").insert({
 user_id:user.id,
-
 title:"",
-
 subtitle:"",
-
-caption:
-$("postCaption").value.trim(),
-
-background:
-state.background,
-
+caption:caption,
+background:state.background || "#fff",
 text_color:"#111111",
-
 font:"Arial",
-
 title_size:52,
-
 subtitle_size:16,
-
-decorations:
-
-decorations,
-
+decorations:decorations,
 brightness:100,
-
 contrast:100,
-
 blur:0
+}).select(`*, profiles (id, username, real_name, avatar_url, bio)`).single();
 
-})
-.select()
-.single();
+if(result.error) throw result.error;
 
-if(result.error){
-
-alert(
-"Could not publish:\n\n"+
-result.error.message
-);
-
-return;
-
+/* Put the returned row into the current feed immediately.
+   This prevents the profile/home view from waiting on a second query. */
+const saved=result.data;
+if(saved){
+  wallpapers=wallpapers.filter(w=>w.id!==saved.id);
+  wallpapers.unshift(saved);
 }
 
 $("postCaption").value="";
 
+await loadLikeCounts();
+renderEverything();
+goPage("home");
+
 alert("Wallpaper published! 🎉");
 
-await loadWallpapers();
+}catch(error){
 
-await loadLikeCounts();
+console.error("DreamWall publish error:",error);
+alert("Could not publish:\n\n"+(error?.message || "Please try again."));
 
-renderEverything();
-
-goPage("home");
+}finally{
+button.disabled=false;
+button.textContent=oldText;
+}
 
 };
 
@@ -3865,5 +3851,6 @@ loadApp();
 
 </script>
 
+<script src="studio-addon.js"></script>
 </body>
 </html>
