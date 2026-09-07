@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DreamWall Messages 💌</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --bg:#fff;
+  --card:#fff;
+  --soft:#f7f5f9;
+  --text:#17141c;
+  --muted:#77717f;
+  --line:#e7e2eb;
+  --pink:#ff3cac;
+  --purple:#784cff;
+  --blue:#25d9ff;
+  --bubble:#ece8f2;
+  --mine:#eadfff;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif}
+body.dark{
+  --bg:#09080b;--card:#111015;--soft:#18151d;--text:#f7f4fa;--muted:#aaa3b0;--line:#2a2630;
+  --bubble:#211e27;--mine:#362b4a;
+}
+button,input{font:inherit}
+button{cursor:pointer}
+.app{min-height:100vh;display:grid;grid-template-columns:320px 1fr}
+.sidebar{border-right:1px solid var(--line);background:var(--bg);display:flex;flex-direction:column;min-width:0}
+.brand{padding:24px 22px 18px;font-size:28px;font-weight:900;background:linear-gradient(90deg,var(--pink),var(--purple),var(--blue));-webkit-background-clip:text;background-clip:text;color:transparent}
+.sidebar-top{padding:0 16px 14px;display:flex;gap:8px}
+.search{flex:1;min-width:0;padding:11px 13px;border:1px solid var(--line);border-radius:12px;background:var(--soft);color:var(--text);outline:none}
+.btn{border:1px solid var(--line);background:var(--card);color:var(--text);padding:10px 14px;border-radius:11px;font-weight:800}
+.btn:hover{transform:translateY(-1px)}
+.primary{color:#fff;border:0;background:linear-gradient(90deg,var(--pink),var(--purple),var(--blue))}
+.list{overflow:auto;flex:1;padding:4px 10px 14px}
+.person{display:flex;align-items:center;gap:11px;padding:11px;border-radius:14px;cursor:pointer}
+.person:hover,.person.active{background:var(--soft)}
+.avatar{width:45px;height:45px;flex:none;border-radius:50%;overflow:hidden;display:grid;place-items:center;background:linear-gradient(135deg,var(--pink),var(--purple),var(--blue));color:#fff;font-weight:900}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.person-info{min-width:0;flex:1}
+.name{font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.handle{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.preview{font-size:12px;color:var(--muted);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.empty{margin:16px;padding:16px;border:1px solid var(--line);border-radius:14px;background:var(--soft);color:var(--muted);line-height:1.45}
+.chat{display:flex;flex-direction:column;min-width:0;min-height:100vh}
+.chat-head{height:76px;padding:14px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;background:var(--card)}
+.chat-head-info{min-width:0;flex:1}
+.chat-title{font-size:18px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.status{font-size:12px;color:var(--muted);margin-top:2px}
+.chat-log{flex:1;overflow:auto;padding:24px 7vw 18px}
+.start-screen{height:100%;display:grid;place-items:center;padding:30px}
+.start-card{max-width:520px;width:100%;border:1px solid var(--line);border-radius:24px;padding:28px;background:var(--card);box-shadow:0 8px 30px #0000000d}
+.start-card h1{margin:0 0 8px;font-size:31px}
+.start-card p{color:var(--muted);line-height:1.55}
+.msg-row{display:flex;margin:8px 0}
+.msg-row.mine{justify-content:flex-end}
+.bubble{max-width:min(78%,520px);padding:11px 14px;border-radius:18px;background:var(--bubble);word-break:break-word;box-shadow:0 2px 8px #00000008}
+.msg-row.mine .bubble{background:var(--mine);color:var(--text)}
+.msg-time{font-size:10px;color:var(--muted);margin-top:5px;text-align:right}
+.msg-wall{width:185px;aspect-ratio:9/14;border-radius:12px;overflow:hidden;margin-top:3px;background:#fff}
+.msg-wall>*{position:absolute;transform-origin:center;white-space:pre-wrap}
+.wall-preview{position:relative;width:100%;height:100%}
+.small-actions{display:flex;gap:6px;margin-top:8px}
+.composer{display:flex;gap:9px;padding:12px 16px;border-top:1px solid var(--line);background:var(--card)}
+.composer input{flex:1;min-width:0;padding:12px 13px;border:1px solid var(--line);border-radius:13px;background:var(--soft);color:var(--text);outline:none}
+.composer input:focus,.search:focus{border-color:var(--purple);box-shadow:0 0 0 3px #784cff18}
+.mobile-only{display:none}
+.modal{position:fixed;inset:0;background:#0009;display:none;place-items:center;padding:18px;z-index:100}
+.modal.open{display:grid}
+.modalbox{width:min(440px,100%);max-height:90vh;overflow:auto;background:var(--card);border-radius:22px;padding:24px}
+.modalbox h2{margin:0 0 8px}
+.muted{color:var(--muted)}
+.field{margin:12px 0}
+.field label{display:block;font-size:12px;font-weight:800;margin-bottom:6px}
+.field input{width:100%;padding:12px;border:1px solid var(--line);border-radius:11px;background:var(--soft);color:var(--text);outline:none}
+.auth-switch{margin-top:8px;width:100%}
+.error{color:#d33;font-size:13px;min-height:18px}
+@media(max-width:850px){
+  .app{grid-template-columns:1fr}
+  .sidebar{height:100vh;display:none}
+  .sidebar.mobile-open{display:flex;position:fixed;inset:0;z-index:60;width:min(340px,92vw);box-shadow:8px 0 35px #0002}
+  .mobile-only{display:inline-flex}
+  .chat-head{height:66px;padding:10px 13px}
+  .chat-log{padding:18px 14px}
+  .bubble{max-width:86%}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside id="sidebar" class="sidebar">
+    <div class="brand">DreamWall Messages 💌</div>
+    <div class="sidebar-top">
+      <input id="searchPeople" class="search" placeholder="Search DreamWallers...">
+      <button id="newChat" class="btn primary" title="Start a chat">＋</button>
+    </div>
+    <div id="peopleList" class="list"></div>
+  </aside>
+
+  <main class="chat">
+    <header class="chat-head">
+      <button id="openPeople" class="btn mobile-only">☰</button>
+      <div id="headerAvatar" class="avatar" style="width:40px;height:40px">D</div>
+      <div class="chat-head-info">
+        <div id="chatTitle" class="chat-title">Choose someone to message</div>
+        <div id="chatStatus" class="status">Your DreamWall conversations</div>
+      </div>
+      <button id="themeToggle" class="btn" title="Toggle dark mode">☾</button>
+      <button id="signOut" class="btn">Sign out</button>
+    </header>
+
+    <section id="chatLog" class="chat-log">
+      <div class="start-screen">
+        <div class="start-card">
+          <h1>DreamWall Messages ✨</h1>
+          <p>Message DreamWallers using the same accounts and messaging system as your main DreamWall app.</p>
+          <button id="pickSomeone" class="btn primary">Choose someone</button>
+        </div>
+      </div>
+    </section>
+
+    <form id="composer" class="composer" autocomplete="off">
+      <input id="messageInput" placeholder="Message..." disabled>
+      <button id="sendMessage" class="btn primary" type="submit" disabled>Send</button>
+    </form>
+  </main>
+</div>
+
+<div id="authModal" class="modal open">
+  <div class="modalbox">
+    <h2 id="authTitle">Welcome to DreamWall Messages</h2>
+    <p class="muted">Use your existing DreamWall account.</p>
+    <div class="field">
+      <label>Email</label>
+      <input id="authEmail" type="email" autocomplete="email">
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input id="authPassword" type="password" autocomplete="current-password">
+    </div>
+    <button id="authSubmit" class="btn primary" style="width:100%">Sign in</button>
+    <button id="authSwitch" class="btn auth-switch">Create account</button>
+    <div id="authMsg" class="error"></div>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL="https://kcybwrdtnlflevndmzfn.supabase.co";
+const SUPABASE_KEY="sb_publishable_XhOq8P5tdMgjWDKZEvgsgg_hcALWg48";
+const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+let user=null;
+let people=[];
+let chatUser=null;
+let authMode="signin";
+let pollTimer=null;
+
+const $=id=>document.getElementById(id);
+const esc=value=>String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+function ago(date){
+  const seconds=Math.max(0,Math.floor((Date.now()-new Date(date).getTime())/1000));
+  if(seconds<60)return "Just now";
+  if(seconds<3600)return Math.floor(seconds/60)+"m ago";
+  if(seconds<86400)return Math.floor(seconds/3600)+"h ago";
+  return Math.floor(seconds/86400)+"d ago";
+}
+
+function avatarMarkup(p){
+  if(p?.avatar_url){
+    return `<img src="${esc(p.avatar_url)}" alt="" onerror="this.style.display='none'">`;
+  }
+  return esc((p?.real_name||p?.username||"D").charAt(0).toUpperCase());
+}
+
+function renderPeople(filter=""){
+  const q=filter.toLowerCase().trim();
+  const list=people.filter(p=>p.id!==user?.id).filter(p=>{
+    if(!q)return true;
+    return ((p.username||"")+" "+(p.real_name||"")+" "+(p.bio||"")).toLowerCase().includes(q);
+  });
+  $("peopleList").innerHTML=list.map(p=>`
+    <div class="person ${chatUser?.id===p.id?"active":""}" onclick="startChat('${p.id}')">
+      <div class="avatar">${avatarMarkup(p)}</div>
+      <div class="person-info">
+        <div class="name">${esc(p.real_name||p.username||"DreamWaller")}</div>
+        <div class="handle">@${esc(p.username||"username")}</div>
+      </div>
+    </div>
+  `).join("")||`<div class="empty">No DreamWallers found.</div>`;
+}
+
+function setChatHeader(){
+  if(!chatUser){
+    $("headerAvatar").innerHTML="D";
+    $("chatTitle").textContent="Choose someone to message";
+    $("chatStatus").textContent="Your DreamWall conversations";
+    $("messageInput").disabled=true;
+    $("sendMessage").disabled=true;
+    return;
+  }
+  $("headerAvatar").innerHTML=avatarMarkup(chatUser);
+  $("chatTitle").textContent=chatUser.real_name||chatUser.username||"DreamWaller";
+  $("chatStatus").textContent="@"+(chatUser.username||"username");
+  $("messageInput").disabled=false;
+  $("sendMessage").disabled=false;
+}
+
+function renderWall(element,w){
+  element.innerHTML="";
+  element.style.background=w?.background||"#fff";
+  element.style.filter=`brightness(${w?.brightness??100}%) contrast(${w?.contrast??100}%) blur(${w?.blur??0}px)`;
+  const decorations=Array.isArray(w?.decorations)?w.decorations:[];
+  decorations.forEach(object=>{
+    const x=document.createElement("div");
+    x.style.cssText=object.css||"";
+    x.textContent=object.text||"";
+    element.appendChild(x);
+  });
+}
+
+async function loadMessages(){
+  if(!user||!chatUser)return;
+
+  const sent=await sb.from("messages").select("*")
+    .eq("sender_id",user.id).eq("receiver_id",chatUser.id)
+    .order("created_at",{ascending:true});
+  const received=await sb.from("messages").select("*")
+    .eq("sender_id",chatUser.id).eq("receiver_id",user.id)
+    .order("created_at",{ascending:true});
+
+  if(sent.error||received.error){
+    const error=sent.error||received.error;
+    $("chatLog").innerHTML=`<div class="empty">Could not load messages.<br><br>${esc(error.message)}</div>`;
+    return;
+  }
+
+  const messages=[...(sent.data||[]),...(received.data||[])].sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
+  if(!messages.length){
+    $("chatLog").innerHTML=`<div class="start-screen"><div class="start-card"><h1>Start the conversation ✨</h1><p>Send a message to ${esc(chatUser.real_name||chatUser.username||"this DreamWaller")}.</p></div></div>`;
+    return;
+  }
+
+  $("chatLog").innerHTML=messages.map(message=>{
+    let wallpaper=null;
+    if(message.text?.startsWith("DW_WALLPAPER:")){
+      try{wallpaper=JSON.parse(message.text.slice("DW_WALLPAPER:".length));}catch(e){}
+    }
+    if(wallpaper){
+      return `<div class="msg-row ${message.sender_id===user.id?"mine":""}">
+        <div class="bubble">
+          <b>Wallpaper ✨</b>
+          <div id="message-wall-${message.id}" class="msg-wall"><div class="wall-preview"></div></div>
+          <div class="small-actions"><button class="btn" type="button" onclick='useWallpaper(${JSON.stringify(wallpaper).replace(/'/g,"&#39;")})'>Use it</button></div>
+          <div class="msg-time">${ago(message.created_at)}</div>
+        </div>
+      </div>`;
+    }
+    return `<div class="msg-row ${message.sender_id===user.id?"mine":""}">
+      <div class="bubble">${esc(message.text)}<div class="msg-time">${ago(message.created_at)}</div></div>
+    </div>`;
+  }).join("");
+
+  for(const message of messages){
+    if(message.text?.startsWith("DW_WALLPAPER:")){
+      try{
+        const w=JSON.parse(message.text.slice("DW_WALLPAPER:".length));
+        const el=$("message-wall-"+message.id);
+        if(el)renderWall(el,w);
+      }catch(e){}
+    }
+  }
+  $("chatLog").scrollTop=$("chatLog").scrollHeight;
+}
+
+function useWallpaper(w){
+  localStorage.setItem("dw_message_wallpaper",JSON.stringify(w));
+  alert("Wallpaper saved. You can use it from your DreamWall studio. ✨");
+}
+
+async function startChat(id){
+  chatUser=people.find(p=>p.id===id)||null;
+  if(!chatUser)return;
+  setChatHeader();
+  renderPeople($("searchPeople").value);
+  await loadMessages();
+  $("messageInput").focus();
+  $("sidebar").classList.remove("mobile-open");
+  startPolling();
+}
+
+function startPolling(){
+  clearInterval(pollTimer);
+  pollTimer=setInterval(()=>{if(document.visibilityState!=="hidden")loadMessages();},3000);
+}
+
+async function sendMessage(){
+  if(!chatUser||!user)return;
+  const input=$("messageInput");
+  const text=input.value.trim();
+  if(!text)return;
+  const result=await sb.from("messages").insert({sender_id:user.id,receiver_id:chatUser.id,text});
+  if(result.error){alert("Could not send message: "+result.error.message);return;}
+  input.value="";
+  await loadMessages();
+  input.focus();
+}
+
+async function loadPeople(){
+  const r=await sb.from("profiles").select("*").order("created_at",{ascending:true});
+  if(r.error){$("peopleList").innerHTML=`<div class="empty">Could not load DreamWallers.<br><br>${esc(r.error.message)}</div>`;return;}
+  people=r.data||[];
+  renderPeople();
+}
+
+function openAuth(mode){
+  authMode=mode;
+  $("authTitle").textContent=mode==="signin"?"Welcome to DreamWall Messages":"Create your DreamWall account";
+  $("authSubmit").textContent=mode==="signin"?"Sign in":"Create account";
+  $("authSwitch").textContent=mode==="signin"?"Create account":"I already have an account";
+  $("authMsg").textContent="";
+}
+
+$("authSwitch").onclick=()=>openAuth(authMode==="signin"?"signup":"signin");
+$("authSubmit").onclick=async()=>{
+  const email=$("authEmail").value.trim();
+  const password=$("authPassword").value;
+  if(!email||!password){$("authMsg").textContent="Enter your email and password.";return;}
+  $("authMsg").textContent="Working...";
+  const result=authMode==="signin"
+    ? await sb.auth.signInWithPassword({email,password})
+    : await sb.auth.signUp({email,password});
+  if(result.error){$("authMsg").textContent=result.error.message;return;}
+  if(authMode==="signup"&&!result.data.session){$("authMsg").textContent="Account created! Check your email if confirmation is enabled.";return;}
+  await loadApp();
+};
+
+$("composer").onsubmit=e=>{e.preventDefault();sendMessage();};
+$("messageInput").onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();sendMessage();}};
+$("searchPeople").oninput=e=>renderPeople(e.target.value);
+$("pickSomeone").onclick=()=>{$("sidebar").classList.add("mobile-open");$("searchPeople").focus();};
+$("newChat").onclick=()=>{$("searchPeople").focus();};
+$("openPeople").onclick=()=>$("sidebar").classList.add("mobile-open");
+$("themeToggle").onclick=()=>{document.body.classList.toggle("dark");localStorage.setItem("dw_msg_dark",document.body.classList.contains("dark")?"1":"0");};
+$("signOut").onclick=async()=>{await sb.auth.signOut();location.reload();};
+if(localStorage.getItem("dw_msg_dark")==="1")document.body.classList.add("dark");
+
+async function loadApp(){
+  const session=await sb.auth.getSession();
+  user=session.data.session?.user||null;
+  if(!user){$("authModal").classList.add("open");return;}
+  $("authModal").classList.remove("open");
+  await loadPeople();
+  setChatHeader();
+}
+
+sb.auth.onAuthStateChange(()=>setTimeout(loadApp,100));
+loadApp();
+</script>
+</body>
+</html>
