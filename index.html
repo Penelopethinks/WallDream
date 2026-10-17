@@ -5737,13 +5737,25 @@ loadApp();
   const getMeta = w => Array.isArray(w?.decorations) ? w.decorations.find(x => x && x._dwMeta === true) || {} : {};
   const sourceLabel = w => {
     const meta = getMeta(w);
-    if(meta.mediaType === "video") return {text:"VIDEO WALLPAPER · COMMUNITY POST",cls:"video"};
-    if(meta.sourceType === "ai") return {text:"AI-STYLE GENERATED",cls:"ai"};
-    return {text:"REAL · COMMUNITY-MADE",cls:""};
+    if(meta.mediaType === "video" && meta.sourceType === "ai") return {text:"AI-GENERATED VIDEO",cls:"ai"};
+    if(meta.mediaType === "video" && meta.sourceType === "real") return {text:"REAL VIDEO · COMMUNITY POST",cls:"video"};
+    if(meta.mediaType === "video") return {text:"ANIMATED VIDEO WALLPAPER",cls:"video"};
+    if(meta.mediaType === "image" && meta.mediaUrl && meta.sourceType === "real") return {text:"REAL PHOTO · COMMUNITY POST",cls:""};
+    if(meta.sourceType === "ai") return {text:"AI-GENERATED DESIGN",cls:"ai"};
+    return {text:"COMMUNITY DESIGN",cls:""};
   };
   const originalRenderWall = renderWall;
   renderWall = function(element,w){
     const meta = getMeta(w);
+    if(meta.mediaType === "image" && meta.mediaUrl){
+      element.innerHTML = "";
+      element.style.cssText = "background:#101018;overflow:hidden;border-radius:14px;position:relative;";
+      const img=document.createElement("img");
+      img.src=meta.mediaUrl;img.alt="Community wallpaper photo";img.loading="lazy";img.decoding="async";
+      img.style.cssText="display:block;width:100%;height:auto;max-height:78vh;object-fit:cover;border-radius:14px;";
+      img.addEventListener("error",()=>{element.innerHTML='<div style="padding:22px;text-align:center">This image could not be loaded. Check that the link is a direct public image URL.</div>';});
+      element.appendChild(img);return;
+    }
     if(meta.mediaType === "video" && meta.mediaUrl){
       element.innerHTML = "";
       element.style.cssText = "background:#08080b;overflow:hidden;border-radius:14px;position:relative;";
@@ -5754,6 +5766,7 @@ loadApp();
       video.controls = true;
       video.loop = true;
       video.muted = true;
+      video.autoplay = true;
       video.playsInline = true;
       video.preload = "metadata";
       video.setAttribute("aria-label","Video wallpaper preview");
@@ -5827,6 +5840,8 @@ loadApp();
       <p class="dw-note">Paste a public, direct video-file URL (MP4 or WebM). The video will appear in your feed with playback controls. A normal webpage or social-media share link may not work. Sign in to publish.</p>
       <label for="dwVideoUrl">Direct video URL</label>
       <input id="dwVideoUrl" type="url" placeholder="https://example.com/my-wallpaper.mp4">
+      <label for="dwVideoKind">What kind of video is this?</label>
+      <select id="dwVideoKind" class="search"><option value="real">Real footage</option><option value="ai">AI-generated video</option><option value="animation">Animated wallpaper</option></select>
       <label for="dwVideoCaption">Caption</label>
       <textarea id="dwVideoCaption" rows="2" maxlength="220" placeholder="Describe the motion or mood..."></textarea>
       <button class="btn primary" id="dwVideoPublish">🎬 Publish video wallpaper</button>
@@ -5904,7 +5919,7 @@ loadApp();
           user_id:user.id,title:"Video wallpaper",subtitle:"Looping video",
           caption:document.getElementById("dwVideoCaption").value.trim(),
           background:"#08080b",text_color:"#fff",font:"Arial",title_size:52,subtitle_size:16,
-          decorations:[{_dwMeta:true,sourceType:"community",mediaType:"video",mediaUrl:url}],
+          decorations:[{_dwMeta:true,sourceType:document.getElementById("dwVideoKind").value,mediaType:"video",mediaUrl:url}],
           brightness:100,contrast:100,blur:0
         }).select("*").single();
         if(result.error)throw result.error;
@@ -5915,6 +5930,46 @@ loadApp();
       finally{button.disabled=false;button.textContent="🎬 Publish video wallpaper";}
     });
   }
+
+  // A direct-image post path lets DreamWallers share real photos beside designs.
+  const photoPanel=document.createElement("div");
+  photoPanel.className="dw-feature-panel";
+  photoPanel.innerHTML=`
+    <h3>📷 Post a real wallpaper photo</h3>
+    <p class="dw-note">Paste a public, direct image URL (JPG, PNG, WebP, or GIF). The label is based on your selection and is not an automatic authenticity check.</p>
+    <label for="dwPhotoUrl">Direct image URL</label>
+    <input id="dwPhotoUrl" type="url" placeholder="https://example.com/ocean-photo.jpg">
+    <label for="dwPhotoCaption">Caption</label>
+    <textarea id="dwPhotoCaption" rows="2" maxlength="220" placeholder="Tell everyone what you love about it..."></textarea>
+    <button class="btn primary" id="dwPhotoPublish">📷 Publish real photo</button>
+    <p class="dw-note" id="dwPhotoStatus">Use an image file URL that other people can open.</p>
+  `;
+  if(livePage) livePage.appendChild(photoPanel);
+  document.getElementById("dwPhotoPublish")?.addEventListener("click",async()=>{
+    if(!user){document.getElementById("authModal")?.classList.add("open");return;}
+    const url=document.getElementById("dwPhotoUrl").value.trim();
+    const status=document.getElementById("dwPhotoStatus");
+    let parsed;
+    try{parsed=new URL(url);}catch(_){status.textContent="Please enter a valid public image URL.";return;}
+    if(!["https:","http:"].includes(parsed.protocol)){status.textContent="Use a public http or https image URL.";return;}
+    if(!/\.(png|jpe?g|webp|gif|avif)(\?.*)?$/i.test(parsed.pathname+parsed.search)){status.textContent="Please use a direct JPG, PNG, WebP, GIF, or AVIF image URL.";return;}
+    const button=document.getElementById("dwPhotoPublish");
+    button.disabled=true;button.textContent="Publishing…";
+    try{
+      const result=await sb.from("wallpapers").insert({
+        user_id:user.id,title:"Real photo wallpaper",subtitle:"Community photo",
+        caption:document.getElementById("dwPhotoCaption").value.trim(),
+        background:"#101018",text_color:"#fff",font:"Arial",title_size:52,subtitle_size:16,
+        decorations:[{_dwMeta:true,sourceType:"real",mediaType:"image",mediaUrl:url}],
+        brightness:100,contrast:100,blur:0
+      }).select("*").single();
+      if(result.error)throw result.error;
+      wallpapers=[result.data,...wallpapers];
+      await loadLikes();renderEverything();go("home");
+      alert("Your photo wallpaper is posted! 📷");
+    }catch(e){console.error(e);status.textContent="Could not publish: "+(e?.message||"Please try again.");}
+    finally{button.disabled=false;button.textContent="📷 Publish real photo";}
+  });
 
   // Make the endless Explore feed feel continuous and clarify generated previews.
   document.querySelectorAll("#exploreGrid .explore-tile").forEach(tile=>{
@@ -5927,6 +5982,114 @@ loadApp();
   });
   const loader=document.getElementById("exploreLoader");
   if(loader){loader.textContent="Keep scrolling ✨ More wallpapers appear as you go.";loader.classList.add("dw-infinite-hint");}
+})();
+
+
+// ============================================================
+// DREAMWALL SMOOTH FEED + STORY ROW + LIVE VIDEO PLAYBACK
+// ============================================================
+(function improveDreamWallFlow(){
+  const feed=document.getElementById("feed");
+  const oldRenderPosts=renderPosts;
+  let feedObserver=null;
+  let feedItems=[];
+  let feedIndex=0;
+  const batchSize=18;
+  function appendNextBatch(){
+    if(!feed)return;
+    const sentinel=feed.querySelector(".dw-feed-sentinel");
+    const end=Math.min(feedIndex+batchSize,feedItems.length);
+    const frag=document.createDocumentFragment();
+    for(;feedIndex<end;feedIndex++) frag.appendChild(feedItems[feedIndex]);
+    if(sentinel)feed.insertBefore(frag,sentinel);else feed.appendChild(frag);
+    if(sentinel){
+      sentinel.textContent=feedIndex<feedItems.length?"Keep scrolling ✨ Loading more DreamWallers…":"You’re all caught up for now ✨";
+      if(feedIndex>=feedItems.length && feedObserver){feedObserver.disconnect();feedObserver=null;}
+    }
+    // Start only visible video previews; pause them when they scroll away.
+    setupVideoPlayback();
+  }
+  function setupVideoPlayback(){
+    document.querySelectorAll("#feed video.dw-observed-video").forEach(v=>{if(!v.isConnected)v.remove();});
+    if(!("IntersectionObserver" in window)){
+      document.querySelectorAll("#feed video").forEach(v=>{v.muted=true;v.play().catch(()=>{});});
+      return;
+    }
+    document.querySelectorAll("#feed video:not(.dw-observed-video)").forEach(v=>{
+      v.classList.add("dw-observed-video");
+      const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{
+        if(entry.isIntersecting){v.play().catch(()=>{});}
+        else{v.pause();}
+      }),{threshold:0.25});
+      observer.observe(v);
+    });
+  }
+  renderPosts=function(){
+    if(feedObserver){feedObserver.disconnect();feedObserver=null;}
+    oldRenderPosts();
+    if(!feed)return;
+    feedItems=Array.from(feed.querySelectorAll(":scope > .post"));
+    if(feedItems.length<=batchSize){setupVideoPlayback();return;}
+    feed.innerHTML="";
+    feedIndex=0;
+    const sentinel=document.createElement("div");
+    sentinel.className="dw-feed-sentinel dw-infinite-hint";
+    sentinel.setAttribute("aria-live","polite");
+    feed.appendChild(sentinel);
+    appendNextBatch();
+    if("IntersectionObserver" in window){
+      feedObserver=new IntersectionObserver(entries=>{
+        if(entries.some(e=>e.isIntersecting))appendNextBatch();
+      },{rootMargin:"700px 0px"});
+      feedObserver.observe(sentinel);
+    }else{
+      sentinel.innerHTML='<button class="btn" type="button">Load more posts</button>';
+      sentinel.querySelector("button").onclick=appendNextBatch;
+    }
+  };
+
+  // Keep the DreamWallers strip populated by recent creators, not only posts from the last 24 hours.
+  renderStories=function(){
+    const ids=[...new Set(wallpapers.map(w=>w.user_id).filter(Boolean))].slice(0,30);
+    const map=peopleMap();
+    const row=document.getElementById("storiesRow");
+    if(!row)return;
+    row.innerHTML=ids.map(id=>{
+      const p=map[id]||{};
+      const label=esc(p.real_name||p.username||"DreamWaller");
+      return '<div class="story" role="button" tabindex="0" onclick="openUser(\''+id+'\')" onkeydown="if(event.key===\'Enter\'||event.key===\' \')openUser(\''+id+'\')"><div class="ring"><div class="face">'+avatar(p)+'</div></div><div class="story-name">'+label+'</div></div>';
+    }).join("")||'<span class="muted">Be the first DreamWaller to post ✨</span>';
+  };
+
+  // A short, muted loop feels live while respecting browser autoplay rules.
+  const previousRenderWall=renderWall;
+  renderWall=function(element,w){
+    previousRenderWall(element,w);
+    const meta=Array.isArray(w?.decorations)?w.decorations.find(x=>x&&x._dwMeta===true)||{}:{};
+    if(meta.mediaType==="video"){
+      const v=element.querySelector("video");
+      if(v){v.autoplay=true;v.loop=true;v.muted=true;v.playsInline=true;v.setAttribute("playsinline","");v.setAttribute("muted","");v.preload="metadata";}
+    }
+  };
+
+  // Correct labels after all existing social/badge wrappers have rendered.
+  const previousSourceRender=renderPosts;
+  renderPosts=function(){
+    previousSourceRender();
+    document.querySelectorAll("#feed .post").forEach(post=>{
+      const wall=post.querySelector("[data-wid]");
+      const w=wallpapers.find(x=>String(x.id)===String(wall?.dataset.wid));
+      const meta=Array.isArray(w?.decorations)?w.decorations.find(x=>x&&x._dwMeta===true)||{}:{};
+      const badge=post.querySelector(".dw-source-badge");
+      if(!badge||!w)return;
+      if(meta.sourceType==="ai") {badge.textContent=meta.mediaType==="video"?"AI-GENERATED VIDEO":"AI-GENERATED DESIGN";badge.className="dw-source-badge ai";}
+      else if(meta.sourceType==="real"&&meta.mediaType==="image"){badge.textContent="REAL PHOTO · COMMUNITY POST";badge.className="dw-source-badge";}
+      else if(meta.sourceType==="real"&&meta.mediaType==="video"){badge.textContent="REAL VIDEO · COMMUNITY POST";badge.className="dw-source-badge video";}
+      else if(meta.mediaType==="video"){badge.textContent="ANIMATED VIDEO WALLPAPER";badge.className="dw-source-badge video";}
+      else if(meta.mediaType==="image"&&meta.mediaUrl){badge.textContent="COMMUNITY PHOTO";badge.className="dw-source-badge";}
+      else {badge.textContent="COMMUNITY DESIGN";badge.className="dw-source-badge";}
+    });
+  };
 })();
 
 </script>
