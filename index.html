@@ -5407,6 +5407,29 @@ renderEverything();
 
 go("home");
 
+// Resolve portable profile and collection links after the signed-in user's data is ready.
+try {
+  const sharedCollectionMatch = location.hash.match(/dw-collection=([^&]+)/);
+  if (sharedCollectionMatch) {
+    const sharedCollection = JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(sharedCollectionMatch[1])))));
+    const collectionKey = "dw_collections_" + user.id;
+    const savedCollections = JSON.parse(localStorage.getItem(collectionKey) || "[]");
+    if (!savedCollections.some(item => item.id === sharedCollection.id)) {
+      savedCollections.unshift(sharedCollection);
+      localStorage.setItem(collectionKey, JSON.stringify(savedCollections));
+    }
+  }
+  const sharedProfileMatch = location.hash.match(/profile=([^&]+)/);
+  if (sharedProfileMatch) {
+    const sharedUsername = decodeURIComponent(sharedProfileMatch[1]).toLowerCase().replace(/^@/, "");
+    const targetProfile = people.find(person => (person.username || "").toLowerCase().replace(/^@/, "") === sharedUsername);
+    if (targetProfile && targetProfile.id !== user.id) openUser(targetProfile.id);
+    else if (targetProfile) go("profile");
+  }
+} catch (error) {
+  console.warn("Could not open shared DreamWall link:", error);
+}
+
 }
 
 
