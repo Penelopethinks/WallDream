@@ -821,6 +821,15 @@ button{
     grid-template-columns:1fr;
   }
 }
+
+/* Live wallpaper studio */
+.live-stage-wrap{width:100%;display:grid;place-items:center;background:var(--soft);border-radius:16px;padding:16px;overflow:hidden}
+#dwLiveCanvas{display:block;width:min(100%,330px);height:auto;aspect-ratio:9/16;max-height:66vh;border-radius:15px;box-shadow:0 12px 34px #0002;background:#79e5ee}
+#dwLiveCanvas.paused{filter:saturate(.92)}
+#liveWallpapers .feature-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+#liveWallpapers input[type=color]{height:43px;padding:4px}
+@media(max-width:600px){#liveWallpapers .feature-grid{grid-template-columns:1fr}}
+
 </style>
 </head>
 
@@ -840,6 +849,7 @@ button{
 <button data-page="messages">✉ Messages</button>
 <button data-page="profile">◎ Profile</button>
 <button data-page="settings">⚙ Settings</button>
+<button data-page="liveWallpapers">✧ Live</button>
 
 </nav>
 </aside>
@@ -1109,6 +1119,42 @@ No objects yet.
 
 </section>
 
+
+<!-- LIVE WALLPAPER STUDIO -->
+<section id="liveWallpapers" class="page">
+  <div class="top">
+    <div><h1>Live Wallpaper Studio ✨</h1><div class="muted">Bring your background to life with moving color, floating lights, and smooth loops.</div></div>
+  </div>
+  <div class="studio-plus">
+    <div class="live-stage-wrap"><canvas id="dwLiveCanvas" width="540" height="960" aria-label="Animated wallpaper preview"></canvas></div>
+    <div class="row" style="margin-top:14px">
+      <button class="btn primary" id="dwLiveToggle">Ⅱ Pause motion</button>
+      <button class="btn" id="dwLiveSnapshot">⬇ Save still PNG</button>
+      <button class="btn" id="dwLiveExport">◉ Export 6-second video</button>
+    </div>
+    <div class="feature-note" id="dwLiveStatus">Preview is moving. Export records a short looping-style WebM video when supported by your browser.</div>
+  </div>
+  <div class="studio-plus">
+    <h3>Make it yours</h3>
+    <div class="feature-grid">
+      <div class="field"><label>Motion style</label><select class="search" id="dwLiveStyle"><option value="aurora">Aurora waves</option><option value="bubbles">Floating bubbles</option><option value="stars">Star drift</option><option value="ocean">Ocean shimmer</option><option value="dream">Dreamy gradient</option></select></div>
+      <div class="field"><label>Screen shape</label><select class="search" id="dwLiveDevice"><option value="phone">Phone · 9:16</option><option value="iphone">Tall phone · 9:19.5</option><option value="tablet">Tablet · 3:4</option><option value="square">Square · 1:1</option><option value="desktop">Desktop · 16:9</option></select></div>
+      <div class="field"><label>Color one</label><input id="dwLiveColor1" type="color" value="#79e5ee"></div>
+      <div class="field"><label>Color two</label><input id="dwLiveColor2" type="color" value="#7c72e8"></div>
+      <div class="field"><label>Accent color</label><input id="dwLiveColor3" type="color" value="#e8c8ff"></div>
+      <div class="field"><label>Motion speed <span id="dwLiveSpeedOut">1.0×</span></label><input class="range" id="dwLiveSpeed" type="range" min="0.3" max="2" step="0.1" value="1"></div>
+    </div>
+    <p class="feature-note">Motion can be paused at any time. Video export is WebM and availability depends on your browser; a PNG still is always offered as a fallback. A website cannot directly set your phone's system wallpaper.</p>
+  </div>
+  <div class="studio-plus">
+    <h3>🎨 Advanced background studio</h3>
+    <p class="muted">Apply a color treatment to the wallpaper you're building in Create.</p>
+    <div class="row">
+      <button class="btn" id="dwBgSoft">Soft gradient</button><button class="btn" id="dwBgOcean">Ocean glow</button><button class="btn" id="dwBgSunset">Sunset</button><button class="btn" id="dwBgNight">Midnight</button>
+    </div>
+    <div class="feature-note">These controls change the Create canvas background. Use Undo if you want to return to an earlier editor state.</div>
+  </div>
+</section>
 
 <!-- ACTIVITY -->
 
@@ -5364,6 +5410,124 @@ await loadApp();
     b.onclick=()=>copyText(location.origin+location.pathname+"#profile="+encodeURIComponent(profile?.username||""));
   }
 })();
+
+
+/* ============================================================
+   LIVE WALLPAPER + ADVANCED BACKGROUND STUDIO
+============================================================ */
+(function installLiveWallpaperStudio(){
+  const $id = id => document.getElementById(id);
+  const canvasEl = $id("dwLiveCanvas");
+  if (!canvasEl) return;
+  const ctx = canvasEl.getContext("2d");
+  let running = true, raf = 0, startAt = performance.now(), lastNow = startAt, particles = [];
+  const cfg = {style:"aurora",c1:"#79e5ee",c2:"#7c72e8",c3:"#e8c8ff",speed:1};
+  const hexRgb = h => { const n=parseInt(String(h).replace("#",""),16); return {r:(n>>16)&255,g:(n>>8)&255,b:n&255}; };
+  const rgba = (h,a) => {const c=hexRgb(h);return "rgba("+c.r+","+c.g+","+c.b+","+a+")";};
+  function resizeParticles(){particles=Array.from({length:58},()=>({x:Math.random()*canvasEl.width,y:Math.random()*canvasEl.height,r:1+Math.random()*4,v:.18+Math.random()*.8,phase:Math.random()*Math.PI*2}));}
+  function draw(now){
+    if(!running)return;
+    const w=canvasEl.width,h=canvasEl.height,t=(now-startAt)*.00018*cfg.speed;
+    const base=ctx.createLinearGradient(0,0,w,h);base.addColorStop(0,cfg.c1);base.addColorStop(.52,cfg.c2);base.addColorStop(1,cfg.c3);
+    ctx.fillStyle=base;ctx.fillRect(0,0,w,h);
+    if(cfg.style==="aurora"||cfg.style==="ocean"||cfg.style==="dream"){
+      ctx.globalCompositeOperation="screen";
+      for(let i=0;i<5;i++){
+        const y=h*(.18+i*.16)+Math.sin(t*4+i*1.7)*h*.08;
+        const x=w*(.15+i*.19)+Math.cos(t*3+i)*w*.13;
+        const g=ctx.createRadialGradient(x,y,4,x,y,w*(cfg.style==="ocean"?.48:.4));
+        g.addColorStop(0,rgba(i%2?cfg.c3:cfg.c1,.42));g.addColorStop(1,rgba(cfg.c2,0));
+        ctx.fillStyle=g;ctx.fillRect(0,0,w,h);
+      }
+      if(cfg.style==="ocean"){
+        ctx.globalCompositeOperation="source-over";
+        for(let j=0;j<9;j++){ctx.beginPath();for(let x=0;x<=w;x+=8){const y=h*.62+j*17+Math.sin(x*.018+t*8+j*.8)*12+Math.cos(x*.009-t*5)*8;if(x===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);}ctx.strokeStyle=rgba(cfg.c3,.18);ctx.lineWidth=2;ctx.stroke();}
+      }
+      ctx.globalCompositeOperation="source-over";
+    }
+    if(cfg.style==="bubbles"||cfg.style==="stars"||cfg.style==="aurora"||cfg.style==="dream"){
+      if(!particles.length)resizeParticles();
+      particles.forEach((p,i)=>{
+        p.y-=p.v*cfg.speed*(cfg.style==="stars"?1.5:1);
+        p.x+=Math.sin(t*12+p.phase)*.45*cfg.speed;
+        if(p.y<-10){p.y=h+10;p.x=Math.random()*w;}
+        if(p.x>w+10)p.x=-10;
+        ctx.beginPath();ctx.arc(p.x,p.y,p.r*(cfg.style==="stars"?.75:1),0,Math.PI*2);
+        ctx.fillStyle=rgba(i%3===0?cfg.c3:cfg.c1,cfg.style==="stars"?.7:.34);ctx.fill();
+        if(cfg.style==="stars"&&i%4===0){ctx.strokeStyle=rgba(cfg.c3,.45);ctx.beginPath();ctx.moveTo(p.x-5,p.y);ctx.lineTo(p.x+5,p.y);ctx.moveTo(p.x,p.y-5);ctx.lineTo(p.x,p.y+5);ctx.stroke();}
+      });
+    }
+    // Gentle vignette makes the live preview feel like a finished wallpaper.
+    const v=ctx.createRadialGradient(w*.5,h*.4,w*.1,w*.5,h*.5,w*.8);v.addColorStop(0,"rgba(255,255,255,0)");v.addColorStop(1,"rgba(12,8,30,.2)");ctx.fillStyle=v;ctx.fillRect(0,0,w,h);
+    raf=requestAnimationFrame(draw);
+  }
+  function restart(){cancelAnimationFrame(raf);startAt=performance.now();lastNow=startAt;resizeParticles();if(running)raf=requestAnimationFrame(draw);}
+  function setRunning(value){running=value;const b=$id("dwLiveToggle");b.textContent=running?"Ⅱ Pause motion":"▶ Resume motion";canvasEl.classList.toggle("paused",!running);if(running)restart();else cancelAnimationFrame(raf);}
+  function setDevice(){
+    const value=$id("dwLiveDevice").value;
+    const sizes={phone:[540,960],iphone:[540,1170],tablet:[720,960],square:[800,800],desktop:[960,540]};
+    [canvasEl.width,canvasEl.height]=sizes[value]||sizes.phone;
+    canvasEl.style.aspectRatio=canvasEl.width+"/"+canvasEl.height;resizeParticles();restart();
+  }
+  ["dwLiveStyle","dwLiveColor1","dwLiveColor2","dwLiveColor3","dwLiveSpeed"].forEach(id=>$id(id).addEventListener("input",()=>{
+    cfg.style=$id("dwLiveStyle").value;cfg.c1=$id("dwLiveColor1").value;cfg.c2=$id("dwLiveColor2").value;cfg.c3=$id("dwLiveColor3").value;cfg.speed=Number($id("dwLiveSpeed").value);
+    $id("dwLiveSpeedOut").textContent=cfg.speed.toFixed(1)+"×";restart();
+  }));
+  $id("dwLiveDevice").addEventListener("change",setDevice);
+  $id("dwLiveToggle").addEventListener("click",()=>setRunning(!running));
+  $id("dwLiveSnapshot").addEventListener("click",()=>{
+    try{const a=document.createElement("a");a.download="dreamwall-live-wallpaper.png";a.href=canvasEl.toDataURL("image/png");a.click();$id("dwLiveStatus").textContent="Still PNG saved."; }
+    catch(e){$id("dwLiveStatus").textContent="Couldn't save the still image in this browser. Try a different browser."; }
+  });
+  $id("dwLiveExport").addEventListener("click",async()=>{
+    if(!canvasEl.captureStream||!window.MediaRecorder){$id("dwLiveStatus").textContent="Video recording isn't supported in this browser. Use Save still PNG instead.";return;}
+    const types=["video/webm;codecs=vp9","video/webm;codecs=vp8","video/webm"];
+    const mime=types.find(t=>MediaRecorder.isTypeSupported(t))||"";
+    let recorder, chunks=[];
+    try{
+      const stream=canvasEl.captureStream(24);
+      recorder=new MediaRecorder(stream,mime?{mimeType:mime}:undefined);
+      recorder.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data);};
+      recorder.onerror=()=>{$id("dwLiveStatus").textContent="Video export failed. Save a PNG still instead.";};
+      recorder.onstop=()=>{
+        const blob=new Blob(chunks,{type:recorder.mimeType||"video/webm"});const url=URL.createObjectURL(blob);
+        const a=document.createElement("a");a.href=url;a.download="dreamwall-live-wallpaper.webm";a.click();
+        setTimeout(()=>URL.revokeObjectURL(url),1500);stream.getTracks().forEach(track=>track.stop());
+        $id("dwLiveStatus").textContent="Video exported as WebM. If your phone needs another format, convert it using a trusted video editor.";
+      };
+      $id("dwLiveStatus").textContent="Recording six seconds of animation…";recorder.start();
+      setTimeout(()=>{if(recorder.state!=="inactive")recorder.stop();},6000);
+    }catch(e){$id("dwLiveStatus").textContent="Couldn't export video in this browser. Save a PNG still instead.";}
+  });
+  function applyBackground(css){
+    if(typeof canvas==="undefined"||!canvas){return;}
+    canvas.style.background=css;canvas.style.backgroundImage="none";canvas.style.backgroundSize="";
+    if(typeof saveHistory==="function")saveHistory();
+  }
+  $id("dwBgSoft").onclick=()=>{applyBackground("linear-gradient(135deg,#fbc2eb 0%,#a6c1ee 100%)");go("create");};
+  $id("dwBgOcean").onclick=()=>{applyBackground("radial-gradient(circle at 25% 20%,#b8f7f5,transparent 42%),linear-gradient(145deg,#087eae,#62d8dc 55%,#b6f6ed)");go("create");};
+  $id("dwBgSunset").onclick=()=>{applyBackground("linear-gradient(145deg,#ffb199,#ff6a88 48%,#7b61ff)");go("create");};
+  $id("dwBgNight").onclick=()=>{applyBackground("radial-gradient(circle at 70% 25%,#553b92,transparent 38%),linear-gradient(145deg,#080b27,#171744,#36215d)");go("create");};
+  // Color matching: pull the current background's dominant usable color, then build a coordinated mini-palette.
+  const panel=document.querySelector("#create .panel");
+  if(panel&&!$id("dwColorMatch")){
+    const box=document.createElement("section");box.className="studio-plus";box.innerHTML='<h3>🌈 Color match & palette</h3><div class="field"><label>Pick a color to match</label><input id="dwMatchColor" type="color" value="#79dce8"></div><div id="dwPalette" class="row" style="flex-wrap:wrap"></div><button class="btn" id="dwApplyPalette">Apply picked color as background</button><div class="feature-note">Build a coordinated palette with complementary and neighboring shades.</div>';
+    panel.appendChild(box);
+    function palette(){
+      const hex=$id("dwMatchColor").value;const n=parseInt(hex.slice(1),16);const r=(n>>16)&255,g=(n>>8)&255,b=n&255;
+      const max=Math.max(r,g,b),min=Math.min(r,g,b),d=max-min;let h=0;
+      if(d){if(max===r)h=((g-b)/d)%6;else if(max===g)h=(b-r)/d+2;else h=(r-g)/d+4;h=Math.round(h*60);if(h<0)h+=360;}
+      const hsvToHex=(hh,ss,vv)=>{const c=vv*ss,x=c*(1-Math.abs((hh/60)%2-1)),m=vv-c;let rr=0,gg=0,bb=0;if(hh<60){rr=c;gg=x;}else if(hh<120){rr=x;gg=c;}else if(hh<180){gg=c;bb=x;}else if(hh<240){gg=x;bb=c;}else if(hh<300){rr=x;bb=c;}else{rr=c;bb=x;}return "#"+[rr,gg,bb].map(v=>Math.round((v+m)*255).toString(16).padStart(2,"0")).join("");};
+      const colors=[hex,hsvToHex((h+28)%360,Math.min(1,(max-min)/255+.45),.95),hsvToHex((h+180)%360,.55,.9),hsvToHex((h+210)%360,.38,.78),hsvToHex(h,.18,1)];
+      $id("dwPalette").innerHTML=colors.map(c=>'<button type="button" title="'+c+'" aria-label="Use '+c+'" style="width:42px;height:42px;border-radius:50%;border:2px solid var(--line);background:'+c+'" data-dw-color="'+c+'"></button>').join("");
+      $id("dwPalette").querySelectorAll("[data-dw-color]").forEach(b=>b.onclick=()=>{$id("dwMatchColor").value=b.dataset.dwColor;palette();});
+    }
+    $id("dwMatchColor").addEventListener("input",palette);palette();
+    $id("dwApplyPalette").onclick=()=>{applyBackground($id("dwMatchColor").value);go("create");};
+  }
+  resizeParticles();setDevice();cfg.style=$id("dwLiveStyle").value;
+})();
+
 
 /* ============================================================
    APP LOADING
