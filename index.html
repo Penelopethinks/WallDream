@@ -703,6 +703,19 @@ button{
   background:var(--card);
 }
 
+
+/* DreamWall Studio+ */
+.studio-plus{border:1px solid var(--line);border-radius:17px;padding:16px;background:var(--card);margin-top:16px}
+.studio-plus h3{margin:0 0 10px;font-size:15px}
+.studio-plus .field{margin:9px 0}
+.studio-plus .row{margin:8px 0}
+.studio-plus textarea{min-height:74px}
+.device-shell{transition:width .2s,height .2s,aspect-ratio .2s;max-height:590px}
+.feature-note{font-size:12px;color:var(--muted);margin-top:7px}
+.collection-card{border:1px solid var(--line);border-radius:14px;padding:13px;margin:10px 0;background:var(--card)}
+.reaction-strip{display:flex;gap:4px;flex-wrap:wrap;padding:0 14px 10px}
+.reaction-chip{border:1px solid var(--line);background:var(--soft);border-radius:999px;padding:5px 9px;color:var(--text);font-size:13px}
+
 @media(max-width:850px){
   .sidebar{
     width:76px;
@@ -5210,6 +5223,147 @@ await loadApp();
 
 };
 
+
+
+/* ============================================================
+   DREAMWALL STUDIO+ — projects, versions, device preview,
+   layer ordering, remixing, gifting, reactions and collections.
+   These extras use browser storage and existing Supabase tables.
+============================================================ */
+(function installDreamWallStudioPlus(){
+  const currentUserKey = () => user?.id || "guest";
+  const key = suffix => "dw_" + suffix + "_" + currentUserKey();
+  const read = (k, fallback=[]) => { try { return JSON.parse(localStorage.getItem(k)) ?? fallback; } catch { return fallback; } };
+  const write = (k,v) => localStorage.setItem(k, JSON.stringify(v));
+  const toast = msg => { const n=document.createElement("div"); n.className="notice"; n.textContent=msg; n.style.cssText="position:fixed;bottom:84px;right:18px;z-index:250;max-width:330px;box-shadow:0 8px 30px #0002"; document.body.appendChild(n); setTimeout(()=>n.remove(),2600); };
+  const safeName = s => String(s||"DreamWall").replace(/[<>]/g,"").slice(0,60);
+  const snapshot = () => ({name:"My wallpaper",editor:editorState(),caption:$("caption").value,updatedAt:new Date().toISOString()});
+  const projects = () => read(key("projects"),[]);
+  const versions = () => read(key("versions"),[]);
+  const collections = () => read(key("collections"),[]);
+  const escapeText = s => esc(s);
+  const addSection = (parent, html) => { const d=document.createElement("section"); d.className="studio-plus"; d.innerHTML=html; parent.appendChild(d); return d; };
+
+  const panel=document.querySelector("#create .panel");
+  if(panel){
+    const tools=addSection(panel, `
+      <h3>✨ Studio+ tools</h3>
+      <div class="field"><label>Phone preview</label><select id="dwDevice" class="search"><option value="wallpaper">Wallpaper canvas · 9:16</option><option value="iphone">iPhone · 9:19.5</option><option value="android">Android · 9:20</option><option value="tablet">Tablet · 3:4</option><option value="square">Square post · 1:1</option></select></div>
+      <div class="row"><button class="tool" id="dwSaveVersion">⏱ Save version</button><button class="tool" id="dwVersions">Version history</button></div>
+      <div class="field"><label>Saved project name</label><input id="dwProjectName" class="search" maxlength="60" placeholder="My ocean wallpaper"></div>
+      <div class="row"><button class="tool" id="dwSaveProject">💾 Save project</button><button class="tool" id="dwOpenProjects">My projects</button></div>
+      <div class="row"><button class="tool" id="dwLayerUp">⬆ Bring forward</button><button class="tool" id="dwLayerDown">⬇ Send backward</button></div>
+      <div class="field"><label>Share or collaborate (project JSON)</label><textarea id="dwProjectTransfer" placeholder="Export a project to share it, or paste a project JSON here to import it."></textarea></div>
+      <div class="row"><button class="tool" id="dwExportProject">↗ Export project</button><button class="tool" id="dwImportProject">↙ Import project</button></div>
+      <div class="feature-note">Projects, versions, collections, and reactions are saved in this browser. Export/import lets you collaborate by sharing a project file or text.</div>
+    `);
+    $("dwDevice").onchange=()=>{
+      const c=$("canvas"), v=$("dwDevice").value;
+      c.style.width = v==="tablet" ? "min(100%,390px)" : "min(100%,330px)";
+      c.style.aspectRatio = v==="iphone" ? "9/19.5" : v==="android" ? "9/20" : v==="tablet" ? "3/4" : v==="square" ? "1/1" : "9/16";
+      c.style.maxHeight="590px";
+    };
+    $("dwSaveVersion").onclick=()=>{
+      const list=versions(); list.unshift({...snapshot(),name:safeName($("dwProjectName").value||"Version "+(list.length+1))});
+      write(key("versions"),list.slice(0,30)); toast("Version saved. You can restore it from Version history.");
+    };
+    $("dwVersions").onclick=()=>{
+      const list=versions(); if(!list.length){toast("No saved versions yet. Tap Save version first.");return;}
+      $("userContent").innerHTML='<button class="close" id="dwClosePanel">×</button><h2>Version history</h2><p class="muted">Restore an earlier version of this design.</p>'+list.map((v,i)=>'<div class="collection-card"><b>'+escapeText(v.name||"Version")+'</b><div class="muted">'+escapeText(new Date(v.updatedAt||Date.now()).toLocaleString())+'</div><div class="row"><button class="btn" data-dw-restore="'+i+'">Restore</button><button class="btn" data-dw-version-delete="'+i+'">Delete</button></div></div>').join("");
+      $("userModal").classList.add("open"); $("dwClosePanel").onclick=()=>$("userModal").classList.remove("open");
+      document.querySelectorAll("[data-dw-restore]").forEach(b=>b.onclick=()=>{const v=list[+b.dataset.dwRestore];if(v?.editor){applyState(v.editor);$("caption").value=v.caption||"";saveHistory();$("userModal").classList.remove("open");go("create");toast("Version restored.");}});
+      document.querySelectorAll("[data-dw-version-delete]").forEach(b=>b.onclick=()=>{list.splice(+b.dataset.dwVersionDelete,1);write(key("versions"),list);$("dwVersions").click();});
+    };
+    $("dwSaveProject").onclick=()=>{
+      const list=projects(); const name=safeName($("dwProjectName").value||"Untitled project");
+      list.unshift({...snapshot(),name,id:"project_"+Date.now()}); write(key("projects"),list.slice(0,50)); toast("Saved to My projects.");
+    };
+    $("dwOpenProjects").onclick=()=>{
+      const list=projects(); $("userContent").innerHTML='<button class="close" id="dwClosePanel">×</button><h2>My projects</h2>'+ (list.map((p,i)=>'<div class="collection-card"><b>'+escapeText(p.name)+'</b><div class="muted">'+escapeText(new Date(p.updatedAt||Date.now()).toLocaleString())+'</div><div class="row"><button class="btn" data-dw-project-open="'+i+'">Open</button><button class="btn" data-dw-project-export="'+i+'">Share / export</button><button class="btn" data-dw-project-delete="'+i+'">Delete</button></div></div>').join("")||'<div class="notice">No saved projects yet.</div>');
+      $("userModal").classList.add("open"); $("dwClosePanel").onclick=()=>$("userModal").classList.remove("open");
+      document.querySelectorAll("[data-dw-project-open]").forEach(b=>b.onclick=()=>{const p=list[+b.dataset.dwProjectOpen];applyState(p.editor);$("caption").value=p.caption||"";$("dwProjectName").value=p.name||"";saveHistory();$("userModal").classList.remove("open");go("create");toast("Project opened.");});
+      document.querySelectorAll("[data-dw-project-export]").forEach(b=>b.onclick=()=>{ $("dwProjectTransfer").value=JSON.stringify(list[+b.dataset.dwProjectExport],null,2); $("userModal").classList.remove("open");go("create");$("dwProjectTransfer").focus();});
+      document.querySelectorAll("[data-dw-project-delete]").forEach(b=>b.onclick=()=>{list.splice(+b.dataset.dwProjectDelete,1);write(key("projects"),list);$("userModal").classList.remove("open");toast("Project deleted.");});
+    };
+    $("dwLayerUp").onclick=()=>{if(!selected){toast("Select a sticker or text layer first.");return;}if(selected.nextElementSibling)selected.parentNode.insertBefore(selected.nextElementSibling,selected);saveHistory();updateLayers();};
+    $("dwLayerDown").onclick=()=>{if(!selected){toast("Select a sticker or text layer first.");return;}if(selected.previousElementSibling)selected.parentNode.insertBefore(selected,selected.previousElementSibling);saveHistory();updateLayers();};
+    $("dwExportProject").onclick=()=>{ $("dwProjectTransfer").value=JSON.stringify({...snapshot(),format:"dreamwall-project-v1"},null,2); $("dwProjectTransfer").focus(); $("dwProjectTransfer").select(); toast("Project exported to the text box. Copy it and send it to a collaborator."); };
+    $("dwImportProject").onclick=()=>{try{const p=JSON.parse($("dwProjectTransfer").value);if(!p.editor||!Array.isArray(p.editor.objects))throw new Error("This doesn't look like a DreamWall project.");applyState(p.editor);$("caption").value=p.caption||"";$("dwProjectName").value=p.name||"Imported project";saveHistory();toast("Project imported!");}catch(e){toast("Could not import: "+e.message);} };
+  }
+
+  // Social sharing and collections appear inside Explore.
+  const explore=document.querySelector("#explore");
+  if(explore){
+    const c=addSection(explore, '<h3>💗 Collections</h3><div class="field"><label>Collection name</label><input id="dwCollectionName" class="search" placeholder="Ocean dreams, pastel skies..."></div><div class="row"><button class="btn primary" id="dwCreateCollection">＋ Create collection</button><button class="btn" id="dwViewCollections">My collections</button></div><div class="feature-note">Save community wallpapers into collections from their preview. Share a collection as a portable link.</div>');
+    $("dwCreateCollection").onclick=()=>{const name=safeName($("dwCollectionName").value);if(!name||name==="DreamWall"){toast("Give your collection a name first.");return;}const list=collections();list.unshift({id:"collection_"+Date.now(),name,items:[],createdAt:new Date().toISOString()});write(key("collections"),list);$("dwCollectionName").value="";toast("Collection created.");};
+    $("dwViewCollections").onclick=()=>{
+      const list=collections();$("userContent").innerHTML='<button class="close" id="dwClosePanel">×</button><h2>My collections</h2>'+ (list.map((c,i)=>'<div class="collection-card"><b>'+escapeText(c.name)+'</b><div class="muted">'+c.items.length+' wallpaper(s)</div><div class="row"><button class="btn" data-dw-collection-share="'+i+'">Share link</button><button class="btn" data-dw-collection-open="'+i+'">View</button><button class="btn" data-dw-collection-delete="'+i+'">Delete</button></div></div>').join("")||'<div class="notice">Create your first collection above.</div>');
+      $("userModal").classList.add("open");$("dwClosePanel").onclick=()=>$("userModal").classList.remove("open");
+      document.querySelectorAll("[data-dw-collection-share]").forEach(b=>b.onclick=()=>{const c=list[+b.dataset.dwCollectionShare];const url=location.origin+location.pathname+"#dw-collection="+encodeURIComponent(btoa(unescape(encodeURIComponent(JSON.stringify(c)))));copyText(url);});
+      document.querySelectorAll("[data-dw-collection-open]").forEach(b=>b.onclick=()=>{const c=list[+b.dataset.dwCollectionOpen];$("userContent").innerHTML='<button class="close" id="dwClosePanel">×</button><h2>'+escapeText(c.name)+'</h2>'+c.items.map((w,i)=>'<div class="collection-card"><b>'+escapeText(w.title||"Wallpaper")+'</b><div class="muted">'+escapeText(w.caption||"")+'</div><button class="btn" data-dw-use-collection="'+i+'">Remix in editor</button></div>').join("")||'<div class="notice">This collection is empty. Open a wallpaper preview and choose Add to collection.</div>'; $("dwClosePanel").onclick=()=>$("userModal").classList.remove("open");document.querySelectorAll("[data-dw-use-collection]").forEach(x=>x.onclick=()=>useWallpaper(c.items[+x.dataset.dwUseCollection]));});
+      document.querySelectorAll("[data-dw-collection-delete]").forEach(b=>b.onclick=()=>{list.splice(+b.dataset.dwCollectionDelete,1);write(key("collections"),list);$("userModal").classList.remove("open");toast("Collection deleted.");});
+    };
+    const hash=location.hash.match(/dw-collection=([^&]+)/);
+    if(hash){try{const shared=JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(hash[1])))));toast('Shared collection "'+safeName(shared.name)+'" opened. Create a local copy to keep it.');const list=collections();if(!list.some(x=>x.id===shared.id)){list.unshift(shared);write(key("collections"),list);}}catch(e){console.warn("Invalid shared collection link",e);}}
+  }
+
+  function copyText(value){if(navigator.clipboard?.writeText)navigator.clipboard.writeText(value).then(()=>toast("Share link copied!")).catch(()=>prompt("Copy this share link:",value));else prompt("Copy this share link:",value);}
+  window.dwGiftWallpaper=async id=>{
+    if(!user){$("authModal").classList.add("open");return;}
+    const w=wallpapers.find(x=>String(x.id)===String(id));if(!w){toast("Only published community wallpapers can be gifted this way.");return;}
+    const handle=prompt("Enter the DreamWaller username to gift this wallpaper to:");if(!handle)return;
+    const target=people.find(p=>(p.username||"").toLowerCase().replace(/^@/,"")===handle.toLowerCase().replace(/^@/,""));
+    if(!target){toast("I couldn't find that username. Check the spelling and try again.");return;}
+    if(target.id===user.id){toast("You already have this wallpaper — send it to a friend instead.");return;}
+    const result=await sb.from("messages").insert({sender_id:user.id,receiver_id:target.id,text:"DW_WALLPAPER:"+JSON.stringify(w)});
+    if(result.error){toast("Could not send the gift: "+result.error.message);return;}
+    toast("Wallpaper gift sent to @"+target.username+"!");go("messages");
+  };
+  window.dwRemixWallpaper=id=>{const w=wallpapers.find(x=>String(x.id)===String(id));if(w)useWallpaper(w);else toast("Open a wallpaper preview and use Use in editor to remix this design.");};
+  window.dwReactWallpaper=(id,emoji)=>{
+    const all=read(key("reactions"),{});all[id]=all[id]===emoji?"":emoji;write(key("reactions"),all);
+    const label=document.querySelector('[data-reaction-label="'+CSS.escape(String(id))+'"]');if(label)label.textContent=all[id]||"React";
+    toast(all[id]?"Reaction saved on this browser.":"Reaction removed.");
+  };
+  window.dwAddToCollection=id=>{
+    const w=wallpapers.find(x=>String(x.id)===String(id));if(!w){toast("Save generated designs from their preview by using Save.");return;}
+    const list=collections();if(!list.length){toast("Create a collection in the Explore section first.");go("explore");return;}
+    const choice=prompt("Add to which collection?\n"+list.map((c,i)=>(i+1)+". "+c.name).join("\n"),"1");const index=Number(choice)-1;if(!Number.isInteger(index)||!list[index])return;
+    if(!list[index].items.some(x=>String(x.id)===String(w.id)))list[index].items.push(w);write(key("collections"),list);toast("Added to "+list[index].name+"!");
+  };
+
+  // Add action controls to feed posts without requiring database schema changes.
+  const originalRenderPosts=renderPosts;
+  renderPosts=function(){
+    originalRenderPosts();
+    document.querySelectorAll("#feed .post").forEach(post=>{
+      const wall=post.querySelector("[data-wid]");if(!wall)return;const id=wall.dataset.wid;
+      const actions=post.querySelector(".actions");if(!actions||actions.querySelector("[data-dw-social]"))return;
+      actions.insertAdjacentHTML("beforeend",'<button class="icon" data-dw-social="gift" title="Gift wallpaper" aria-label="Gift wallpaper" onclick="dwGiftWallpaper(\''+id+'\')">🎁</button><button class="icon" data-dw-social="remix" title="Remix wallpaper" aria-label="Remix wallpaper" onclick="dwRemixWallpaper(\''+id+'\')">🎨</button><button class="icon" data-dw-social="collect" title="Add to collection" aria-label="Add to collection" onclick="dwAddToCollection(\''+id+'\')">📚</button>');
+      const reactions=document.createElement("div");reactions.className="reaction-strip";reactions.innerHTML='<span class="muted" style="align-self:center">React</span>'+["😍","✨","🌊","🎀","🔥"].map(e=>'<button class="reaction-chip" onclick="dwReactWallpaper(\''+id+'\',\''+e+'\')">'+e+'</button>').join("")+'<span class="muted" data-reaction-label="'+id+'">React</span>';post.appendChild(reactions);
+    });
+  };
+
+  // Expand the existing preview actions to include remix, gift and collection saving.
+  const originalPreview=previewWallpaper;
+  previewWallpaper=function(w){
+    originalPreview(w);
+    const actions=document.querySelector("#userContent .small-actions");
+    if(!actions)return;
+    const isPublished=wallpapers.some(x=>String(x.id)===String(w.id));
+    actions.insertAdjacentHTML("beforeend",'<button class="btn" id="dwRemixPreview">🎨 Remix</button><button class="btn" id="dwCollectPreview">📚 Add to collection</button>'+(isPublished?'<button class="btn" id="dwGiftPreview">🎁 Gift</button>':''));
+    $("dwRemixPreview").onclick=()=>useWallpaper(w);
+    $("dwCollectPreview").onclick=()=>{if(isPublished)dwAddToCollection(w.id);else{const list=collections();if(!list.length){toast("Create a collection in Explore first.");return;}const choice=prompt("Add to which collection?\n"+list.map((c,i)=>(i+1)+". "+c.name).join("\n"),"1");const index=Number(choice)-1;if(!list[index])return;list[index].items.push(w);write(key("collections"),list);toast("Added to "+list[index].name+"!");}};
+    if(isPublished)$("dwGiftPreview").onclick=()=>dwGiftWallpaper(w.id);
+  };
+
+  // Profile sharing gives each creator page a simple share action.
+  const profileTop=document.querySelector("#profile .top");
+  if(profileTop&&!$("dwShareProfile")){
+    const b=document.createElement("button");b.className="btn";b.id="dwShareProfile";b.textContent="↗ Share profile";profileTop.appendChild(b);
+    b.onclick=()=>copyText(location.origin+location.pathname+"#profile="+encodeURIComponent(profile?.username||""));
+  }
+})();
 
 /* ============================================================
    APP LOADING
