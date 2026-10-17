@@ -5708,6 +5708,219 @@ resetExplore();
 
 loadApp();
 
+
+/* ============================================================
+   DREAMWALL MEDIA TYPES + AI-STYLE MAKER + VIDEO POSTS
+   Uses the existing wallpapers table and its JSON decorations field.
+============================================================ */
+(function installDreamWallMediaFeatures(){
+  const style = document.createElement("style");
+  style.textContent = `
+    .dw-source-badge{display:inline-flex;align-items:center;gap:5px;width:max-content;max-width:100%;margin-top:7px;padding:5px 9px;border-radius:999px;font-size:10px;font-weight:900;letter-spacing:.055em;background:var(--soft);border:1px solid var(--line);color:var(--text)}
+    .dw-source-badge.ai{background:#f1eaff;color:#6735b7;border-color:#dfd0ff}
+    .dw-source-badge.video{background:#e3f9ff;color:#086b84;border-color:#b6efff}
+    body.dark .dw-source-badge.ai{background:#2b1d40;color:#e0caff}
+    body.dark .dw-source-badge.video{background:#102d35;color:#b5f2ff}
+    .dw-video-wall{position:relative;width:100%;height:100%;min-height:280px;display:grid;place-items:center;overflow:hidden;background:#09080b;border-radius:14px}
+    .dw-video-wall video{display:block;width:100%;height:100%;min-height:280px;max-height:72vh;object-fit:cover}
+    .dw-feature-panel{margin:16px 0;padding:18px;border:1px solid var(--line);border-radius:18px;background:var(--card);box-shadow:0 8px 24px #00000008}
+    .dw-feature-panel h3{margin:0 0 8px;font-size:18px}
+    .dw-feature-panel .dw-note{font-size:12px;color:var(--muted);line-height:1.5;margin:7px 0 12px}
+    .dw-feature-panel input,.dw-feature-panel textarea{width:100%;border:1px solid var(--line);background:var(--bg);color:var(--text);padding:11px 12px;border-radius:11px;margin:5px 0 10px}
+    .dw-ai-preview{height:230px;border-radius:15px;display:grid;place-items:center;text-align:center;padding:20px;color:white;font-size:30px;font-weight:800;background:linear-gradient(135deg,#7be7e9,#7563d9,#ff9acb);background-size:180% 180%;overflow:hidden}
+    .dw-ai-preview span{filter:drop-shadow(0 3px 8px #0004)}
+    .dw-infinite-hint{font-size:12px;color:var(--muted);text-align:center;padding:10px}
+    @media(max-width:600px){.dw-feature-panel{padding:14px}.dw-ai-preview{height:190px}}
+  `;
+  document.head.appendChild(style);
+
+  const getMeta = w => Array.isArray(w?.decorations) ? w.decorations.find(x => x && x._dwMeta === true) || {} : {};
+  const sourceLabel = w => {
+    const meta = getMeta(w);
+    if(meta.mediaType === "video") return {text:"VIDEO WALLPAPER · COMMUNITY POST",cls:"video"};
+    if(meta.sourceType === "ai") return {text:"AI-STYLE GENERATED",cls:"ai"};
+    return {text:"REAL · COMMUNITY-MADE",cls:""};
+  };
+  const originalRenderWall = renderWall;
+  renderWall = function(element,w){
+    const meta = getMeta(w);
+    if(meta.mediaType === "video" && meta.mediaUrl){
+      element.innerHTML = "";
+      element.style.cssText = "background:#08080b;overflow:hidden;border-radius:14px;position:relative;";
+      const wrap = document.createElement("div");
+      wrap.className = "dw-video-wall";
+      const video = document.createElement("video");
+      video.src = meta.mediaUrl;
+      video.controls = true;
+      video.loop = true;
+      video.muted = true;
+      video.playsInline = true;
+      video.preload = "metadata";
+      video.setAttribute("aria-label","Video wallpaper preview");
+      video.addEventListener("error",()=>{wrap.innerHTML='<div style="padding:22px;color:white;text-align:center">This video could not be loaded. Check that the link is a direct MP4 or WebM video URL.</div>';});
+      wrap.appendChild(video);
+      element.appendChild(wrap);
+      return;
+    }
+    const clean = {...w, decorations:Array.isArray(w?.decorations)?w.decorations.filter(x=>!(x&&x._dwMeta===true)):[]};
+    originalRenderWall(element,clean);
+  };
+
+  const addBadges = () => {
+    document.querySelectorAll("#feed .post").forEach(post=>{
+      const wall=post.querySelector("[data-wid]");
+      if(!wall)return;
+      const w=wallpapers.find(x=>String(x.id)===String(wall.dataset.wid));
+      if(!w)return;
+      const head=post.querySelector(".posthead");
+      if(!head || head.querySelector(".dw-source-badge"))return;
+      const badge=sourceLabel(w);
+      const el=document.createElement("span");
+      el.className="dw-source-badge "+badge.cls;
+      el.textContent=badge.text;
+      const target=head.querySelector(".post-time")?.parentElement || head.lastElementChild;
+      target?.appendChild(el);
+    });
+  };
+  const baseRenderPosts = renderPosts;
+  renderPosts = function(){baseRenderPosts();addBadges();};
+
+  // The Explore stream is already observer-driven; label its generated inspiration tiles
+  // so users can tell these are generated previews rather than community posts.
+  const baseAddExploreBatch = addExploreBatch;
+  addExploreBatch = function(amount=24){
+    baseAddExploreBatch(amount);
+    document.querySelectorAll("#exploreGrid .explore-tile").forEach(tile=>{
+      if(tile.querySelector(".dw-source-badge"))return;
+      const badge=document.createElement("span");
+      badge.className="dw-source-badge ai";
+      badge.textContent="GENERATED PREVIEW";
+      badge.style.margin="8px 0 0";
+      tile.appendChild(badge);
+    });
+  };
+
+  const livePage = document.getElementById("liveWallpapers");
+  if(livePage){
+    const panel=document.createElement("div");
+    panel.className="dw-feature-panel";
+    panel.innerHTML=`
+      <h3>✨ AI Wallpaper Maker</h3>
+      <p class="dw-note">Describe a vibe and make a custom, animated-color-inspired wallpaper. This built-in maker uses prompt-based design recipes; it does not connect to an external image-generation AI service. Posts are labeled honestly as AI-style generated.</p>
+      <label for="dwAiPrompt">Describe your wallpaper</label>
+      <input id="dwAiPrompt" maxlength="180" placeholder="e.g. dreamy turquoise ocean, tiny stars, soft pink glow">
+      <div id="dwAiPreview" class="dw-ai-preview"><span id="dwAiPreviewText">Your vibe, your wallpaper ✨</span></div>
+      <div class="row" style="margin-top:12px">
+        <button class="btn" id="dwAiGenerate">✨ Generate design</button>
+        <button class="btn primary" id="dwAiPublish">Publish AI-style design</button>
+      </div>
+      <p class="dw-note" id="dwAiStatus">Tip: try ocean, sunset, forest, galaxy, pink, or turquoise.</p>
+    `;
+    const firstStudio = livePage.querySelector(".studio-plus");
+    if(firstStudio) firstStudio.insertAdjacentElement("afterend",panel);
+    else livePage.appendChild(panel);
+
+    const videoPanel=document.createElement("div");
+    videoPanel.className="dw-feature-panel";
+    videoPanel.innerHTML=`
+      <h3>🎬 Post a video wallpaper</h3>
+      <p class="dw-note">Paste a public, direct video-file URL (MP4 or WebM). The video will appear in your feed with playback controls. A normal webpage or social-media share link may not work. Sign in to publish.</p>
+      <label for="dwVideoUrl">Direct video URL</label>
+      <input id="dwVideoUrl" type="url" placeholder="https://example.com/my-wallpaper.mp4">
+      <label for="dwVideoCaption">Caption</label>
+      <textarea id="dwVideoCaption" rows="2" maxlength="220" placeholder="Describe the motion or mood..."></textarea>
+      <button class="btn primary" id="dwVideoPublish">🎬 Publish video wallpaper</button>
+      <p class="dw-note" id="dwVideoStatus">Live previews and exported WebM clips can be viewed here; publishing requires a video URL that other people can access.</p>
+    `;
+    panel.insertAdjacentElement("afterend",videoPanel);
+
+    let aiDraft=null;
+    const promptEl=()=>document.getElementById("dwAiPrompt");
+    const preview=document.getElementById("dwAiPreview");
+    const previewText=document.getElementById("dwAiPreviewText");
+    const paletteFor = prompt => {
+      const p=prompt.toLowerCase();
+      if(/ocean|sea|beach|turquoise|underwater|wave/.test(p))return ["#67e8f9","#1d9bb6","#786de8"];
+      if(/sunset|sunrise|orange|golden/.test(p))return ["#ff8a7a","#ffbf69","#8d6ee8"];
+      if(/forest|moss|nature|garden|green/.test(p))return ["#b7e4c7","#40916c","#1b4332"];
+      if(/galaxy|space|stars|cosmic|moon/.test(p))return ["#161044","#6d4aff","#f38bd4"];
+      if(/pink|cute|dreamy|pastel/.test(p))return ["#ffb7d5","#c5a5ff","#8ce6ee"];
+      if(/blue|ice|winter|sky/.test(p))return ["#bdeeff","#60a5fa","#6d5dfc"];
+      return ["#f7a8d8","#8b7cf6","#63d9e8"];
+    };
+    const generateAIStyle = ()=>{
+      const prompt=(promptEl().value||"dreamy pastel ocean").trim();
+      const colors=paletteFor(prompt);
+      const words=prompt.split(/\s+/).filter(Boolean).slice(0,5).join(" ");
+      const emojis=/ocean|sea|beach|underwater|wave/i.test(prompt)?"🌊 𓇼 🫧":
+        /forest|garden|nature|green/i.test(prompt)?"🌿 ✨ 🍃":
+        /galaxy|space|stars|moon/i.test(prompt)?"☾ ✦ ✧":
+        /sunset|sunrise/i.test(prompt)?"☀️ ✨ 🌅":"✧ ✨ ♡";
+      const background=`radial-gradient(circle at 18% 18%, ${colors[0]} 0, transparent 36%), radial-gradient(circle at 82% 22%, ${colors[2]} 0, transparent 35%), linear-gradient(145deg, ${colors[1]}, ${colors[0]}, ${colors[2]})`;
+      preview.style.background=background;
+      preview.style.backgroundSize="180% 180%";
+      previewText.textContent=emojis+"\n"+(words||"Dreamy wallpaper");
+      previewText.style.whiteSpace="pre-line";
+      aiDraft={prompt,background,colors,emojis};
+      document.getElementById("dwAiStatus").textContent="Design generated! You can publish it below. Label: AI-STYLE GENERATED.";
+    };
+    document.getElementById("dwAiGenerate").addEventListener("click",generateAIStyle);
+    promptEl().addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();generateAIStyle();}});
+    document.getElementById("dwAiPublish").addEventListener("click",async()=>{
+      if(!user){document.getElementById("authModal")?.classList.add("open");return;}
+      if(!aiDraft)generateAIStyle();
+      const button=document.getElementById("dwAiPublish");
+      button.disabled=true;button.textContent="Publishing…";
+      try{
+        const result=await sb.from("wallpapers").insert({
+          user_id:user.id,title:"AI-style wallpaper",subtitle:aiDraft.prompt.slice(0,80),
+          caption:"✨ AI-style generated: "+aiDraft.prompt,
+          background:aiDraft.background,text_color:"#fff",font:"Arial",title_size:52,subtitle_size:16,
+          decorations:[{text:aiDraft.emojis,css:"position:absolute;left:8%;top:15%;font-size:34px;filter:drop-shadow(0 3px 10px #0003)"},{_dwMeta:true,sourceType:"ai",mediaType:"image",prompt:aiDraft.prompt}],
+          brightness:100,contrast:100,blur:0
+        }).select("*").single();
+        if(result.error)throw result.error;
+        wallpapers=[result.data,...wallpapers];
+        await loadLikes();renderEverything();go("home");
+        alert("Your AI-style wallpaper is posted! ✨");
+      }catch(e){console.error(e);document.getElementById("dwAiStatus").textContent="Could not publish: "+(e?.message||"Please try again.");}
+      finally{button.disabled=false;button.textContent="Publish AI-style design";}
+    });
+
+    document.getElementById("dwVideoPublish").addEventListener("click",async()=>{
+      if(!user){document.getElementById("authModal")?.classList.add("open");return;}
+      const url=document.getElementById("dwVideoUrl").value.trim();
+      const status=document.getElementById("dwVideoStatus");
+      let parsed;
+      try{parsed=new URL(url);}catch(_){status.textContent="Please enter a valid public video URL.";return;}
+      if(!["https:","http:"].includes(parsed.protocol)){status.textContent="Use a public http or https video URL.";return;}
+      if(!/\.(mp4|webm|mov)(\?.*)?$/i.test(parsed.pathname+parsed.search)){
+        status.textContent="This looks like a webpage link, not a direct video file. Use a direct .mp4 or .webm URL.";return;
+      }
+      const button=document.getElementById("dwVideoPublish");
+      button.disabled=true;button.textContent="Publishing…";
+      try{
+        const result=await sb.from("wallpapers").insert({
+          user_id:user.id,title:"Video wallpaper",subtitle:"Looping video",
+          caption:document.getElementById("dwVideoCaption").value.trim(),
+          background:"#08080b",text_color:"#fff",font:"Arial",title_size:52,subtitle_size:16,
+          decorations:[{_dwMeta:true,sourceType:"community",mediaType:"video",mediaUrl:url}],
+          brightness:100,contrast:100,blur:0
+        }).select("*").single();
+        if(result.error)throw result.error;
+        wallpapers=[result.data,...wallpapers];
+        await loadLikes();renderEverything();go("home");
+        alert("Your video wallpaper is posted! 🎬");
+      }catch(e){console.error(e);status.textContent="Could not publish: "+(e?.message||"Please try again.");}
+      finally{button.disabled=false;button.textContent="🎬 Publish video wallpaper";}
+    });
+  }
+
+  // Make the endless Explore feed feel continuous and clarify generated previews.
+  const loader=document.getElementById("exploreLoader");
+  if(loader){loader.textContent="Keep scrolling ✨ More wallpapers appear as you go.";loader.classList.add("dw-infinite-hint");}
+})();
+
 </script>
 
 </body>
