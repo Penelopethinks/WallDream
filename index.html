@@ -6,6 +6,7 @@
 <title>DreamWall ✨</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.min.js"></script>
 
 <style>
 :root{
@@ -352,6 +353,14 @@ button{
 .explore-tile:hover{
   transform:scale(1.025);
 }
+.download-tile{
+  position:absolute;right:7px;bottom:7px;z-index:3;
+  border:0;border-radius:999px;background:#fff;color:#33233d;
+  box-shadow:0 2px 12px #0003;padding:7px 10px;font-weight:800;
+  cursor:pointer;font-size:13px;
+}
+.download-tile:disabled{opacity:.65;cursor:wait}
+.download-action{font-size:14px!important;}
 
 .editor{
   display:grid;
@@ -1789,6 +1798,35 @@ blur(${w.blur ?? 0}px);
 }
 
 
+async function downloadWallpaper(element, filename="dreamwall-wallpaper.png"){
+if(!element){ alert("Sorry, I couldn't find that wallpaper."); return; }
+if(!window.htmlToImage || !window.htmlToImage.toPng){
+alert("The download tool is still loading. Please try again in a moment."); return;
+}
+const button = document.activeElement;
+const oldText = button && button.tagName === "BUTTON" ? button.textContent : "";
+if(button && button.tagName === "BUTTON"){ button.disabled = true; button.textContent = "Preparing…"; }
+try{
+if(document.fonts && document.fonts.ready) await document.fonts.ready;
+const dataUrl = await window.htmlToImage.toPng(element,{cacheBust:true,pixelRatio:2,backgroundColor:"#ffffff"});
+const link = document.createElement("a");
+link.download = filename.replace(/[^a-z0-9._-]+/gi,"-");
+link.href = dataUrl;
+document.body.appendChild(link); link.click(); link.remove();
+}catch(error){
+console.error("Wallpaper download failed:",error);
+alert("This wallpaper couldn't be downloaded right now. Please try again.");
+}finally{
+if(button && button.tagName === "BUTTON"){ button.disabled = false; button.textContent = oldText; }
+}
+}
+
+function downloadWallById(id){
+const element = document.querySelector('[data-wid="'+CSS.escape(String(id))+'"]');
+const wallpaper = wallpapers.find(w => String(w.id) === String(id));
+downloadWallpaper(element, "dreamwall-"+(wallpaper?.title || "wallpaper")+".png");
+}
+
 function renderWall(element,w){
 
 element.innerHTML = "";
@@ -1907,6 +1945,8 @@ onclick="startChatFromWall('${w.id}')"
 >
 💌
 </button>
+
+<button class="icon download-action" onclick="downloadWallById('${w.id}')" title="Download wallpaper" aria-label="Download wallpaper">⬇️</button>
 
 <button
 class="icon"
@@ -3433,6 +3473,17 @@ wall.className =
 
 tile.appendChild(wall);
 
+const downloadButton = document.createElement("button");
+downloadButton.className = "download-tile";
+downloadButton.type = "button";
+downloadButton.textContent = "⬇ Download";
+downloadButton.title = "Download this wallpaper";
+downloadButton.onclick = event => {
+event.stopPropagation();
+downloadWallpaper(wall, "dreamwall-explore-"+index+".png");
+};
+tile.appendChild(downloadButton);
+
 renderWall(
 wall,
 wallpaper
@@ -3517,6 +3568,8 @@ ${w.id.startsWith("explore_")
 
 <div class="small-actions">
 
+<button class="btn" id="downloadPreview">⬇ Download PNG</button>
+
 <button
 class="btn primary"
 id="usePreview"
@@ -3542,6 +3595,8 @@ renderWall(
 $("previewWall"),
 w
 );
+
+$("downloadPreview").onclick = () => downloadWallpaper($("previewWall"), "dreamwall-wallpaper.png");
 
 $("usePreview").onclick =
 () => useWallpaper(w);
