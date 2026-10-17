@@ -6006,6 +6006,20 @@ loadApp();
       sentinel.textContent=feedIndex<feedItems.length?"Keep scrolling ✨ Loading more DreamWallers…":"You’re all caught up for now ✨";
       if(feedIndex>=feedItems.length && feedObserver){feedObserver.disconnect();feedObserver=null;}
     }
+    // Keep badges correct as newly loaded posts enter the feed.
+    document.querySelectorAll("#feed .post").forEach(post=>{
+      const wall=post.querySelector("[data-wid]");
+      const w=wallpapers.find(x=>String(x.id)===String(wall?.dataset.wid));
+      const meta=Array.isArray(w?.decorations)?w.decorations.find(x=>x&&x._dwMeta===true)||{}:{};
+      const badge=post.querySelector(".dw-source-badge");
+      if(!badge||!w)return;
+      if(meta.sourceType==="ai"){badge.textContent=meta.mediaType==="video"?"AI-GENERATED VIDEO":"AI-GENERATED DESIGN";badge.className="dw-source-badge ai";}
+      else if(meta.sourceType==="real"&&meta.mediaType==="image"){badge.textContent="REAL PHOTO · COMMUNITY POST";badge.className="dw-source-badge";}
+      else if(meta.sourceType==="real"&&meta.mediaType==="video"){badge.textContent="REAL VIDEO · COMMUNITY POST";badge.className="dw-source-badge video";}
+      else if(meta.mediaType==="video"){badge.textContent="ANIMATED VIDEO WALLPAPER";badge.className="dw-source-badge video";}
+      else if(meta.mediaType==="image"&&meta.mediaUrl){badge.textContent="COMMUNITY PHOTO";badge.className="dw-source-badge";}
+      else {badge.textContent="COMMUNITY DESIGN";badge.className="dw-source-badge";}
+    });
     // Start only visible video previews; pause them when they scroll away.
     setupVideoPlayback();
   }
