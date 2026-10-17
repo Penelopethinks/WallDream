@@ -5917,6 +5917,14 @@ loadApp();
   }
 
   // Make the endless Explore feed feel continuous and clarify generated previews.
+  document.querySelectorAll("#exploreGrid .explore-tile").forEach(tile=>{
+    if(tile.querySelector(".dw-source-badge"))return;
+    const badge=document.createElement("span");
+    badge.className="dw-source-badge ai";
+    badge.textContent="GENERATED PREVIEW";
+    badge.style.margin="8px 0 0";
+    tile.appendChild(badge);
+  });
   const loader=document.getElementById("exploreLoader");
   if(loader){loader.textContent="Keep scrolling ✨ More wallpapers appear as you go.";loader.classList.add("dw-infinite-hint");}
 })();
