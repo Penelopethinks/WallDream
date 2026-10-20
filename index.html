@@ -6185,14 +6185,22 @@ loadApp();
     window.addEventListener("dreamwall:feed-updated",applyFilters);
   }
 
-  // Instagram-like "Your story" shortcut opens the existing creator, so a new design can be posted.
-  if(stories && !stories.querySelector(".dw-story-add")){
+  // Instagram-like "Your story" shortcut opens the existing creator and survives story rerenders.
+  const addYourStory=()=>{
+    const row=document.getElementById("storiesRow");
+    if(!row || row.querySelector(".dw-story-add"))return;
     const add=document.createElement("button");
     add.type="button";add.className="dw-story-add";
     add.innerHTML='<span class="ring"><span class="face">＋</span></span><span>Your story</span>';
     add.addEventListener("click",()=>typeof go==="function"?go("create"):null);
-    stories.prepend(add);
+    row.prepend(add);
+  };
+  if(typeof renderStories==="function" && !window.__dwStoryWrapped){
+    const previousStories=renderStories;
+    renderStories=function(){previousStories();addYourStory();};
+    window.__dwStoryWrapped=true;
   }
+  addYourStory();
 
   // Add gentle entry motion and reapply feed filters when the current feed rerenders.
   if(typeof renderPosts==="function" && !window.__dwPolishRenderWrapped){
@@ -6212,7 +6220,7 @@ loadApp();
       const wall=post.querySelector("[data-wid]");
       if(!wall||post.querySelector(".dw-video-download"))return;
       const id=wall.dataset.wid;
-      const w=Array.isArray(window.wallpapers)?window.wallpapers.find(x=>String(x.id)===String(id)):null;
+      const w=(typeof wallpapers!=="undefined" && Array.isArray(wallpapers))?wallpapers.find(x=>String(x.id)===String(id)):null;
       const meta=Array.isArray(w?.decorations)?w.decorations.find(x=>x&&x._dwMeta===true)||{}:{};
       if(meta.mediaType!=="video"||!meta.mediaUrl)return;
       const actions=post.querySelector(".actions");if(!actions)return;
