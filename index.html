@@ -6108,5 +6108,140 @@ loadApp();
 
 </script>
 
+
+<!-- DreamWall polish: Instagram-style feed controls, story shortcuts, responsive motion -->
+<script>
+(function dreamWallFinalPolish(){
+  const style=document.createElement("style");
+  style.textContent=`
+    html{scroll-behavior:smooth;scroll-padding-top:18px}
+    .dw-feed-tools{width:min(650px,100%);margin:0 auto 14px;display:flex;gap:8px;overflow-x:auto;padding:3px 1px 9px;scrollbar-width:none}
+    .dw-feed-tools::-webkit-scrollbar{display:none}
+    .dw-feed-filter{flex:0 0 auto;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--muted);padding:9px 14px;font-weight:750;transition:background .18s,color .18s,transform .18s}
+    .dw-feed-filter[aria-pressed="true"]{background:var(--text);color:var(--bg);border-color:var(--text)}
+    .dw-feed-filter:active{transform:scale(.97)}
+    .dw-source-badge{display:inline-flex;align-items:center;width:max-content;max-width:100%;margin-top:5px;padding:4px 7px;border-radius:6px;background:#e9f8ee;color:#17623b;font-size:9px;font-weight:900;letter-spacing:.045em;line-height:1.3;overflow-wrap:anywhere}
+    .dw-source-badge.ai{background:#f0e8ff;color:#6335b3}
+    .dw-source-badge.video{background:#dff7ff;color:#075a75}
+    .dw-video-wall video{display:block;width:100%;height:auto;max-height:78vh;object-fit:contain;background:#08080b}
+    .dw-story-add{display:flex;flex-direction:column;align-items:center;gap:6px;flex:0 0 72px;border:0;background:transparent;color:var(--text);padding:0}
+    .dw-story-add .ring{position:relative}
+    .dw-story-add .ring:after{content:"+";position:absolute;right:-2px;bottom:-1px;width:23px;height:23px;display:grid;place-items:center;border-radius:50%;background:var(--purple);border:2px solid var(--bg);color:white;font-size:18px;font-weight:800}
+    .dw-story-add span:last-child{font-size:11px;white-space:nowrap}
+    .dw-post-enter{animation:dwPostEnter .32s ease both}
+    @keyframes dwPostEnter{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}
+    .dw-feed-sentinel{margin:12px auto 24px}
+    .post,.tile,.explore-tile,.feature-card,.dw-feature-panel{transition:box-shadow .18s ease,border-color .18s ease}
+    .post:hover{box-shadow:0 10px 32px #0000000c}
+    .posthead{align-items:center}
+    .posthead .dw-source-badge{display:flex}
+    @media(max-width:850px){.main{max-width:none}.feed,.stories,.funbar{width:min(650px,100%)}}
+    @media(max-width:600px){
+      .dw-feed-tools{margin-bottom:10px}
+      .post{border-radius:14px;margin-bottom:17px}
+      .posthead{padding:12px}
+      .wall{aspect-ratio:4/5}
+      .stories-row{gap:12px}
+      .dw-story-add{flex-basis:66px}
+      .ring{width:62px;height:62px}
+      .top{align-items:flex-start}
+      .top h1{font-size:25px}
+      button,.btn,.tool,.funchip{touch-action:manipulation}
+    }
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.dw-post-enter{animation:none}*,*:before,*:after{transition:none!important}}
+  `;
+  document.head.appendChild(style);
+
+  const feed=document.getElementById("feed");
+  const stories=document.getElementById("storiesRow");
+  if(feed && !document.getElementById("dwFeedTools")){
+    const tools=document.createElement("div");
+    tools.id="dwFeedTools";
+    tools.className="dw-feed-tools";
+    tools.setAttribute("aria-label","Filter wallpaper feed");
+    tools.innerHTML=[
+      ["all","For you"],["ai","AI-made"],["video","Live & video"],["real","Real photos"]
+    ].map((x,i)=>'<button type="button" class="dw-feed-filter" data-filter="'+x[0]+'" aria-pressed="'+(i===0?'true':'false')+'">'+x[1]+'</button>').join("");
+    feed.parentNode.insertBefore(tools,feed);
+    let activeFilter="all";
+    const applyFilters=()=>{
+      feed.querySelectorAll(".post").forEach(post=>{
+        const badge=post.querySelector(".dw-source-badge");
+        const label=(badge?.textContent||"").toLowerCase();
+        let show=activeFilter==="all";
+        if(activeFilter==="ai")show=label.includes("ai-generated");
+        if(activeFilter==="video")show=label.includes("video")||!!post.querySelector("video");
+        if(activeFilter==="real")show=label.includes("real photo")||label.includes("real video");
+        post.style.display=show?"":"none";
+      });
+    };
+    tools.addEventListener("click",e=>{
+      const b=e.target.closest("[data-filter]");if(!b)return;
+      activeFilter=b.dataset.filter;
+      tools.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",String(x===b)));
+      applyFilters();
+    });
+    if("MutationObserver" in window)new MutationObserver(applyFilters).observe(feed,{childList:true,subtree:true});
+    window.addEventListener("dreamwall:feed-updated",applyFilters);
+  }
+
+  // Instagram-like "Your story" shortcut opens the existing creator, so a new design can be posted.
+  if(stories && !stories.querySelector(".dw-story-add")){
+    const add=document.createElement("button");
+    add.type="button";add.className="dw-story-add";
+    add.innerHTML='<span class="ring"><span class="face">＋</span></span><span>Your story</span>';
+    add.addEventListener("click",()=>typeof go==="function"?go("create"):null);
+    stories.prepend(add);
+  }
+
+  // Add gentle entry motion and reapply feed filters when the current feed rerenders.
+  if(typeof renderPosts==="function" && !window.__dwPolishRenderWrapped){
+    const prior=renderPosts;
+    renderPosts=function(){
+      prior();
+      const posts=feed?.querySelectorAll(".post")||[];
+      posts.forEach((p,i)=>{if(i<18)p.classList.add("dw-post-enter");});
+      window.dispatchEvent(new Event("dreamwall:feed-updated"));
+    };
+    window.__dwPolishRenderWrapped=true;
+  }
+
+  // A posted video gets a clear moving-media download control when the URL is available.
+  const decorateVideoDownloads=()=>{
+    document.querySelectorAll("#feed .post").forEach(post=>{
+      const wall=post.querySelector("[data-wid]");
+      if(!wall||post.querySelector(".dw-video-download"))return;
+      const id=wall.dataset.wid;
+      const w=Array.isArray(window.wallpapers)?window.wallpapers.find(x=>String(x.id)===String(id)):null;
+      const meta=Array.isArray(w?.decorations)?w.decorations.find(x=>x&&x._dwMeta===true)||{}:{};
+      if(meta.mediaType!=="video"||!meta.mediaUrl)return;
+      const actions=post.querySelector(".actions");if(!actions)return;
+      const b=document.createElement("button");b.type="button";b.className="icon dw-video-download";b.title="Download moving wallpaper";b.setAttribute("aria-label","Download moving wallpaper");b.textContent="🎞️";
+      b.addEventListener("click",async()=>{
+        const old=b.textContent;b.disabled=true;b.textContent="…";
+        try{
+          const response=await fetch(meta.mediaUrl,{mode:"cors"});
+          if(!response.ok)throw new Error("Video could not be fetched");
+          const blob=await response.blob();
+          const url=URL.createObjectURL(blob);
+          const a=document.createElement("a");a.href=url;a.download="dreamwall-live-wallpaper."+(blob.type.includes("webm")?"webm":blob.type.includes("mp4")?"mp4":"video");document.body.appendChild(a);a.click();a.remove();
+          setTimeout(()=>URL.revokeObjectURL(url),1500);
+        }catch(err){
+          const a=document.createElement("a");a.href=meta.mediaUrl;a.target="_blank";a.rel="noopener";a.click();
+          const status=document.createElement("div");status.className="muted";status.textContent="Opened the video in a new tab because this host blocks direct downloads.";actions.after(status);
+        }finally{b.disabled=false;b.textContent=old;}
+      });
+      actions.appendChild(b);
+    });
+  };
+  if(feed && "MutationObserver" in window)new MutationObserver(decorateVideoDownloads).observe(feed,{childList:true,subtree:true});
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",decorateVideoDownloads);else decorateVideoDownloads();
+
+  // Make the Explore stream's promise explicit; it creates endless design inspiration, while the Home feed stays real.
+  const loader=document.getElementById("exploreLoader");
+  if(loader)loader.textContent="Keep scrolling — fresh wallpaper inspiration keeps appearing ✨";
+})();
+</script>
+
 </body>
 </html>
